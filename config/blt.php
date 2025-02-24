@@ -6,13 +6,14 @@ use Blumilk\BLT\Helpers\ArrayHelper;
 use Blumilk\BLT\Helpers\BooleanHelper;
 use Blumilk\BLT\Helpers\ClassHelper;
 use Blumilk\BLT\Helpers\NullableHelper;
+use Spatie\Permission\Models\Role;
 
 return [
     "namespaces" => [
         "default" => "App\\",
         "types" => [
             "user" => "App\Models\User",
-            "role" => "Spatie\Permission\Models\Role",
+            "role" => Role::class,
         ],
     ],
     "helpers" => [
