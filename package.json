@@ -1,0 +1,15 @@
+{
+    "name": "community-with-legends",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "dependencies": {
+        "laravel-vite-plugin": "^1.1.1"
+    },
+    "devDependencies": {
+        "vite": "^5.4.11"
+    }
+}
