@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a28bd21d188796cfc8e1520b708d1c48",
+    "content-hash": "a6722513b8df501831e7cfb02d3ff5aa",
     "packages": [
         {
             "name": "brick/math",
@@ -6308,12 +6308,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/MRR-Group/blt.git",
-                "reference": "778b9f933941a6b576638968ba65530aa1ce7a60"
+                "reference": "b7341631674c50c7acdaa7606f5e70d1111aa548"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MRR-Group/blt/zipball/778b9f933941a6b576638968ba65530aa1ce7a60",
-                "reference": "778b9f933941a6b576638968ba65530aa1ce7a60",
+                "url": "https://api.github.com/repos/MRR-Group/blt/zipball/b7341631674c50c7acdaa7606f5e70d1111aa548",
+                "reference": "b7341631674c50c7acdaa7606f5e70d1111aa548",
                 "shasum": ""
             },
             "require": {
@@ -6370,7 +6370,7 @@
             "support": {
                 "source": "https://github.com/MRR-Group/blt/tree/v0.1.1"
             },
-            "time": "2025-02-24T01:58:21+00:00"
+            "time": "2025-02-24T03:54:45+00:00"
         },
         {
             "name": "blumilksoftware/codestyle",
