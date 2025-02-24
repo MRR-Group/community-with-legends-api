@@ -61,6 +61,7 @@
             "@putenv XDEBUG_MODE=off",
             "@php artisan test"
         ],
+        "test-features": "./vendor/bin/behat",
         "analyse": "./vendor/bin/phpstan analyse",
         "cs": "./vendor/bin/php-cs-fixer fix --dry-run --diff --config codestyle.php",
         "csf": "./vendor/bin/php-cs-fixer fix --diff --config codestyle.php"
