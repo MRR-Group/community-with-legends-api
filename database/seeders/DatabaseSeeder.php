@@ -14,8 +14,10 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(PermissionsSeeder::class);
 
-        User::factory([
-            "email" => "admin@cwl.com",
-        ])->admin()->create();
+        if (User::query()->where("email", "=", "admin@cwl.com")->count() === 0) {
+            User::factory([
+                "email" => "admin@cwl.com",
+            ])->admin()->create();
+        }
     }
 }
