@@ -35,21 +35,11 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
-        if (Auth::user()) {
-            Auth::logout();
-
-            $request->session()->invalidate();
-
-            $request->session()->regenerateToken();
-
-            return response()->json([
-                "message" => "success",
-            ])->setStatusCode(Status::HTTP_OK);
-        }
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            "message" => "You are not logged in.",
-        ])->setStatusCode(Status::HTTP_UNAUTHORIZED);
+            "message" => "Logged out"
+        ], Status::HTTP_OK);
     }
 
     public function register(RegisterRequest $registerRequest)
@@ -61,8 +51,6 @@ class AuthController extends Controller
             $user = new User($validated);
             $user->password = Hash::make($validated["password"]);
             $user->save();
-
-            Auth::login($user);
         }
 
         return response()->json([
