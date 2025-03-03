@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use CommunityWithLegends\Http\Controllers\AuthController;
 use CommunityWithLegends\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -26,4 +27,11 @@ Route::post("/auth/token", function (Request $request) {
     return $user->createToken($request->device_name)->plainTextToken;
 });
 
-Route::get("/user", fn(Request $request) => $request->user())->middleware("auth:sanctum");
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get("/user", fn(Request $request) => $request->user());
+
+    Route::post("/auth/logout", [AuthController::class, 'logout']);
+});
+
+Route::post("/auth/login", [AuthController::class, 'login'])->name('login');
+Route::post("/auth/register", [AuthController::class, 'register']);
