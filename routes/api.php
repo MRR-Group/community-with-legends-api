@@ -27,11 +27,11 @@ Route::post("/auth/token", function (Request $request) {
     return $user->createToken($request->device_name)->plainTextToken;
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware("auth:sanctum")->group(function (): void {
     Route::get("/user", fn(Request $request) => $request->user());
 
-    Route::post("/auth/logout", [AuthController::class, 'logout']);
+    Route::post("/auth/logout", [AuthController::class, "logout"]);
 });
 
-Route::post("/auth/login", [AuthController::class, 'login'])->name('login');
-Route::post("/auth/register", [AuthController::class, 'register']);
+Route::post("/auth/login", [AuthController::class, "login"])->name("login");
+Route::post("/auth/register", [AuthController::class, "register"]);

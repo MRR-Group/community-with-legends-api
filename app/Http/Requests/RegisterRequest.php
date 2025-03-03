@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
@@ -17,14 +20,14 @@ class RegisterRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            "name" => ['required', 'max:225'],
-            "email" => ['required', 'email:rfc,dns', 'max:225', 'string'],
-            "password" => ['required', 'min:8', 'max:225', 'string'],
+            "name" => ["required", "max:225"],
+            "email" => ["required", "email:rfc,dns", "max:225", "string"],
+            "password" => ["required", "min:8", "max:225", "string"],
         ];
     }
 }
