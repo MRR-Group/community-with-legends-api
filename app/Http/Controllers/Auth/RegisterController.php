@@ -15,15 +15,11 @@ class RegisterController extends Controller
         $validated = $registerRequest->validated();
         $userExist = User::query()->where("email", $validated["email"])->exists();
 
-        if ($userExist) {
-            return response()->json([
-                "message" => "User already exists.",
-            ])->setStatusCode(Status::HTTP_CONFLICT);
+        if (!$userExist) {
+            $user = new User($validated);
+            $user->password = Hash::make($validated["password"]);
+            $user->save();
         }
-
-        $user = new User($validated);
-        $user->password = Hash::make($validated["password"]);
-        $user->save();
 
         return response()->json([
             "message" => "success",
