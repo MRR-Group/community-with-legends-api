@@ -1,5 +1,5 @@
 # For other versions check: https://hub.docker.com/_/composer/tags
-FROM composer/composer:2.8.3-bin@sha256:9f83907ae037ada989775f462a19932cdd388fefcbf3b697780363bba1767f94 AS composer-bin
+FROM composer/composer:2.8.6-bin@sha256:989ad47cea06cb9365afda43d7431a238c6abf913d631b9cf043eb0d43f783ae AS composer-bin
 
 # For other versions check: https://hub.docker.com/_/node/tags?page=1&name=bullseye-slim
 FROM node:23.8.0-bullseye-slim@sha256:23f14061bdb69ec7ae04a292e8de122c57dcc58712bf8ce09c25180197e8d945 AS node
