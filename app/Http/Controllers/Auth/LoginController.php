@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Controllers\Auth;
 
 use CommunityWithLegends\Http\Controllers\Controller;
@@ -20,11 +22,11 @@ class LoginController extends Controller
 
         $user = Auth::user();
         $user->tokens()->delete();
-        $token = $user->createToken('api-token')->plainTextToken;
+        $token = $user->createToken("api-token")->plainTextToken;
 
         return response()->json([
             "message" => "success",
-            "token" => $token
+            "token" => $token,
         ], Status::HTTP_OK);
     }
 }

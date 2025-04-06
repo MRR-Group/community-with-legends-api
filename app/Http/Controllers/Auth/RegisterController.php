@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Controllers\Auth;
 
 use CommunityWithLegends\Http\Controllers\Controller;

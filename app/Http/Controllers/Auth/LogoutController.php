@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Controllers\Auth;
 
 use CommunityWithLegends\Http\Controllers\Controller;
@@ -14,7 +16,7 @@ class LogoutController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            "message" => "Logged out"
+            "message" => "Logged out",
         ], Status::HTTP_OK);
     }
 }
