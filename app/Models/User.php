@@ -6,6 +6,7 @@ namespace CommunityWithLegends\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -42,5 +43,20 @@ class User extends Authenticatable
             "email_verified_at" => "datetime",
             "password" => "hashed",
         ];
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function reactions(): HasMany
+    {
+        return $this->hasMany(Reaction::class);
     }
 }
