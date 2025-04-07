@@ -14,9 +14,9 @@ class PostController extends Controller
         $validated = $request->validated();
         $postData = $validated;
 
-        $postData->user_id = auth()->id();
+        $postData['user_id'] = auth()->id();
 
-        $post = new Post($validated);
+        $post = new Post($postData);
         $post->save();
 
         return response()->json([
