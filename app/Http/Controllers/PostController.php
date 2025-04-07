@@ -23,4 +23,11 @@ class PostController extends Controller
             'message' => 'Post has been created'
         ], Status::HTTP_OK);
     }
+
+    public function index(): JsonResponse
+    {
+        $posts = Post::query()->with(['user', 'tag', 'game'])->paginate(10);
+
+        return response()->json($posts);
+    }
 }
