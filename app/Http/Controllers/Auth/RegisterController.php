@@ -25,6 +25,6 @@ class RegisterController extends Controller
 
         return response()->json([
             "message" => "success",
-        ])->setStatusCode(Status::HTTP_OK);
+        ])->setStatusCode(Status::HTTP_CREATED);
     }
 }
