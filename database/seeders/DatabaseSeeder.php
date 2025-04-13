@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RoleSeeder::class);
         $this->call(PermissionsSeeder::class);
+        $this->call(GameSeeder::class);
+        $this->call(TagSeeder::class);
 
         if (User::query()->where("email", "=", "admin@cwl.com")->count() === 0) {
             User::factory([

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use CommunityWithLegends\Http\Controllers\Auth\LoginController;
 use CommunityWithLegends\Http\Controllers\Auth\LogoutController;
 use CommunityWithLegends\Http\Controllers\Auth\RegisterController;
+use CommunityWithLegends\Http\Controllers\PostController;
 use CommunityWithLegends\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -31,6 +32,9 @@ Route::post("/auth/token", function (Request $request) {
 
 Route::middleware("auth:sanctum")->group(function (): void {
     Route::get("/user", fn(Request $request) => $request->user());
+
+    Route::post("/posts", [PostController::class, "store"]);
+    Route::get("/posts", [PostController::class, "index"]);
 
     Route::post("/auth/logout", [LogoutController::class, "logout"]);
 });
