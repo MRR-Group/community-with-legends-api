@@ -28,7 +28,7 @@ class PostController extends Controller
 
     public function index(): JsonResponse
     {
-        $posts = Post::query()->with(["user", "tag", "game"])->paginate(10);
+        $posts = Post::query()->with(["user", "tag", "game"])->orderBy('created_at', 'desc')->paginate(10);
 
         return response()->json($posts);
     }
