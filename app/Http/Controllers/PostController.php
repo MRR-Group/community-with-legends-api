@@ -21,7 +21,7 @@ class PostController extends Controller
 
         return response()->json([
             'message' => 'Post has been created'
-        ], Status::HTTP_OK);
+        ], Status::HTTP_CREATED);
     }
 
     public function index(): JsonResponse
