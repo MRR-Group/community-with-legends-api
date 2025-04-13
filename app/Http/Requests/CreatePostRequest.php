@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreatePostRequest extends FormRequest
@@ -17,14 +20,14 @@ class CreatePostRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'content' => ['required', 'string', 'max:512'],
-            'tag_id' => ['nullable', 'integer', 'exists:tags,id'],
-            'game_id' => ['nullable', 'integer', 'exists:games,id'],
+            "content" => ["required", "string", "max:512"],
+            "tag_id" => ["nullable", "integer", "exists:tags,id"],
+            "game_id" => ["nullable", "integer", "exists:games,id"],
         ];
     }
 }

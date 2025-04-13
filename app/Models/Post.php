@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Post extends Model
 {
-    protected $fillable = ['user_id', 'game_id', 'tag_id', 'content'];
+    protected $fillable = ["user_id", "game_id", "tag_id", "content"];
 
     public function user(): BelongsTo
     {
@@ -36,7 +38,8 @@ class Post extends Model
         return $this->hasMany(Reaction::class);
     }
 
-    public function reactionsCount(){
+    public function reactionsCount()
+    {
         return $this->reactions()->count();
     }
 

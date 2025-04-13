@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,15 +14,15 @@ class TagSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('tags')->insert([
+        DB::table("tags")->insert([
             [
-                'name' => "Clutch moment"
+                "name" => "Clutch moment",
             ],
             [
-                'name' => "Funny moment"
+                "name" => "Funny moment",
             ],
             [
-                'name' => "Glitch"
+                "name" => "Glitch",
             ],
         ]);
     }
