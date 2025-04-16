@@ -12,15 +12,18 @@ class GameController extends Controller
     {
         $filter = $request->input('filter');
 
-        if($filter){
-            $games = Game::query()->where('name', 'like', '%' . $filter . '%') ->paginate(20);
-        }else{
+        if ($filter) {
+            $games = Game::query()
+                ->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($filter) . '%'])
+                ->paginate(20);
+        } else {
             $games = Game::query()->paginate(20);
         }
 
 
         return response()->json($games);
     }
+
     public function index(Request $request): JsonResponse
     {
         $games = Game::query()->paginate(20);
