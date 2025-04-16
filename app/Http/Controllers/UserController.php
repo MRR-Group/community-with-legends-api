@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Controllers;
 
 use CommunityWithLegends\Http\Resources\UserResource;

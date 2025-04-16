@@ -22,11 +22,11 @@ class PostController extends Controller
         $post = new Post($postData);
         $post->save();
 
-        if (isset($validated['asset_type_id']) && isset($validated['asset_link'])) {
+        if (isset($validated["asset_type_id"]) && isset($validated["asset_link"])) {
             PostAsset::create([
-                'post_id' => $post->id,
-                'type_id' => $validated['asset_type_id'],
-                'link' => $validated['asset_link'],
+                "post_id" => $post->id,
+                "type_id" => $validated["asset_type_id"],
+                "link" => $validated["asset_link"],
             ]);
         }
 
@@ -37,7 +37,7 @@ class PostController extends Controller
 
     public function index(): JsonResponse
     {
-        $posts = Post::query()->with(["user", "tag", "game"])->orderBy('created_at', 'desc')->paginate(10);
+        $posts = Post::query()->with(["user", "tag", "game"])->orderBy("created_at", "desc")->paginate(10);
 
         return response()->json($posts);
     }

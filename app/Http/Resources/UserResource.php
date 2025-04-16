@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Resources;
 
 use CommunityWithLegends\Enums\Permission;
