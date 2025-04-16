@@ -28,6 +28,8 @@ class CreatePostRequest extends FormRequest
             "content" => ["required", "string", "max:512"],
             "tag_id" => ["nullable", "integer", "exists:tags,id"],
             "game_id" => ["nullable", "integer", "exists:games,id"],
+            "asset_type_id" => ["nullable", "integer", "exists:asset_types,id"],
+            "asset_link" => ["nullable", "string", "max:512"],
         ];
     }
 }
