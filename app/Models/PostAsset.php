@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PostAsset extends Model
 {
-    protected $fillable = ["post_id", "type_id"];
+    protected $fillable = ["post_id", "type_id", "link"];
 
     public function post(): BelongsTo
     {

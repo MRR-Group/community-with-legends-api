@@ -82,6 +82,8 @@ return new class() extends Migration {
             $table->id();
             $table->unsignedBigInteger("post_id");
             $table->unsignedBigInteger("type_id");
+            $table->string("link");
+            $table->timestamps();
 
             $table->foreign("post_id")
                 ->references("id")

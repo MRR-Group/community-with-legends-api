@@ -7,6 +7,7 @@ namespace CommunityWithLegends\Enums;
 enum Role: string
 {
     case User = "user";
+    case SuperAdministrator = "superAdministrator";
     case Administrator = "administrator";
     case Moderator = "moderator";
 
