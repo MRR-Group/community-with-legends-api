@@ -16,11 +16,11 @@ class AssetTypesSeeder extends Seeder
     {
         DB::table("asset_types")->insert([
             [
-                "id" => 0,
+                "id" => 1,
                 "name" => "Image",
             ],
             [
-                "id" => 1,
+                "id" => 2,
                 "name" => "Video",
             ],
         ]);
