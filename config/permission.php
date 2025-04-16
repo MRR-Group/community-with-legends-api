@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
+use CommunityWithLegends\Enums\Permission;
 use CommunityWithLegends\Enums\Role;
 use Spatie\Permission\DefaultTeamResolver;
-use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Permission as SpatiePermission;
+use Spatie\Permission\Models\Role as SpatieRole;
 
 return [
     "models" => [
-        "permission" => Permission::class,
-        "role" => Spatie\Permission\Models\Role::class,
+        "permission" => SpatiePermission::class,
+        "role" => SpatieRole::class,
     ],
 
     "table_names" => [
@@ -43,17 +45,47 @@ return [
         "store" => "default",
     ],
     "permissions" => [
-        "manageUsers",
-        "manageModerators",
+        Permission::CreatePost->value,
+        Permission::MakeComment->value,
+        Permission::ReactToPost->value,
+        Permission::BanUsers->value,
+        Permission::ViewUsers->value,
+        Permission::DeletePosts->value,
+        Permission::ManageAdministrators->value,
+        Permission::ManageModerators->value,
     ],
     "permission_roles" => [
+        Role::SuperAdministrator->value => [
+            Permission::CreatePost->value,
+            Permission::MakeComment->value,
+            Permission::ReactToPost->value,
+            Permission::ViewUsers->value,
+            Permission::BanUsers->value,
+            Permission::DeletePosts->value,
+            Permission::ManageModerators->value,
+            Permission::ManageAdministrators->value,
+        ],
         Role::Administrator->value => [
-            "manageUsers",
-            "manageModerators",
+            Permission::CreatePost->value,
+            Permission::MakeComment->value,
+            Permission::ReactToPost->value,
+            Permission::ViewUsers->value,
+            Permission::BanUsers->value,
+            Permission::DeletePosts->value,
+            Permission::ManageModerators->value,
         ],
         Role::Moderator->value => [
-            "manageUsers",
+            Permission::CreatePost->value,
+            Permission::MakeComment->value,
+            Permission::ReactToPost->value,
+            Permission::ViewUsers->value,
+            Permission::BanUsers->value,
+            Permission::DeletePosts->value,
         ],
-        Role::User->value => [],
+        Role::User->value => [
+            Permission::CreatePost->value,
+            Permission::MakeComment->value,
+            Permission::ReactToPost->value,
+        ],
     ],
 ];

@@ -51,6 +51,14 @@ class UserFactory extends Factory
         });
     }
 
+    public function superAdmin(): static
+    {
+        return $this->afterCreating(function (User $user): void {
+            $user->assignRole(Role::SuperAdministrator);
+            $user->syncPermissions(Role::SuperAdministrator->permissions());
+        });
+    }
+
     public function moderator(): static
     {
         return $this->afterCreating(function (User $user): void {

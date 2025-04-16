@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use CommunityWithLegends\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,7 +20,8 @@ class DatabaseSeeder extends Seeder
         if (User::query()->where("email", "=", "admin@cwl.com")->count() === 0) {
             User::factory([
                 "email" => "admin@cwl.com",
-            ])->admin()->create();
+                "password" => env("DEFAULT_SUPER_ADMIN_PASSWORD", "admin"),
+            ])->superAdmin()->create();
         }
     }
 }
