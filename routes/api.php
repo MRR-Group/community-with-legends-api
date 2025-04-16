@@ -6,6 +6,8 @@ use CommunityWithLegends\Enums\Permission;
 use CommunityWithLegends\Http\Controllers\Auth\LoginController;
 use CommunityWithLegends\Http\Controllers\Auth\LogoutController;
 use CommunityWithLegends\Http\Controllers\Auth\RegisterController;
+use CommunityWithLegends\Http\Controllers\GameController;
+use CommunityWithLegends\Models\Tag;
 use CommunityWithLegends\Http\Controllers\PostController;
 use CommunityWithLegends\Http\Controllers\UserController;
 use CommunityWithLegends\Models\User;
@@ -34,6 +36,10 @@ Route::post("/auth/token", function (Request $request) {
 });
 
 Route::middleware("auth:sanctum")->group(function (): void {
+    Route::get("/tags", fn(Request $request) => Tag::query()->get());
+    Route::get("/games", [GameController::class, "index"]);
+    Route::get("/games/search", [GameController::class, "search"]);
+
     Route::post("/posts", [PostController::class, "store"])->middleware(Authorize::using(Permission::CreatePost));
     Route::get("/posts", [PostController::class, "index"]);
 
