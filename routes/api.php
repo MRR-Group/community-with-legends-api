@@ -7,6 +7,7 @@ use CommunityWithLegends\Http\Controllers\Auth\LogoutController;
 use CommunityWithLegends\Http\Controllers\Auth\RegisterController;
 use CommunityWithLegends\Http\Controllers\GameController;
 use CommunityWithLegends\Http\Controllers\PostController;
+use CommunityWithLegends\Http\Controllers\TagController;
 use CommunityWithLegends\Models\Game;
 use CommunityWithLegends\Models\Tag;
 use CommunityWithLegends\Models\User;
@@ -35,9 +36,10 @@ Route::post("/auth/token", function (Request $request) {
 
 Route::middleware("auth:sanctum")->group(function (): void {
     Route::get("/user", fn(Request $request) => $request->user());
-    Route::get("/tags", fn(Request $request) => Tag::query()->get());
     Route::get("/games", [GameController::class, "index"]);
     Route::get("/games/search", [GameController::class, "search"]);
+    Route::get("/tags", [TagController::class, "index"]);
+    Route::get("/tags/search", [TagController::class, "search"]);
 
     Route::post("/posts", [PostController::class, "store"]);
     Route::get("/posts", [PostController::class, "index"]);
