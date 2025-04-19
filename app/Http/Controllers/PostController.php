@@ -30,6 +30,10 @@ class PostController extends Controller
             ]);
         }
 
+        if(isset($validated['tag_ids'])){
+            $post->tags()->attach($validated['tag_ids']);
+        }
+
         return response()->json([
             "message" => "Post has been created",
         ], Status::HTTP_CREATED);
@@ -37,7 +41,7 @@ class PostController extends Controller
 
     public function index(): JsonResponse
     {
-        $posts = Post::query()->with(["user", "tag", "game"])->orderBy('created_at', 'desc')->paginate(10);
+        $posts = Post::query()->with(["user", "tags", "game"])->orderBy('created_at', 'desc')->paginate(10);
 
         return response()->json($posts);
     }
