@@ -42,7 +42,7 @@ Route::middleware("auth:sanctum")->group(function (): void {
     Route::get("/tags/search", [TagController::class, "search"]);
 
     Route::post("/posts", [PostController::class, "store"]);
-    Route::post("/posts/{id}/reactions", [PostController::class, "addReaction"]);
+    Route::post("/posts/{id}/reactions", [PostController::class, "toggleReaction"]);
     Route::get("/posts", [PostController::class, "index"]);
 
     Route::post("/auth/logout", [LogoutController::class, "logout"]);

@@ -50,18 +50,20 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
-    public function addReaction(int $postId): JsonResponse
+    public function toggleReaction(int $postId): JsonResponse
     {
         $post = Post::query()->findOrFail($postId);
 
-        $alreadyReacted = $post->reactions()
+        $reaction = $post->reactions()
             ->where("user_id", auth()->id())
             ->first();
 
-        if ($alreadyReacted) {
+        if ($reaction) {
+            $reaction->delete();
+
             return response()->json([
-                "message" => "You have already reacted to this post",
-            ], Status::HTTP_CONFLICT);
+                "message" => "Reaction removed successfully",
+            ], Status::HTTP_OK);
         }
 
         $post->reactions()->create([
