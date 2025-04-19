@@ -30,7 +30,7 @@ class PostController extends Controller
             ]);
         }
 
-        if(isset($validated['tag_ids'])){
+        if (isset($validated['tag_ids'])) {
             $post->tags()->attach($validated['tag_ids']);
         }
 
@@ -41,8 +41,35 @@ class PostController extends Controller
 
     public function index(): JsonResponse
     {
-        $posts = Post::query()->with(["user", "tags", "game"])->orderBy('created_at', 'desc')->paginate(10);
+        $posts = Post::query()
+            ->with(["user", "tags", "game"])
+            ->withCount('reactions')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return response()->json($posts);
+    }
+
+    public function addReaction(int $postId): JsonResponse
+    {
+        $post = Post::query()->findOrFail($postId);
+
+        $alreadyReacted = $post->reactions()
+            ->where("user_id", auth()->id())
+            ->first();
+
+        if ($alreadyReacted) {
+            return response()->json([
+                "message" => "You have already reacted to this post",
+            ], Status::HTTP_CONFLICT);
+        }
+
+        $post->reactions()->create([
+            'user_id' => auth()->id()
+        ]);
+
+        return response()->json([
+            "message" => "Reaction added successfully",
+        ], Status::HTTP_CREATED);
     }
 }

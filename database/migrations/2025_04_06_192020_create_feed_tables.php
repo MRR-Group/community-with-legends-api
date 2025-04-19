@@ -62,6 +62,7 @@ return new class() extends Migration {
             $table->id();
             $table->unsignedBigInteger("post_id");
             $table->unsignedBigInteger("user_id");
+            $table->timestamps();
 
             $table->foreign("post_id")
                 ->references("id")
