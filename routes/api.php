@@ -7,9 +7,8 @@ use CommunityWithLegends\Http\Controllers\Auth\LogoutController;
 use CommunityWithLegends\Http\Controllers\Auth\RegisterController;
 use CommunityWithLegends\Http\Controllers\GameController;
 use CommunityWithLegends\Http\Controllers\PostController;
+use CommunityWithLegends\Http\Controllers\ResetPasswordController;
 use CommunityWithLegends\Http\Controllers\TagController;
-use CommunityWithLegends\Models\Game;
-use CommunityWithLegends\Models\Tag;
 use CommunityWithLegends\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -47,6 +46,8 @@ Route::middleware("auth:sanctum")->group(function (): void {
     Route::get("/posts", [PostController::class, "index"]);
 
     Route::post("/auth/logout", [LogoutController::class, "logout"]);
+    Route::post("/auth/forgot-password", [ResetPasswordController::class, "sendResetLinkEmail"]);
+    Route::post("/auth/reset-password", [ResetPasswordController::class, "reset"]);
 });
 
 Route::post("/auth/login", [LoginController::class, "login"])->name("login");
