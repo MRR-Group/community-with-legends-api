@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CommunityWithLegends\Http\Controllers\Auth;
 
+use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Http\Controllers\Controller;
 use CommunityWithLegends\Http\Requests\RegisterRequest;
 use CommunityWithLegends\Models\User;
@@ -21,6 +22,9 @@ class RegisterController extends Controller
             $user = new User($validated);
             $user->password = Hash::make($validated["password"]);
             $user->save();
+
+            $user->assignRole(Role::User);
+            $user->syncPermissions(Role::User->permissions());
         }
 
         return response()->json([

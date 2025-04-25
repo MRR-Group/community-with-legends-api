@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
+use CommunityWithLegends\Enums\Permission;
 use CommunityWithLegends\Http\Controllers\Auth\LoginController;
 use CommunityWithLegends\Http\Controllers\Auth\LogoutController;
 use CommunityWithLegends\Http\Controllers\Auth\RegisterController;
 use CommunityWithLegends\Http\Controllers\GameController;
 use CommunityWithLegends\Http\Controllers\PostController;
 use CommunityWithLegends\Http\Controllers\ResetPasswordController;
+use CommunityWithLegends\Http\Controllers\UserController;
 use CommunityWithLegends\Http\Controllers\TagController;
 use CommunityWithLegends\Models\User;
+use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
@@ -45,10 +48,14 @@ Route::middleware("auth:sanctum")->group(function (): void {
     Route::delete("/posts/{id}/reactions", [PostController::class, "removeReaction"]);
     Route::get("/posts", [PostController::class, "index"]);
 
+    Route::get("/users", [UserController::class, "index"])->middleware(Authorize::using(Permission::ViewUsers));
+    Route::get("/users/{user}", [UserController::class, "show"]);
+
     Route::post("/auth/logout", [LogoutController::class, "logout"]);
 });
 
 Route::post("/auth/login", [LoginController::class, "login"])->name("login");
 Route::post("/auth/register", [RegisterController::class, "register"]);
+
 Route::post("/auth/forgot-password", [ResetPasswordController::class, "sendResetLinkEmail"]);
 Route::post("/auth/reset-password", [ResetPasswordController::class, "reset"]);
