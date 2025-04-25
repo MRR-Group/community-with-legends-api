@@ -12,16 +12,19 @@ return new class() extends Migration {
         Schema::create("games", function (Blueprint $table): void {
             $table->id();
             $table->string("name");
+            $table->timestamps();
         });
 
         Schema::create("tags", function (Blueprint $table): void {
             $table->id();
             $table->string("name");
+            $table->timestamps();
         });
 
         Schema::create("asset_types", function (Blueprint $table): void {
             $table->id();
             $table->string("name");
+            $table->timestamps();
         });
 
         Schema::create("posts", function (Blueprint $table): void {
@@ -35,6 +38,7 @@ return new class() extends Migration {
                 ->references("id")
                 ->on("users")
                 ->onDelete("cascade");
+
             $table->foreign("game_id")
                 ->references("id")
                 ->on("games")
@@ -52,6 +56,7 @@ return new class() extends Migration {
                 ->references("id")
                 ->on("posts")
                 ->onDelete("cascade");
+
             $table->foreign("user_id")
                 ->references("id")
                 ->on("users")
@@ -68,6 +73,7 @@ return new class() extends Migration {
                 ->references("id")
                 ->on("posts")
                 ->onDelete("cascade");
+
             $table->foreign("user_id")
                 ->references("id")
                 ->on("users")
@@ -85,6 +91,7 @@ return new class() extends Migration {
                 ->references("id")
                 ->on("posts")
                 ->onDelete("cascade");
+
             $table->foreign("type_id")
                 ->references("id")
                 ->on("asset_types")
@@ -101,6 +108,7 @@ return new class() extends Migration {
                 ->references("id")
                 ->on("posts")
                 ->onDelete("cascade");
+
             $table->foreign("tag_id")
                 ->references("id")
                 ->on("tags")

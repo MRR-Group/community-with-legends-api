@@ -9,12 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class GameSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        DB::table("games")->insert([
+        DB::table("games")->insertOrIgnore([
             [
                 "name" => "R.E.P.O",
             ],

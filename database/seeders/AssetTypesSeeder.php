@@ -9,12 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class AssetTypesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        DB::table("asset_types")->insert([
+        DB::table("asset_types")->insertOrIgnore([
             [
                 "id" => 1,
                 "name" => "Image",

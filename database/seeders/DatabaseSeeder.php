@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -18,10 +19,13 @@ class DatabaseSeeder extends Seeder
         $this->call(AssetTypesSeeder::class);
 
         if (User::query()->where("email", "=", "admin@cwl.com")->count() === 0) {
-            User::factory([
+            $user = User::factory([
                 "email" => "admin@cwl.com",
                 "password" => env("DEFAULT_SUPER_ADMIN_PASSWORD", "admin"),
             ])->superAdmin()->create();
+
+            $identiconHelper = new IdenticonHelper();
+            $identiconHelper->create($user->id, $user->email);
         }
     }
 }

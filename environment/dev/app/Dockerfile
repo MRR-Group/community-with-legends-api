@@ -50,14 +50,15 @@ RUN apt-get update \
         nginx=${NGINX_VERSION} \
         libzip-dev \
         libpq-dev \
+        libpng-dev \
         supervisor \
+        libmagickwand-dev \
         cron \
     && pecl install redis-${PHPREDIS_VERSION} \
-    && docker-php-ext-install \
-        zip \
-        pdo_pgsql \
-    && docker-php-ext-enable \
-        redis
+    && pecl install imagick \
+    && docker-php-ext-install zip gd pdo_pgsql \
+    && docker-php-ext-enable redis \
+    && docker-php-ext-enable imagick
 
 # For other versions check: https://pecl.php.net/package/xdebug
 ARG XDEBUG_VERSION=3.3.2
