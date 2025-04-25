@@ -28,7 +28,6 @@ return new class() extends Migration {
             $table->id();
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("game_id")->nullable();
-            $table->unsignedBigInteger("tag_id")->nullable();
             $table->text("content");
             $table->timestamps();
 
@@ -39,10 +38,6 @@ return new class() extends Migration {
             $table->foreign("game_id")
                 ->references("id")
                 ->on("games")
-                ->onDelete("set null");
-            $table->foreign("tag_id")
-                ->references("id")
-                ->on("tags")
                 ->onDelete("set null");
         });
 
@@ -67,6 +62,7 @@ return new class() extends Migration {
             $table->id();
             $table->unsignedBigInteger("post_id");
             $table->unsignedBigInteger("user_id");
+            $table->timestamps();
 
             $table->foreign("post_id")
                 ->references("id")
@@ -94,12 +90,29 @@ return new class() extends Migration {
                 ->on("asset_types")
                 ->onDelete("cascade");
         });
+
+        Schema::create("post_tag", function (Blueprint $table): void {
+            $table->id();
+            $table->unsignedBigInteger("post_id");
+            $table->integer("tag_id");
+            $table->timestamps();
+
+            $table->foreign("post_id")
+                ->references("id")
+                ->on("posts")
+                ->onDelete("cascade");
+            $table->foreign("tag_id")
+                ->references("id")
+                ->on("tags")
+                ->onDelete("set null");
+        });
     }
 
     public function down(): void
     {
         Schema::dropIfExists("reactions");
         Schema::dropIfExists("post_assets");
+        Schema::dropIfExists("post_tag");
         Schema::dropIfExists("comments");
         Schema::dropIfExists("posts");
         Schema::dropIfExists("games");

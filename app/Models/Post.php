@@ -6,21 +6,17 @@ namespace CommunityWithLegends\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Post extends Model
 {
-    protected $fillable = ["user_id", "game_id", "tag_id", "content"];
+    protected $fillable = ["user_id", "game_id", "content"];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function tag(): BelongsTo
-    {
-        return $this->belongsTo(Tag::class);
     }
 
     public function game(): BelongsTo
@@ -31,6 +27,11 @@ class Post extends Model
     public function asset(): HasOne
     {
         return $this->hasOne(PostAsset::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class);
     }
 
     public function reactions(): HasMany

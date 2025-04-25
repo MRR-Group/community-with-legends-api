@@ -7,6 +7,7 @@ namespace CommunityWithLegends\Http\Controllers;
 use CommunityWithLegends\Http\Requests\CreatePostRequest;
 use CommunityWithLegends\Models\Post;
 use CommunityWithLegends\Models\PostAsset;
+use CommunityWithLegends\Models\Reaction;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response as Status;
 
@@ -30,6 +31,10 @@ class PostController extends Controller
             ]);
         }
 
+        if (isset($validated["tag_ids"])) {
+            $post->tags()->attach($validated["tag_ids"]);
+        }
+
         return response()->json([
             "message" => "Post has been created",
         ], Status::HTTP_CREATED);
@@ -37,8 +42,67 @@ class PostController extends Controller
 
     public function index(): JsonResponse
     {
-        $posts = Post::query()->with(["user", "tag", "game"])->orderBy("created_at", "desc")->paginate(10);
+        $posts = Post::query()
+            ->with(["user", "tags", "game"])
+            ->withCount("reactions")
+            ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
+                ->whereColumn("post_id", "posts.id")
+                ->where("user_id", auth()->id())
+                ->limit(1),
+            ])
+            ->orderBy("created_at", "desc")
+            ->paginate(10);
+
+        $posts->getCollection()->transform(function ($post) {
+            $post->user_reacted = $post->user_reacted === 1;
+
+            return $post;
+        });
 
         return response()->json($posts);
+    }
+
+    public function addReaction(int $postId): JsonResponse
+    {
+        $post = Post::query()->findOrFail($postId);
+
+        $reaction = $post->reactions()
+            ->where("user_id", auth()->id())
+            ->first();
+
+        if ($reaction) {
+            return response()->json([
+                "message" => "You have already reacted to this post",
+            ], Status::HTTP_CONFLICT);
+        }
+
+        $post->reactions()->create([
+            "user_id" => auth()->id(),
+        ]);
+
+        return response()->json([
+            "message" => "Reaction added successfully",
+        ], Status::HTTP_CREATED);
+    }
+
+    public function removeReaction(int $postId): JsonResponse
+    {
+        $post = Post::query()->findOrFail($postId);
+
+        $reaction = $post->reactions()
+            ->where("user_id", auth()->id())
+            ->first();
+
+        if (!$reaction) {
+            return response()->json([
+                "message" => "No reaction to remove",
+            ], Status::HTTP_NOT_FOUND);
+        }
+
+        $reaction->delete();
+
+        return response()->json([
+            "message" => "Reaction removed successfully",
+        ], Status::HTTP_OK);
     }
 }
