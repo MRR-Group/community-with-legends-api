@@ -50,11 +50,13 @@ RUN apt-get update \
         nginx=${NGINX_VERSION} \
         libzip-dev \
         libpq-dev \
+        libpng-dev \
         supervisor \
         cron \
     && pecl install redis-${PHPREDIS_VERSION} \
     && docker-php-ext-install \
         zip \
+        gd \
         pdo_pgsql \
     && docker-php-ext-enable \
         redis
