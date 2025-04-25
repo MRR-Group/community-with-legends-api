@@ -14,14 +14,15 @@ class LoginController extends Controller
 {
     public function login(LoginRequest $loginRequest): JsonResponse
     {
-        if (!Auth::attempt($loginRequest->validated())) {
+        $credentials = $loginRequest->validated();
+
+        if (!Auth::attempt($credentials)) {
             return response()->json([
                 "message" => "The provided credentials do not match our records.",
             ], Status::HTTP_FORBIDDEN);
         }
 
         $user = Auth::user();
-        $user->tokens()->delete();
         $token = $user->createToken("api-token")->plainTextToken;
 
         return response()->json([

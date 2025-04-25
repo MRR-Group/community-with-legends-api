@@ -9,8 +9,9 @@ use CommunityWithLegends\Http\Controllers\Auth\RegisterController;
 use CommunityWithLegends\Http\Controllers\ChangeAvatarController;
 use CommunityWithLegends\Http\Controllers\GameController;
 use CommunityWithLegends\Http\Controllers\PostController;
+use CommunityWithLegends\Http\Controllers\ResetPasswordController;
+use CommunityWithLegends\Http\Controllers\TagController;
 use CommunityWithLegends\Http\Controllers\UserController;
-use CommunityWithLegends\Models\Tag;
 use CommunityWithLegends\Models\User;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Http\Request;
@@ -37,11 +38,15 @@ Route::post("/auth/token", function (Request $request) {
 });
 
 Route::middleware("auth:sanctum")->group(function (): void {
-    Route::get("/tags", fn(Request $request) => Tag::query()->get());
+    Route::get("/user", fn(Request $request) => $request->user());
     Route::get("/games", [GameController::class, "index"]);
     Route::get("/games/search", [GameController::class, "search"]);
+    Route::get("/tags", [TagController::class, "index"]);
+    Route::get("/tags/search", [TagController::class, "search"]);
 
-    Route::post("/posts", [PostController::class, "store"])->middleware(Authorize::using(Permission::CreatePost));
+    Route::post("/posts", [PostController::class, "store"]);
+    Route::post("/posts/{id}/reactions", [PostController::class, "addReaction"]);
+    Route::delete("/posts/{id}/reactions", [PostController::class, "removeReaction"]);
     Route::get("/posts", [PostController::class, "index"]);
 
     Route::get("/users", [UserController::class, "index"])->middleware(Authorize::using(Permission::ViewUsers));
@@ -53,3 +58,6 @@ Route::middleware("auth:sanctum")->group(function (): void {
 
 Route::post("/auth/login", [LoginController::class, "login"])->name("login");
 Route::post("/auth/register", [RegisterController::class, "register"]);
+
+Route::post("/auth/forgot-password", [ResetPasswordController::class, "sendResetLinkEmail"]);
+Route::post("/auth/reset-password", [ResetPasswordController::class, "reset"]);

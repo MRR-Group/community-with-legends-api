@@ -7,6 +7,7 @@ namespace CommunityWithLegends\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
@@ -17,24 +18,19 @@ use Illuminate\Support\Collection;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property User $user
- * @property ?Tag $tag
  * @property ?Game $game
  * @property ?PostAsset $asset
  * @property Collection<Reaction> $reactions
  * @property Collection<Comment> $comments
+ * @property Collection<Tag> $tags
  */
 class Post extends Model
 {
-    protected $fillable = ["user_id", "game_id", "tag_id", "content"];
+    protected $fillable = ["user_id", "game_id", "content"];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function tag(): BelongsTo
-    {
-        return $this->belongsTo(Tag::class);
     }
 
     public function game(): BelongsTo
@@ -45,6 +41,11 @@ class Post extends Model
     public function asset(): HasOne
     {
         return $this->hasOne(PostAsset::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class);
     }
 
     public function reactions(): HasMany

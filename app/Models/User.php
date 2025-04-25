@@ -7,6 +7,7 @@ namespace CommunityWithLegends\Models;
 use Carbon\Carbon;
 use CommunityWithLegends\Helpers\IdenticonHelper;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use CommunityWithLegends\Notifications\PasswordResetCodeNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -63,6 +64,11 @@ class User extends Authenticatable
     protected function avatar(): Attribute
     {
         return Attribute::get(fn(): string => IdenticonHelper::url($this->id));
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new PasswordResetCodeNotification($this->email));
     }
 
     protected function casts(): array
