@@ -78,7 +78,7 @@ return new class() extends Migration {
             $table->id();
             $table->unsignedBigInteger("post_id");
             $table->unsignedBigInteger("type_id");
-            $table->string('link');
+            $table->string("link");
             $table->timestamps();
 
             $table->foreign("post_id")
@@ -94,9 +94,8 @@ return new class() extends Migration {
         Schema::create("post_tag", function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger("post_id");
-            $table->integer('tag_id');
+            $table->integer("tag_id");
             $table->timestamps();
-
 
             $table->foreign("post_id")
                 ->references("id")

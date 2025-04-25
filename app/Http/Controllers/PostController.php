@@ -23,16 +23,16 @@ class PostController extends Controller
         $post = new Post($postData);
         $post->save();
 
-        if (isset($validated['asset_type_id']) && isset($validated['asset_link'])) {
+        if (isset($validated["asset_type_id"]) && isset($validated["asset_link"])) {
             PostAsset::create([
-                'post_id' => $post->id,
-                'type_id' => $validated['asset_type_id'],
-                'link' => $validated['asset_link'],
+                "post_id" => $post->id,
+                "type_id" => $validated["asset_type_id"],
+                "link" => $validated["asset_link"],
             ]);
         }
 
-        if (isset($validated['tag_ids'])) {
-            $post->tags()->attach($validated['tag_ids']);
+        if (isset($validated["tag_ids"])) {
+            $post->tags()->attach($validated["tag_ids"]);
         }
 
         return response()->json([
@@ -44,18 +44,18 @@ class PostController extends Controller
     {
         $posts = Post::query()
             ->with(["user", "tags", "game"])
-            ->withCount('reactions')
-            ->addSelect(['user_reacted' => Reaction::query()->selectRaw('count(*)')
-                ->whereColumn('post_id', 'posts.id')
-                ->where('user_id', auth()->id())
-                ->limit(1)
+            ->withCount("reactions")
+            ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
+                ->whereColumn("post_id", "posts.id")
+                ->where("user_id", auth()->id())
+                ->limit(1),
             ])
-            ->orderBy('created_at', 'desc')
+            ->orderBy("created_at", "desc")
             ->paginate(10);
 
-
         $posts->getCollection()->transform(function ($post) {
-            $post->user_reacted = $post->user_reacted == 1;
+            $post->user_reacted = $post->user_reacted === 1;
+
             return $post;
         });
 
@@ -77,7 +77,7 @@ class PostController extends Controller
         }
 
         $post->reactions()->create([
-            'user_id' => auth()->id()
+            "user_id" => auth()->id(),
         ]);
 
         return response()->json([
@@ -95,7 +95,7 @@ class PostController extends Controller
 
         if (!$reaction) {
             return response()->json([
-                'message' => 'No reaction to remove',
+                "message" => "No reaction to remove",
             ], Status::HTTP_NOT_FOUND);
         }
 

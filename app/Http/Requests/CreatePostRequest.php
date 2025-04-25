@@ -25,7 +25,7 @@ class CreatePostRequest extends FormRequest
             "asset_type_id" => ["nullable", "integer", "exists:asset_types,id"],
             "asset_link" => ["nullable", "string", "max:512"],
             "tag_ids" => ["array", "nullable"],
-            "tag_ids.*" => ["integer", "exists:tags,id"]
+            "tag_ids.*" => ["integer", "exists:tags,id"],
         ];
     }
 }

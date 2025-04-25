@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -17,17 +19,18 @@ class PasswordResetCodeNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(public string $email)
-    {
-        $this->code = (string) random_int(100000, 999999);
+    public function __construct(
+        public string $email,
+    ) {
+        $this->code = (string)random_int(100000, 999999);
 
-        DB::table('password_reset_tokens')->updateOrInsert(
-            ['email' => $this->email],
+        DB::table("password_reset_tokens")->updateOrInsert(
+            ["email" => $this->email],
             [
-                'email' => $this->email,
-                'token' => Hash::make($this->code),
-                'created_at' => now()
-            ]
+                "email" => $this->email,
+                "token" => Hash::make($this->code),
+                "created_at" => now(),
+            ],
         );
     }
 
@@ -38,7 +41,7 @@ class PasswordResetCodeNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ["mail"];
     }
 
     /**
@@ -46,11 +49,11 @@ class PasswordResetCodeNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
-            ->subject('Community With Legends - Password Reset Code')
-            ->view('emails.password_reset_code', [
-                'code' => $this->code,
-                'user' => $notifiable,
+        return (new MailMessage())
+            ->subject("Community With Legends - Password Reset Code")
+            ->view("emails.password_reset_code", [
+                "code" => $this->code,
+                "user" => $notifiable,
             ]);
     }
 
@@ -61,8 +64,6 @@ class PasswordResetCodeNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 }

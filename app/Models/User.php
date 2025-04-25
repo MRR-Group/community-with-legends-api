@@ -53,16 +53,16 @@ class User extends Authenticatable
         return $this->hasMany(Reaction::class);
     }
 
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new PasswordResetCodeNotification($this->email));
+    }
+
     protected function casts(): array
     {
         return [
             "email_verified_at" => "datetime",
             "password" => "hashed",
         ];
-    }
-
-    public function sendPasswordResetNotification($token): void
-    {
-        $this->notify(new PasswordResetCodeNotification($this->email));
     }
 }

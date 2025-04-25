@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -24,8 +26,8 @@ class ResetPasswordRequest extends FormRequest
     {
         return [
             "email" => "required|email",
-            "token" => 'required',
-            'password' => 'required|confirmed|min:8'
+            "token" => "required",
+            "password" => "required|confirmed|min:8",
         ];
     }
 }
