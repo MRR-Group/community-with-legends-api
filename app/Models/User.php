@@ -5,20 +5,28 @@ declare(strict_types=1);
 namespace CommunityWithLegends\Models;
 
 use Carbon\Carbon;
+use CommunityWithLegends\Helpers\IdenticonHelper;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
+ * @property int $id
  * @property string $name
  * @property string $email
  * @property string $password
+ * @property string $avatar
  * @property Carbon $email_verified_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property Collection<Post> posts
+ * @property Collection<Comment> comments
+ * @property Collection<Reaction> reactions
  */
 class User extends Authenticatable
 {
@@ -50,6 +58,11 @@ class User extends Authenticatable
     public function reactions(): HasMany
     {
         return $this->hasMany(Reaction::class);
+    }
+
+    protected function avatar(): Attribute
+    {
+        return Attribute::get(fn(): string => IdenticonHelper::url($this->id));
     }
 
     protected function casts(): array

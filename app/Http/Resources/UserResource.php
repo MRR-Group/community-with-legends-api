@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             "roles" => $this->getRoleNames(),
             "email" => $this->email,
             "name" => $this->name,
+            "avatar" => $this->avatar,
             "permissions" => Permission::toBoolean($this->getPermissionNames()),
         ];
     }
