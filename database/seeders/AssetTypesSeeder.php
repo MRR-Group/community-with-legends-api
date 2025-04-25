@@ -14,7 +14,7 @@ class AssetTypesSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table("asset_types")->insert([
+        DB::table("asset_types")->insertOrIgnore([
             [
                 "id" => 1,
                 "name" => "Image",
