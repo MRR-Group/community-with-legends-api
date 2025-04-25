@@ -16,9 +16,9 @@ class IdenticonHelper
         $this->identicon = new Identicon();
     }
 
-    public function create(string|int $filename, string $data, int $size = 64, ?string $color = null, ?string $backgroundColor = null): string
+    public function create(string|int $filename, string $data): string
     {
-        $image = $this->identicon->getImageData($data, $size, $color, $backgroundColor);
+        $image = $this->identicon->getImageData($data, 300);
 
         return $this->save($filename, $image);
     }
