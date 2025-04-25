@@ -4,9 +4,17 @@ declare(strict_types=1);
 
 namespace CommunityWithLegends\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Post $post
+ * @property User $user
+ */
 class Reaction extends Model
 {
     protected $fillable = ["post_id", "user_id"];
