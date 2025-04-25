@@ -24,7 +24,7 @@ class RegisterController extends Controller
             $user->save();
 
             $user->assignRole(Role::User);
-            $user->syncPermissions(Role::User)->permissions();
+            $user->syncPermissions(Role::User->permissions());
         }
 
         return response()->json([
