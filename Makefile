@@ -5,7 +5,14 @@ include .env
 
 SHELL := /bin/bash
 
-DOCKER_COMPOSE_FILE = docker-compose.yaml
+ENV ?= dev
+
+ifeq ($(ENV),prod)
+    DOCKER_COMPOSE_FILE = docker-compose.prod.yaml
+else
+    DOCKER_COMPOSE_FILE = docker-compose.yaml
+endif
+
 DOCKER_COMPOSE_APP_CONTAINER = app
 DOCKER_COMPOSE_DATABASE_CONTAINER = database
 
