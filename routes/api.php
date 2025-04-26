@@ -7,6 +7,7 @@ use CommunityWithLegends\Http\Controllers\Auth\LoginController;
 use CommunityWithLegends\Http\Controllers\Auth\LogoutController;
 use CommunityWithLegends\Http\Controllers\Auth\RegisterController;
 use CommunityWithLegends\Http\Controllers\ChangeAvatarController;
+use CommunityWithLegends\Http\Controllers\CommentController;
 use CommunityWithLegends\Http\Controllers\GameController;
 use CommunityWithLegends\Http\Controllers\PostController;
 use CommunityWithLegends\Http\Controllers\ResetPasswordController;
@@ -38,22 +39,25 @@ Route::post("/auth/token", function (Request $request) {
 });
 
 Route::middleware("auth:sanctum")->group(function (): void {
+    Route::post("/auth/logout", [LogoutController::class, "logout"]);
+
     Route::get("/user", fn(Request $request) => $request->user());
-    Route::get("/games", [GameController::class, "index"]);
-    Route::get("/games/search", [GameController::class, "search"]);
-    Route::get("/tags", [TagController::class, "index"]);
-    Route::get("/tags/search", [TagController::class, "search"]);
-
-    Route::post("/posts", [PostController::class, "store"]);
-    Route::post("/posts/{id}/reactions", [PostController::class, "addReaction"]);
-    Route::delete("/posts/{id}/reactions", [PostController::class, "removeReaction"]);
-    Route::get("/posts", [PostController::class, "index"]);
-
     Route::get("/users", [UserController::class, "index"])->middleware(Authorize::using(Permission::ViewUsers));
     Route::get("/users/{user}", [UserController::class, "show"]);
 
-    Route::post("/auth/logout", [LogoutController::class, "logout"]);
     Route::post("/avatar", [ChangeAvatarController::class, "store"]);
+
+    Route::get("/games", [GameController::class, "index"]);
+    Route::get("/games/search", [GameController::class, "search"]);
+
+    Route::get("/tags", [TagController::class, "index"]);
+    Route::get("/tags/search", [TagController::class, "search"]);
+
+    Route::get("/posts", [PostController::class, "index"]);
+    Route::post("/posts", [PostController::class, "store"]);
+    Route::post("/posts/{id}/reactions", [PostController::class, "addReaction"]);
+    Route::delete("/posts/{id}/reactions", [PostController::class, "removeReaction"]);
+    Route::post("/posts/{id}/comments", [CommentController::class, "store"]);
 });
 
 Route::post("/auth/login", [LoginController::class, "login"])->name("login");
