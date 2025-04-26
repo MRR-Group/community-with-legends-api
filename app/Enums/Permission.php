@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace CommunityWithLegends\Enums;
 
-use Illuminate\Support\Collection;
-
 enum Permission: string
 {
     case CreatePost = "createPost";
