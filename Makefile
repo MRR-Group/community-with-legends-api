@@ -5,7 +5,14 @@ include .env
 
 SHELL := /bin/bash
 
-DOCKER_COMPOSE_FILE = docker-compose.yaml
+ENV ?= dev
+
+ifeq ($(ENV),prod)
+    DOCKER_COMPOSE_FILE = docker-compose.prod.yaml
+else
+    DOCKER_COMPOSE_FILE = docker-compose.yaml
+endif
+
 DOCKER_COMPOSE_APP_CONTAINER = app
 DOCKER_COMPOSE_DATABASE_CONTAINER = database
 
@@ -60,6 +67,9 @@ dev:
 
 queue:
 	@docker compose --file ${DOCKER_COMPOSE_FILE} exec --user "${CURRENT_USER_ID}:${CURRENT_USER_GROUP_ID}" ${DOCKER_COMPOSE_APP_CONTAINER} php artisan queue:work
+
+migrate:
+	@docker compose --file ${DOCKER_COMPOSE_FILE} exec --user "${CURRENT_USER_ID}:${CURRENT_USER_GROUP_ID}" ${DOCKER_COMPOSE_APP_CONTAINER} php artisan migrate:fresh --seed
 
 create-test-db:
 	@docker compose --file ${DOCKER_COMPOSE_FILE} exec ${DOCKER_COMPOSE_DATABASE_CONTAINER} bash -c 'createdb --username=${DATABASE_USERNAME} ${TEST_DATABASE_NAME} &> /dev/null && echo "Created database for tests (${TEST_DATABASE_NAME})." || echo "Database for tests (${TEST_DATABASE_NAME}) exists."'
