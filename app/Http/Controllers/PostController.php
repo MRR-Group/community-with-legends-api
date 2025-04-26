@@ -62,6 +62,24 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
+    public function show(int $postId): JsonResponse
+    {
+        $post = Post::query()
+            ->with(["user", "tags", "game", 'comments'])
+            ->withCount("reactions")
+            ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
+                ->whereColumn("post_id", "posts.id")
+                ->where("user_id", auth()->id())
+                ->limit(1),
+            ])
+            ->where('id', $postId)
+            ->first();
+
+        $post->user_reacted = $post->user_reacted === 1;
+
+        return response()->json($post);
+    }
+
     public function addReaction(int $postId): JsonResponse
     {
         $post = Post::query()->findOrFail($postId);
