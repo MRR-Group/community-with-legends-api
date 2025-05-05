@@ -65,7 +65,7 @@ class PostController extends Controller
     public function show(int $postId): JsonResponse
     {
         $post = Post::query()
-            ->with(["user", "tags", "game", 'comments'])
+            ->with(["user", "tags", "game", 'comments.user'])
             ->withCount("reactions")
             ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
                 ->whereColumn("post_id", "posts.id")
