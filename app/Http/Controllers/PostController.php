@@ -68,19 +68,32 @@ class PostController extends Controller
         $tagId = request('tag');
         $gameId = request('game');
 
-        if ($tagId) {
+        if ($tagId && $tagId != 'null') {
             $query->whereHas('tags', function ($query) use ($tagId) {
                 $query->where('tags.id', $tagId);
             });
         }
 
-        if ($gameId) {
+        if ($gameId && $gameId != 'null') {
             $query->where('game_id', $gameId);
         }
 
         $posts = $query
             ->with(["user", "tags", "game"])
-            ->get();
+            ->withCount("reactions")
+            ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
+                ->whereColumn("post_id", "posts.id")
+                ->where("user_id", auth()->id())
+                ->limit(1),
+            ])
+            ->orderBy("created_at", "desc")
+            ->paginate(10);
+
+        $posts->getCollection()->transform(function ($post) {
+            $post->user_reacted = $post->user_reacted === 1;
+
+            return $post;
+        });
 
         return response()->json($posts);
     }
