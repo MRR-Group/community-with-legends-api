@@ -55,6 +55,7 @@ Route::middleware("auth:sanctum")->group(function (): void {
 
     Route::get("/posts", [PostController::class, "index"]);
     Route::post("/posts", [PostController::class, "store"]);
+    Route::get("/posts/trending", [PostController::class, "getTrendingPosts"]);
     Route::get("/posts/filter", [PostController::class, "getFilteredPosts"]);
     Route::get("/posts/{id}", [PostController::class, "show"]);
     Route::post("/posts/{id}/reactions", [PostController::class, "addReaction"]);
