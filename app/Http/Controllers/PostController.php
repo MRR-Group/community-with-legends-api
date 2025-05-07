@@ -62,6 +62,29 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
+    public function getFilteredPosts(): JsonResponse
+    {
+        $query = Post::query();
+        $tagId = request('tag');
+        $gameId = request('game');
+
+        if ($tagId) {
+            $query->whereHas('tags', function ($query) use ($tagId) {
+                $query->where('tags.id', $tagId);
+            });
+        }
+
+        if ($gameId) {
+            $query->where('game_id', $gameId);
+        }
+
+        $posts = $query
+            ->with(["user", "tags", "game"])
+            ->get();
+
+        return response()->json($posts);
+    }
+
     public function show(int $postId): JsonResponse
     {
         $post = Post::query()
