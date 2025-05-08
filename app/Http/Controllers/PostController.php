@@ -73,7 +73,7 @@ class PostController extends Controller
                 ->where("user_id", auth()->id())
                 ->limit(1),
             ])
-            ->where('created_at', '>', Carbon::now()->subDays(7))
+            ->where("created_at", ">", Carbon::now()->subDays(7))
             ->orderBy("user_reacted", "desc")
             ->orderBy("created_at", "desc")
             ->paginate(10);
@@ -90,17 +90,17 @@ class PostController extends Controller
     public function getFilteredPosts(): JsonResponse
     {
         $query = Post::query();
-        $tagId = request('tag');
-        $gameId = request('game');
+        $tagId = request("tag");
+        $gameId = request("game");
 
-        if ($tagId && $tagId != 'null') {
-            $query->whereHas('tags', function ($query) use ($tagId) {
-                $query->where('tags.id', $tagId);
+        if ($tagId && $tagId !== "null") {
+            $query->whereHas("tags", function ($query) use ($tagId): void {
+                $query->where("tags.id", $tagId);
             });
         }
 
-        if ($gameId && $gameId != 'null') {
-            $query->where('game_id', $gameId);
+        if ($gameId && $gameId !== "null") {
+            $query->where("game_id", $gameId);
         }
 
         $posts = $query
@@ -126,14 +126,14 @@ class PostController extends Controller
     public function show(int $postId): JsonResponse
     {
         $post = Post::query()
-            ->with(["user", "tags", "game", 'comments.user'])
+            ->with(["user", "tags", "game", "comments.user"])
             ->withCount("reactions")
             ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
                 ->whereColumn("post_id", "posts.id")
                 ->where("user_id", auth()->id())
                 ->limit(1),
             ])
-            ->where('id', $postId)
+            ->where("id", $postId)
             ->first();
 
         $post->user_reacted = $post->user_reacted === 1;
