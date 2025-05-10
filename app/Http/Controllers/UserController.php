@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace CommunityWithLegends\Http\Controllers;
 
-use CommunityWithLegends\Enums\Permission;
+use CommunityWithLegends\Enums\Role;
+use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Http\Resources\UserResource;
 use CommunityWithLegends\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -25,12 +26,40 @@ class UserController
 
     public function ban(User $user, Request $request): JsonResponse
     {
-        $user->revokePermissionTo(Permission::CreatePost);
-        $user->revokePermissionTo(Permission::MakeComment);
-        $user->revokePermissionTo(Permission::ReactToPost);
+        foreach ($user->givePermissionTo(Role::User->permissions()) as $permission) {
+            $user->revokePermissionTo($permission);
+        }
 
         return response()->json(
             ["message" => "$user->name successfully banned"],
+            Status::HTTP_OK,
+        );
+    }
+
+    public function unban(User $user, Request $request): JsonResponse
+    {
+        $user->givePermissionTo(Role::User->permissions());
+
+        return response()->json(
+            ["message" => "$user->name successfully unbanned"],
+            Status::HTTP_OK,
+        );
+    }
+
+    public function anonymize(User $user, IdenticonHelper $identiconHelper): JsonResponse
+    {
+        foreach ($user->givePermissionTo(Role::User->permissions()) as $permission) {
+            $user->revokePermissionTo($permission);
+        }
+
+        $user->email = "$user->id@anonymous.com";
+        $user->name = "Anonymous";
+        $user->save();
+
+        $identiconHelper->create($user->id, $user->email);
+
+        return response()->json(
+            ["message" => "$user->name successfully anonymized"],
             Status::HTTP_OK,
         );
     }

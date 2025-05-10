@@ -88,20 +88,13 @@ class PostController extends Controller
         return PostResource::collection($posts)->response();
     }
 
-    public function show(int $postId): JsonResponse
+    public function show(Post $post): JsonResponse
     {
-        $post = Post::query()
-            ->with(["user", "tags", "game", "comments.user"])
-            ->where("id", $postId)
-            ->first();
-
         return PostResource::make($post)->response();
     }
 
-    public function addReaction(int $postId): JsonResponse
+    public function addReaction(Post $post): JsonResponse
     {
-        $post = Post::query()->findOrFail($postId);
-
         $reaction = $post->reactions()
             ->where("user_id", auth()->id())
             ->first();
@@ -121,10 +114,8 @@ class PostController extends Controller
         ], Status::HTTP_CREATED);
     }
 
-    public function removeReaction(int $postId): JsonResponse
+    public function removeReaction(Post $post): JsonResponse
     {
-        $post = Post::query()->findOrFail($postId);
-
         $reaction = $post->reactions()
             ->where("user_id", auth()->id())
             ->first();
