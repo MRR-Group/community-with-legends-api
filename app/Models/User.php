@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     public function permissionsNames(): array
     {
-        if (auth()->id() === $this->id || auth()->user()->hasPermissionTo(Permission::ViewUsers)) {
+        if (auth()->id() === $this->id || $this->hasPermissionTo(Permission::ViewUsers->name)) {
             return $this->getPermissionNames()->toArray();
         }
 
