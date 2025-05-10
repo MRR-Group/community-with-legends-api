@@ -44,6 +44,7 @@ Route::middleware("auth:sanctum")->group(function (): void {
     Route::get("/user", fn(Request $request) => $request->user());
     Route::get("/users", [UserController::class, "index"])->middleware(Authorize::using(Permission::ViewUsers));
     Route::get("/users/{user}", [UserController::class, "show"]);
+    Route::post("/users/{user}/ban", [UserController::class, "ban"])->middleware(Authorize::using(Permission::BanUsers));
 
     Route::post("/avatar", [ChangeAvatarController::class, "store"]);
 
@@ -54,13 +55,13 @@ Route::middleware("auth:sanctum")->group(function (): void {
     Route::get("/tags/search", [TagController::class, "search"]);
 
     Route::get("/posts", [PostController::class, "index"]);
-    Route::post("/posts", [PostController::class, "store"]);
+    Route::post("/posts", [PostController::class, "store"])->middleware(Authorize::using(Permission::CreatePost));
     Route::get("/posts/trending", [PostController::class, "getTrendingPosts"]);
     Route::get("/posts/filter", [PostController::class, "getFilteredPosts"]);
     Route::get("/posts/{id}", [PostController::class, "show"]);
-    Route::post("/posts/{id}/reactions", [PostController::class, "addReaction"]);
-    Route::delete("/posts/{id}/reactions", [PostController::class, "removeReaction"]);
-    Route::post("/posts/{id}/comments", [CommentController::class, "store"]);
+    Route::post("/posts/{id}/reactions", [PostController::class, "addReaction"])->middleware(Authorize::using(Permission::ReactToPost));
+    Route::delete("/posts/{id}/reactions", [PostController::class, "removeReaction"])->middleware(Authorize::using(Permission::DeletePosts));
+    Route::post("/posts/{id}/comments", [CommentController::class, "store"])->middleware(Authorize::using(Permission::MakeComment));
 });
 
 Route::post("/auth/login", [LoginController::class, "login"])->name("login");
