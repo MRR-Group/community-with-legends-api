@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CommunityWithLegends\Http\Controllers;
 
+use CommunityWithLegends\Http\Resources\GameResource;
 use CommunityWithLegends\Models\Game;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,13 +23,13 @@ class GameController extends Controller
             $games = Game::query()->paginate(20);
         }
 
-        return response()->json($games);
+        return GameResource::collection($games)->response();
     }
 
     public function index(Request $request): JsonResponse
     {
         $games = Game::query()->paginate(20);
 
-        return response()->json($games);
+        return GameResource::collection($games)->response();
     }
 }

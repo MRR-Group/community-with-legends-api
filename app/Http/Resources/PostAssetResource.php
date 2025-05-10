@@ -7,7 +7,7 @@ namespace CommunityWithLegends\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class PostAssetResource extends JsonResource
 {
     /**
      * @return array<string, mixed>
@@ -16,12 +16,8 @@ class UserResource extends JsonResource
     {
         return [
             "id" => $this->id,
-            "roles" => $this->getRoleNames(),
-            "email" => $this->email,
-            "name" => $this->name,
-            "avatar" => $this->avatar,
-            "permissions" => $this->permissionsNames(),
-            "created_at" => $this->created_at,
+            "link" => $this->link,
+            "type" => $this->type->name,
         ];
     }
 }
