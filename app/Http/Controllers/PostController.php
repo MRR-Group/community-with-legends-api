@@ -55,25 +55,13 @@ class PostController extends Controller
     public function getTrendingPosts(): JsonResponse
     {
         $posts = Post::query()
-            ->with(["user", "tags", "game"])
-            ->withCount("reactions")
-            ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
-                ->whereColumn("post_id", "posts.id")
-                ->where("user_id", auth()->id())
-                ->limit(1),
-            ])
+            ->with(["user", "tags", "game", "comments.user"])
             ->where("created_at", ">", Carbon::now()->subDays(7))
             ->orderBy("user_reacted", "desc")
             ->orderBy("created_at", "desc")
             ->paginate(10);
 
-        $posts->getCollection()->transform(function ($post) {
-            $post->user_reacted = $post->user_reacted === 1;
-
-            return $post;
-        });
-
-        return response()->json($posts);
+        return PostResource::collection($posts)->response();
     }
 
     public function getFilteredPosts(): JsonResponse
@@ -93,41 +81,21 @@ class PostController extends Controller
         }
 
         $posts = $query
-            ->with(["user", "tags", "game"])
-            ->withCount("reactions")
-            ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
-                ->whereColumn("post_id", "posts.id")
-                ->where("user_id", auth()->id())
-                ->limit(1),
-            ])
+            ->with(["user", "tags", "game", "comments.user"])
             ->orderBy("created_at", "desc")
             ->paginate(10);
 
-        $posts->getCollection()->transform(function ($post) {
-            $post->user_reacted = $post->user_reacted === 1;
-
-            return $post;
-        });
-
-        return response()->json($posts);
+        return PostResource::collection($posts)->response();
     }
 
     public function show(int $postId): JsonResponse
     {
         $post = Post::query()
             ->with(["user", "tags", "game", "comments.user"])
-            ->withCount("reactions")
-            ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
-                ->whereColumn("post_id", "posts.id")
-                ->where("user_id", auth()->id())
-                ->limit(1),
-            ])
             ->where("id", $postId)
             ->first();
 
-        $post->user_reacted = $post->user_reacted === 1;
-
-        return response()->json($post);
+        return PostResource::make($post)->response();
     }
 
     public function addReaction(int $postId): JsonResponse
