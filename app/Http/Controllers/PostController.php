@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CommunityWithLegends\Http\Controllers;
 
+use Carbon\Carbon;
 use CommunityWithLegends\Http\Requests\CreatePostRequest;
 use CommunityWithLegends\Models\Post;
 use CommunityWithLegends\Models\PostAsset;
@@ -60,6 +61,84 @@ class PostController extends Controller
         });
 
         return response()->json($posts);
+    }
+
+    public function getTrendingPosts(): JsonResponse
+    {
+        $posts = Post::query()
+            ->with(["user", "tags", "game"])
+            ->withCount("reactions")
+            ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
+                ->whereColumn("post_id", "posts.id")
+                ->where("user_id", auth()->id())
+                ->limit(1),
+            ])
+            ->where("created_at", ">", Carbon::now()->subDays(7))
+            ->orderBy("user_reacted", "desc")
+            ->orderBy("created_at", "desc")
+            ->paginate(10);
+
+        $posts->getCollection()->transform(function ($post) {
+            $post->user_reacted = $post->user_reacted === 1;
+
+            return $post;
+        });
+
+        return response()->json($posts);
+    }
+
+    public function getFilteredPosts(): JsonResponse
+    {
+        $query = Post::query();
+        $tagId = request("tag");
+        $gameId = request("game");
+
+        if ($tagId && $tagId !== "null") {
+            $query->whereHas("tags", function ($query) use ($tagId): void {
+                $query->where("tags.id", $tagId);
+            });
+        }
+
+        if ($gameId && $gameId !== "null") {
+            $query->where("game_id", $gameId);
+        }
+
+        $posts = $query
+            ->with(["user", "tags", "game"])
+            ->withCount("reactions")
+            ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
+                ->whereColumn("post_id", "posts.id")
+                ->where("user_id", auth()->id())
+                ->limit(1),
+            ])
+            ->orderBy("created_at", "desc")
+            ->paginate(10);
+
+        $posts->getCollection()->transform(function ($post) {
+            $post->user_reacted = $post->user_reacted === 1;
+
+            return $post;
+        });
+
+        return response()->json($posts);
+    }
+
+    public function show(int $postId): JsonResponse
+    {
+        $post = Post::query()
+            ->with(["user", "tags", "game", "comments.user"])
+            ->withCount("reactions")
+            ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
+                ->whereColumn("post_id", "posts.id")
+                ->where("user_id", auth()->id())
+                ->limit(1),
+            ])
+            ->where("id", $postId)
+            ->first();
+
+        $post->user_reacted = $post->user_reacted === 1;
+
+        return response()->json($post);
     }
 
     public function addReaction(int $postId): JsonResponse
