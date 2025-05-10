@@ -29,6 +29,6 @@ class PostTag extends Model
 
     public function tag(): BelongsTo
     {
-        return $this->BelongsTo(Tag::class);
+        return $this->belongsTo(Tag::class);
     }
 }
