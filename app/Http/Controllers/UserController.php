@@ -41,7 +41,7 @@ class UserController
         $user->givePermissionTo([
             Permission::CreatePost,
             Permission::MakeComment,
-            Permission::ReactToPost
+            Permission::ReactToPost,
         ]);
 
         return response()->json(
