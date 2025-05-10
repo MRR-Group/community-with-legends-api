@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommunityWithLegends\Http\Controllers;
 
-use CommunityWithLegends\Enums\Permission;
+use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Http\Resources\UserResource;
 use CommunityWithLegends\Models\User;
@@ -26,9 +26,9 @@ class UserController
 
     public function ban(User $user, Request $request): JsonResponse
     {
-        $user->revokePermissionTo(Permission::CreatePost);
-        $user->revokePermissionTo(Permission::MakeComment);
-        $user->revokePermissionTo(Permission::ReactToPost);
+        foreach ($user->givePermissionTo(Role::User->permissions()) as $permission) {
+            $user->revokePermissionTo($permission);
+        }
 
         return response()->json(
             ["message" => "$user->name successfully banned"],
@@ -38,11 +38,7 @@ class UserController
 
     public function unban(User $user, Request $request): JsonResponse
     {
-        $user->givePermissionTo([
-            Permission::CreatePost,
-            Permission::MakeComment,
-            Permission::ReactToPost,
-        ]);
+        $user->givePermissionTo(Role::User->permissions());
 
         return response()->json(
             ["message" => "$user->name successfully unbanned"],
@@ -52,9 +48,9 @@ class UserController
 
     public function anonymize(User $user, IdenticonHelper $identiconHelper): JsonResponse
     {
-        $user->revokePermissionTo(Permission::CreatePost);
-        $user->revokePermissionTo(Permission::MakeComment);
-        $user->revokePermissionTo(Permission::ReactToPost);
+        foreach ($user->givePermissionTo(Role::User->permissions()) as $permission) {
+            $user->revokePermissionTo($permission);
+        }
 
         $user->email = "$user->id@anonymous.com";
         $user->name = "Anonymous";
