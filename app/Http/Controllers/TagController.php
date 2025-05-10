@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CommunityWithLegends\Http\Controllers;
 
+use CommunityWithLegends\Http\Resources\TagResource;
 use CommunityWithLegends\Models\Tag;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,13 +23,13 @@ class TagController extends Controller
             $tags = Tag::query()->get(["id", "name"]);
         }
 
-        return response()->json(["data" => $tags]);
+        return TagResource::collection($tags)->response();
     }
 
     public function index(Request $request): JsonResponse
     {
         $tags = Tag::query()->get(["id", "name"]);
 
-        return response()->json(["data" => $tags]);
+        return TagResource::collection($tags)->response();
     }
 }

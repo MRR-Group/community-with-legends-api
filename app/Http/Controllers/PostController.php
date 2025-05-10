@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace CommunityWithLegends\Http\Controllers;
 
 use CommunityWithLegends\Http\Requests\CreatePostRequest;
+use CommunityWithLegends\Http\Resources\PostResource;
 use CommunityWithLegends\Models\Post;
 use CommunityWithLegends\Models\PostAsset;
-use CommunityWithLegends\Models\Reaction;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as Status;
 
 class PostController extends Controller
@@ -40,26 +41,14 @@ class PostController extends Controller
         ], Status::HTTP_CREATED);
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $posts = Post::query()
-            ->with(["user", "tags", "game"])
-            ->withCount("reactions")
-            ->addSelect(["user_reacted" => Reaction::query()->selectRaw("count(*)")
-                ->whereColumn("post_id", "posts.id")
-                ->where("user_id", auth()->id())
-                ->limit(1),
-            ])
+            ->with(["user", "tags", "game", "comments.user"])
             ->orderBy("created_at", "desc")
             ->paginate(10);
 
-        $posts->getCollection()->transform(function ($post) {
-            $post->user_reacted = $post->user_reacted === 1;
-
-            return $post;
-        });
-
-        return response()->json($posts);
+        return PostResource::collection($posts)->response();
     }
 
     public function addReaction(int $postId): JsonResponse

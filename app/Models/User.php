@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CommunityWithLegends\Models;
 
 use Carbon\Carbon;
+use CommunityWithLegends\Enums\Permission;
 use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Notifications\PasswordResetCodeNotification;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -45,6 +46,15 @@ class User extends Authenticatable
         "password",
         "remember_token",
     ];
+
+    public function permissionsNames(): array
+    {
+        if (auth()->id() === $this->id || $this->hasPermissionTo(Permission::ViewUsers->name)) {
+            return $this->getPermissionNames()->toArray();
+        }
+
+        return [];
+    }
 
     public function posts(): HasMany
     {

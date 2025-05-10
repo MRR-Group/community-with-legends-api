@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Post $post
- * @property AssetType $type
+ * @property AssetType "permissions" => ->getPermissionNames(),
  */
 class PostAsset extends Model
 {
