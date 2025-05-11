@@ -69,6 +69,17 @@ RUN if [ ${INSTALL_XDEBUG} = true ]; then \
     && docker-php-ext-enable xdebug \
 ;fi
 
+COPY ./nginx.conf /nginx.conf
+COPY ./nginx_ssl.conf /nginx_ssl.conf
+
+ARG ENABLE_SSL=false
+
+RUN if [ ${ENABLE_SSL} = true ]; then \
+        cp /nginx_ssl.conf /etc/nginx/nginx.conf; \
+    else \
+        cp /nginx.conf /etc/nginx/nginx.conf; \
+fi
+
 COPY ./entrypoint.sh /entrypoint.sh
 
 WORKDIR /application
