@@ -26,9 +26,7 @@ class UserController
 
     public function ban(User $user, Request $request): JsonResponse
     {
-        foreach ($user->permissions() as $permission) {
-            $user->revokePermissionTo($permission);
-        }
+        $user->revokePermissionTo(Role::User->permissions());
 
         return response()->json(
             ["message" => "$user->name successfully banned"],
