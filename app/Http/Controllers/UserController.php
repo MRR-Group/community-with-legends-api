@@ -26,7 +26,7 @@ class UserController
 
     public function ban(User $user, Request $request): JsonResponse
     {
-        foreach ($user->givePermissionTo(Role::User->permissions()) as $permission) {
+        foreach ($user->permissions() as $permission) {
             $user->revokePermissionTo($permission);
         }
 
@@ -48,7 +48,7 @@ class UserController
 
     public function anonymize(User $user, IdenticonHelper $identiconHelper): JsonResponse
     {
-        foreach ($user->givePermissionTo(Role::User->permissions()) as $permission) {
+        foreach ($user->permissions() as $permission) {
             $user->revokePermissionTo($permission);
         }
 

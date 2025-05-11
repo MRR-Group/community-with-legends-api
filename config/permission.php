@@ -44,6 +44,7 @@ return [
         "key" => "spatie.permission.cache",
         "store" => "default",
     ],
+
     "permissions" => [
         Permission::CreatePost->value,
         Permission::MakeComment->value,
