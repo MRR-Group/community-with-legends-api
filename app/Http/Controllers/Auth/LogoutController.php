@@ -21,11 +21,12 @@ class LogoutController extends Controller
         if ($token instanceof PersonalAccessToken) {
             $token->delete();
         } else {
-            Auth::guard('web')->logout();
+            Auth::guard("web")->logout();
 
             $request->session()->invalidate();
             $request->session()->regenerateToken();
         }
+
         return response()->json([
             "message" => "Logged out",
         ], Status::HTTP_OK);
