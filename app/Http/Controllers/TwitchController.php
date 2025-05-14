@@ -2,14 +2,17 @@
 
 namespace CommunityWithLegends\Http\Controllers;
 
+use CommunityWithLegends\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpFoundation\Response as Status;
 
 class TwitchController extends Controller
 {
-    public function loginByAuthCode(Request $request): JsonResponse
+    public function loginByAuthCode(Request $request)
     {
         $authenticationCode = $request->get("code");
 
@@ -31,11 +34,27 @@ class TwitchController extends Controller
             return response()->json($accessTokenData);
         }
 
-        $userDetails = $this->getUserDetails($accessTokenData->get('access_token'));
+        $userDetailsResponse = $this->getUserDetails($accessTokenData->get('access_token'));
 
-        return response()->json($userDetails);
+        $userDetails = collect($userDetailsResponse[0][0]);
+        $email = $userDetails->get('email');
 
-        // TODO: add login functionality
+        if($email){
+            $user = User::query()->where('email', $email)->first();
+            if($user){
+                $token = $user->createToken("api-token")->plainTextToken;
+
+                Auth::login($user);
+
+                return redirect()->to('communitywithlegends://loginCallback?token=' . $token);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Failed to log in with Twitch. Please try again.',
+            'email' => $email,
+            'user' => $user,
+        ], Status::HTTP_UNAUTHORIZED);
     }
 
     // TODO: add registerByAuthCode
