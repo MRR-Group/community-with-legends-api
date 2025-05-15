@@ -64,6 +64,9 @@ return [
             Permission::ViewUsers->value,
             Permission::BanUsers->value,
             Permission::DeletePosts->value,
+            Permission::CreatePost->value,
+            Permission::MakeComment->value,
+            Permission::ReactToPost->value,
         ],
         Role::Administrator->value => [
             Permission::AnonymizeUsers->value,
@@ -71,11 +74,17 @@ return [
             Permission::ViewUsers->value,
             Permission::BanUsers->value,
             Permission::DeletePosts->value,
+            Permission::CreatePost->value,
+            Permission::MakeComment->value,
+            Permission::ReactToPost->value,
         ],
         Role::Moderator->value => [
             Permission::ViewUsers->value,
             Permission::BanUsers->value,
             Permission::DeletePosts->value,
+            Permission::CreatePost->value,
+            Permission::MakeComment->value,
+            Permission::ReactToPost->value,
         ],
         Role::User->value => [
             Permission::CreatePost->value,
