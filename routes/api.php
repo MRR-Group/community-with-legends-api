@@ -74,5 +74,5 @@ Route::post("/auth/forgot-password", [ResetPasswordController::class, "sendReset
 Route::post("/auth/reset-password", [ResetPasswordController::class, "reset"]);
 
 Route::get("/twitch/auth/login", [TwitchController::class, "loginByAuthCode"]);
-Route::get("/twitch/auth/register", [TwitchController::class, "loginByAuthCode"]); // TODO: change to registerByAuthCode
+Route::get("/twitch/auth/register", [TwitchController::class, "registerByAuthCode"]);
 Route::get("/twitch/token", [TwitchController::class, "receiveAccessToken"]);
