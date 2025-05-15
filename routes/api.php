@@ -73,6 +73,6 @@ Route::post("/auth/register", [RegisterController::class, "register"]);
 Route::post("/auth/forgot-password", [ResetPasswordController::class, "sendResetLinkEmail"]);
 Route::post("/auth/reset-password", [ResetPasswordController::class, "reset"]);
 
-Route::get("/twitch/auth/login", [TwitchController::class, "loginByAuthCode"]);
-Route::get("/twitch/auth/register", [TwitchController::class, "registerByAuthCode"]);
+Route::get("/twitch/auth/login/{platform}", [TwitchController::class, "loginByAuthCode"]);
+Route::get("/twitch/auth/register/{platform}", [TwitchController::class, "registerByAuthCode"]);
 Route::get("/twitch/token", [TwitchController::class, "receiveAccessToken"]);

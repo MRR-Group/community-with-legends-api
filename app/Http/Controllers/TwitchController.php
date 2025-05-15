@@ -5,7 +5,7 @@ namespace CommunityWithLegends\Http\Controllers;
 use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Models\User;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Env;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response as Status;
 
 class TwitchController extends Controller
 {
-    public function loginByAuthCode(Request $request)
+    public function loginByAuthCode(Request $request, string $platform)
     {
         $authenticationCode = $request->get("code");
 
@@ -48,18 +48,28 @@ class TwitchController extends Controller
 
                 Auth::login($user);
 
-                return redirect()->to('communitywithlegends://loginCallback?token=' . $token);
+                return match ($platform) {
+                    'mobile' => redirect()->to(Env::get('TWITCH_LOGIN_REDIRECT_URL_MOBILE') . '?token=' . $token),
+                    'web' => redirect()->to(Env::get('TWITCH_LOGIN_REDIRECT_URL_WEB')),
+                    default => response()->json([
+                        'message' => 'Invalid platform',
+                    ], Status::HTTP_BAD_REQUEST),
+                };
+            }else{
+                return response()->json([
+                    'message' => "No account was found linked to this email address from Twitch. Please make sure you're using the correct account or sign up to continue.",
+                    'email' => $email,
+                    'user' => $user,
+                ], Status::HTTP_NOT_FOUND);
             }
         }
 
         return response()->json([
             'message' => 'Failed to log in with Twitch. Please try again.',
-            'email' => $email,
-            'user' => $user,
         ], Status::HTTP_UNAUTHORIZED);
     }
 
-    public function registerByAuthCode(Request $request, IdenticonHelper $identiconHelper)
+    public function registerByAuthCode(Request $request, IdenticonHelper $identiconHelper, string $platform)
     {
         $authenticationCode = $request->get("code");
 
@@ -109,6 +119,7 @@ class TwitchController extends Controller
                 'name' => $username
             ]
         );
+        $user->markEmailAsVerified();
         $user->save();
 
         $identiconHelper->create($user->id, $user->email);
@@ -120,7 +131,14 @@ class TwitchController extends Controller
 
         Auth::login($user);
 
-        return redirect()->to('communitywithlegends://loginCallback?token=' . $token);
+        return match ($platform) {
+            'mobile' => redirect()->to(Env::get('TWITCH_LOGIN_REDIRECT_URL_MOBILE') . '?token=' . $token),
+            'web' => redirect()->to(Env::get('TWITCH_LOGIN_REDIRECT_URL_WEB')),
+            default => response()->json([
+                'message' => 'Invalid platform',
+            ], Status::HTTP_BAD_REQUEST),
+        };
+
     }
 
     public function receiveAccessToken(Request $request): Collection
