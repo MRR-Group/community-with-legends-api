@@ -47,6 +47,9 @@ Route::middleware("auth:sanctum")->group(function (): void {
     Route::post("/users/{user}/ban", [UserController::class, "ban"])->middleware(Authorize::using(Permission::BanUsers));
     Route::post("/users/{user}/unban", [UserController::class, "unban"])->middleware(Authorize::using(Permission::BanUsers));
     Route::post("/users/{user}/anonymize", [UserController::class, "anonymize"])->middleware(Authorize::using(Permission::AnonymizeUsers));
+    Route::post("/users/{user}/grant-moderator-privileges", [UserController::class, "grantModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
+    Route::post("/users/{user}/revoke-moderator-privileges", [UserController::class, "revokeModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
+    Route::post("/users/{user}/revoke-administrator-privileges", [UserController::class, "revokeAdministratorPrivileges"])->middleware(Authorize::using(Permission::ManageAdministrators));
 
     Route::post("/avatar", [ChangeAvatarController::class, "store"]);
 
