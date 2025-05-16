@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Controllers;
 
-use _PHPStan_24e2736d6\Nette\Neon\Exception;
 use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Env;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response as Status;
@@ -21,53 +22,55 @@ class TwitchController extends Controller
     {
         $userDetails = $this->getUserDetails($request, $platform);
 
-        if($userDetails instanceof RedirectResponse){
+        if ($userDetails instanceof RedirectResponse) {
             return $userDetails;
         }
 
-        $email = $userDetails->get('email');
+        $email = $userDetails->get("email");
 
         if ($email) {
-            $user = User::query()->where('email', $email)->first();
+            $user = User::query()->where("email", $email)->first();
+
             if ($user) {
                 $token = $user->createToken("api-token")->plainTextToken;
 
                 Auth::login($user);
 
                 return $this->redirectByPlatform($platform, $token);
-            }else{
-                return $this->redirectErrorByPlatform($platform, "No account was found linked to this email address from Twitch. Please make sure you're using the correct account or sign up to continue.");
             }
+
+            return $this->redirectErrorByPlatform($platform, "No account was found linked to this email address from Twitch. Please make sure you're using the correct account or sign up to continue.");
         }
-        return $this->redirectErrorByPlatform($platform, 'Failed to log in with Twitch. Please try again.');
+
+        return $this->redirectErrorByPlatform($platform, "Failed to log in with Twitch. Please try again.");
     }
 
     public function registerByAuthCode(Request $request, IdenticonHelper $identiconHelper, string $platform)
     {
         $userDetails = $this->getUserDetails($request, $platform);
 
-        if($userDetails instanceof RedirectResponse){
+        if ($userDetails instanceof RedirectResponse) {
             return $userDetails;
         }
 
-        $email = $userDetails->get('email');
-        $username = $userDetails->get('display_name');
+        $email = $userDetails->get("email");
+        $username = $userDetails->get("display_name");
 
-        if ($email == null) {
-            return $this->redirectErrorByPlatform($platform, 'Failed to log in with Twitch. Please try again.',);
+        if ($email === null) {
+            return $this->redirectErrorByPlatform($platform, "Failed to log in with Twitch. Please try again.");
         }
 
-        $userExist = User::query()->where('email', $email)->first();
+        $userExist = User::query()->where("email", $email)->first();
 
         if ($userExist) {
-            return $this->redirectErrorByPlatform($platform, 'An account with this email address already exists. Assign a twitch account in settings');
+            return $this->redirectErrorByPlatform($platform, "An account with this email address already exists. Assign a twitch account in settings");
         }
 
         $user = new User(
             [
-                'email' => $email,
-                'name' => $username
-            ]
+                "email" => $email,
+                "name" => $username,
+            ],
         );
         $user->markEmailAsVerified();
         $user->save();
@@ -82,7 +85,6 @@ class TwitchController extends Controller
         Auth::login($user);
 
         return $this->redirectByPlatform($platform, $token);
-
     }
 
     public function receiveAccessToken(Request $request): Collection
@@ -98,16 +100,16 @@ class TwitchController extends Controller
 
         if ($errorMessage) {
             return collect([
-                'error_message' => $errorMessage,
+                "error_message" => $errorMessage,
             ]);
         }
 
         return collect([
-            'access_token' => $access_token,
-            'expires_in' => $expires_in,
-            'refresh_token' => $refresh_token,
-            'scope' => $scope,
-            'token_type' => $token_type,
+            "access_token" => $access_token,
+            "expires_in" => $expires_in,
+            "refresh_token" => $refresh_token,
+            "scope" => $scope,
+            "token_type" => $token_type,
         ]);
     }
 
@@ -121,25 +123,28 @@ class TwitchController extends Controller
         }
 
         $accessTokenData = $this->getAccessToken($authenticationCode);
-        $errorMessage = $accessTokenData->get('message');
+        $errorMessage = $accessTokenData->get("message");
 
         if ($errorMessage) {
             return $this->redirectErrorByPlatform($platform, $errorMessage);
         }
 
-        $userDetailsResponse = $this->getTwitchUser($accessTokenData->get('access_token'));
+        $userDetailsResponse = $this->getTwitchUser($accessTokenData->get("access_token"));
 
         return collect($userDetailsResponse[0][0]);
     }
 
+    /**
+     * @return Collection<string, mixed>
+     */
     private function getAccessToken(string $authenticationCode): Collection
     {
-        $response = Http::post('https://id.twitch.tv/oauth2/token', [
-            'client_id' => config("twitch.client_id"),
-            'client_secret' => config("twitch.client_secret"),
-            'code' => $authenticationCode,
-            'grant_type' => 'authorization_code',
-            'redirect_uri' => config("twitch.token_redirect_uri"),
+        $response = Http::post("https://id.twitch.tv/oauth2/token", [
+            "client_id" => config("twitch.client_id"),
+            "client_secret" => config("twitch.client_secret"),
+            "code" => $authenticationCode,
+            "grant_type" => "authorization_code",
+            "redirect_uri" => config("twitch.token_redirect_uri"),
         ]);
 
         return collect($response->json());
@@ -148,19 +153,19 @@ class TwitchController extends Controller
     private function getTwitchUser(string $accessToken): Collection
     {
         $response = Http::withHeaders([
-            'Client-Id' => config("twitch.client_id"),
-            'Authorization' => "Bearer $accessToken"
-        ])->get('https://api.twitch.tv/helix/users');
+            "Client-Id" => config("twitch.client_id"),
+            "Authorization" => "Bearer $accessToken",
+        ])->get("https://api.twitch.tv/helix/users");
 
         $data = collect($response->json());
 
-        $errorMessage = $data->get('message');
+        $errorMessage = $data->get("message");
 
         if ($errorMessage) {
             return collect($data);
         }
 
-        $userData = collect($data->get('data'));
+        $userData = collect($data->get("data"));
 
         return collect([$userData]);
     }
@@ -168,10 +173,10 @@ class TwitchController extends Controller
     private function redirectByPlatform(String $platform, String $token): JsonResponse|RedirectResponse
     {
         return match ($platform) {
-            'mobile' => redirect()->away(Env::get('TWITCH_LOGIN_REDIRECT_URL_MOBILE') . '?token=' . $token),
-            'web' => redirect()->away(Env::get('TWITCH_LOGIN_REDIRECT_URL_WEB')),
+            "mobile" => redirect()->away(Env::get("TWITCH_LOGIN_REDIRECT_URL_MOBILE") . "?token=" . $token),
+            "web" => redirect()->away(Env::get("TWITCH_LOGIN_REDIRECT_URL_WEB")),
             default => response()->json([
-                'message' => 'Invalid platform',
+                "message" => "Invalid platform",
             ], Status::HTTP_BAD_REQUEST),
         };
     }
@@ -179,10 +184,10 @@ class TwitchController extends Controller
     private function redirectErrorByPlatform(String $platform, String $message): JsonResponse|RedirectResponse
     {
         return match ($platform) {
-            'mobile' => redirect()->away(Env::get('TWITCH_LOGIN_ERROR_REDIRECT_URL_MOBILE') . '?message=' . $message),
-            'web' => redirect()->away(Env::get('TWITCH_LOGIN_ERROR_REDIRECT_URL_WEB') . '?message=' . $message),
+            "mobile" => redirect()->away(Env::get("TWITCH_LOGIN_ERROR_REDIRECT_URL_MOBILE") . "?message=" . $message),
+            "web" => redirect()->away(Env::get("TWITCH_LOGIN_ERROR_REDIRECT_URL_WEB") . "?message=" . $message),
             default => response()->json([
-                'message' => 'Invalid platform',
+                "message" => "Invalid platform",
             ], Status::HTTP_BAD_REQUEST),
         };
     }
