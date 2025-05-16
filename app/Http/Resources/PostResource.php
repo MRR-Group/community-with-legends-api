@@ -23,7 +23,7 @@ class PostResource extends JsonResource
             "tags" => $this->tags->pluck("name"),
             "asset" => PostAssetResource::make($this->asset),
             "reactions" => $this->reactions->count(),
-            "user_reacted" => $this->reactions->contains("user_id", $request->user()->id),
+            "user_reacted" => $this->reactions->contains("user_id", $request->user()?->id) ?? false,
             "comments" => CommentResource::collection($this->comments),
         ];
     }

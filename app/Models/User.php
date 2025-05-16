@@ -49,6 +49,10 @@ class User extends Authenticatable
 
     public function permissionsNames(): array
     {
+        if (auth()->user() === null) {
+            return [];
+        }
+
         if (auth()->id() === $this->id || auth()->user()->hasPermissionTo(Permission::ViewUsers)) {
             return $this->getPermissionNames()->toArray();
         }
