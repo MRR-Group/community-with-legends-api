@@ -70,13 +70,15 @@ Route::get("/twitch/auth/login/{platform}", [TwitchController::class, "loginByAu
 Route::get("/twitch/auth/register/{platform}", [TwitchController::class, "registerByAuthCode"]);
 Route::get("/twitch/token", [TwitchController::class, "receiveAccessToken"]);
 
-Route::get("/posts", [PostController::class, "index"]);
-Route::get("/posts/trending", [PostController::class, "getTrendingPosts"]);
-Route::get("/posts/filter", [PostController::class, "getFilteredPosts"]);
-Route::get("/posts/{post}", [PostController::class, "show"]);
+Route::group([], function (): void {
+    Route::get("/posts", [PostController::class, "index"]);
+    Route::get("/posts/trending", [PostController::class, "getTrendingPosts"]);
+    Route::get("/posts/filter", [PostController::class, "getFilteredPosts"]);
+    Route::get("/posts/{post}", [PostController::class, "show"]);
 
-Route::get("/games", [GameController::class, "index"]);
-Route::get("/games/search", [GameController::class, "search"]);
+    Route::get("/games", [GameController::class, "index"]);
+    Route::get("/games/search", [GameController::class, "search"]);
 
-Route::get("/tags", [TagController::class, "index"]);
-Route::get("/tags/search", [TagController::class, "search"]);
+    Route::get("/tags", [TagController::class, "index"]);
+    Route::get("/tags/search", [TagController::class, "search"]);
+});
