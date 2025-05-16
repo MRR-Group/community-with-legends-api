@@ -12,6 +12,7 @@ use CommunityWithLegends\Http\Controllers\GameController;
 use CommunityWithLegends\Http\Controllers\PostController;
 use CommunityWithLegends\Http\Controllers\ResetPasswordController;
 use CommunityWithLegends\Http\Controllers\TagController;
+use CommunityWithLegends\Http\Controllers\TwitchController;
 use CommunityWithLegends\Http\Controllers\UserController;
 use CommunityWithLegends\Models\User;
 use Illuminate\Auth\Middleware\Authorize;
@@ -74,3 +75,7 @@ Route::post("/auth/register", [RegisterController::class, "register"]);
 
 Route::post("/auth/forgot-password", [ResetPasswordController::class, "sendResetLinkEmail"]);
 Route::post("/auth/reset-password", [ResetPasswordController::class, "reset"]);
+
+Route::get("/twitch/auth/login/{platform}", [TwitchController::class, "loginByAuthCode"]);
+Route::get("/twitch/auth/register/{platform}", [TwitchController::class, "registerByAuthCode"]);
+Route::get("/twitch/token", [TwitchController::class, "receiveAccessToken"]);
