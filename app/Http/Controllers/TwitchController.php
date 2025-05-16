@@ -57,7 +57,7 @@ class TwitchController extends Controller
         $username = $userDetails->get("display_name");
 
         if ($email === null) {
-            return $this->redirectErrorByPlatform($platform, "Failed to log in with Twitch. Please try again.");
+            return $this->redirectErrorByPlatform($platform, "Failed to register via Twitch. Please try again.");
         }
 
         $userExist = User::query()->where("email", $email)->first();
