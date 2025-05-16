@@ -2,6 +2,7 @@
 
 namespace CommunityWithLegends\Http\Controllers;
 
+use _PHPStan_24e2736d6\Nette\Neon\Exception;
 use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Models\User;
@@ -19,6 +20,10 @@ class TwitchController extends Controller
     public function loginByAuthCode(Request $request, string $platform)
     {
         $userDetails = $this->getUserDetails($request, $platform);
+
+        if($userDetails instanceof RedirectResponse){
+            return $userDetails;
+        }
 
         $email = $userDetails->get('email');
 
@@ -40,6 +45,10 @@ class TwitchController extends Controller
     public function registerByAuthCode(Request $request, IdenticonHelper $identiconHelper, string $platform)
     {
         $userDetails = $this->getUserDetails($request, $platform);
+
+        if($userDetails instanceof RedirectResponse){
+            return $userDetails;
+        }
 
         $email = $userDetails->get('email');
         $username = $userDetails->get('display_name');
@@ -102,7 +111,8 @@ class TwitchController extends Controller
         ]);
     }
 
-    private function getUserDetails(Request $request, String $platform){
+    private function getUserDetails(Request $request, String $platform): Collection|RedirectResponse
+    {
         $authenticationCode = $request->get("code");
         $error_description = $request->get("error_description");
 
@@ -158,8 +168,8 @@ class TwitchController extends Controller
     private function redirectByPlatform(String $platform, String $token): JsonResponse|RedirectResponse
     {
         return match ($platform) {
-            'mobile' => redirect()->to(Env::get('TWITCH_LOGIN_REDIRECT_URL_MOBILE') . '?token=' . $token),
-            'web' => redirect()->to(Env::get('TWITCH_LOGIN_REDIRECT_URL_WEB')),
+            'mobile' => redirect()->away(Env::get('TWITCH_LOGIN_REDIRECT_URL_MOBILE') . '?token=' . $token),
+            'web' => redirect()->away(Env::get('TWITCH_LOGIN_REDIRECT_URL_WEB')),
             default => response()->json([
                 'message' => 'Invalid platform',
             ], Status::HTTP_BAD_REQUEST),
@@ -169,8 +179,8 @@ class TwitchController extends Controller
     private function redirectErrorByPlatform(String $platform, String $message): JsonResponse|RedirectResponse
     {
         return match ($platform) {
-            'mobile' => redirect()->to(Env::get('TWITCH_LOGIN_ERROR_REDIRECT_URL_MOBILE') . '?message=' . $message),
-            'web' => redirect()->to(Env::get('TWITCH_LOGIN_ERROR_REDIRECT_URL_WEB') . '?message=' . $message),
+            'mobile' => redirect()->away(Env::get('TWITCH_LOGIN_ERROR_REDIRECT_URL_MOBILE') . '?message=' . $message),
+            'web' => redirect()->away(Env::get('TWITCH_LOGIN_ERROR_REDIRECT_URL_WEB') . '?message=' . $message),
             default => response()->json([
                 'message' => 'Invalid platform',
             ], Status::HTTP_BAD_REQUEST),
