@@ -54,17 +54,7 @@ Route::middleware("auth:sanctum")->group(function (): void {
 
     Route::post("/avatar", [ChangeAvatarController::class, "store"]);
 
-    Route::get("/games", [GameController::class, "index"]);
-    Route::get("/games/search", [GameController::class, "search"]);
-
-    Route::get("/tags", [TagController::class, "index"]);
-    Route::get("/tags/search", [TagController::class, "search"]);
-
-    Route::get("/posts", [PostController::class, "index"]);
     Route::post("/posts", [PostController::class, "store"])->middleware(Authorize::using(Permission::CreatePost));
-    Route::get("/posts/trending", [PostController::class, "getTrendingPosts"]);
-    Route::get("/posts/filter", [PostController::class, "getFilteredPosts"]);
-    Route::get("/posts/{post}", [PostController::class, "show"]);
     Route::post("/posts/{post}/reactions", [PostController::class, "addReaction"])->middleware(Authorize::using(Permission::ReactToPost));
     Route::delete("/posts/{post}/reactions", [PostController::class, "removeReaction"])->middleware(Authorize::using(Permission::DeletePosts));
     Route::post("/posts/{post}/comments", [CommentController::class, "store"])->middleware(Authorize::using(Permission::MakeComment));
@@ -79,3 +69,16 @@ Route::post("/auth/reset-password", [ResetPasswordController::class, "reset"]);
 Route::get("/twitch/auth/login/{platform}", [TwitchController::class, "loginByAuthCode"]);
 Route::get("/twitch/auth/register/{platform}", [TwitchController::class, "registerByAuthCode"]);
 Route::get("/twitch/token", [TwitchController::class, "receiveAccessToken"]);
+
+Route::group([], function (): void {
+    Route::get("/posts", [PostController::class, "index"]);
+    Route::get("/posts/trending", [PostController::class, "getTrendingPosts"]);
+    Route::get("/posts/filter", [PostController::class, "getFilteredPosts"]);
+    Route::get("/posts/{post}", [PostController::class, "show"]);
+
+    Route::get("/games", [GameController::class, "index"]);
+    Route::get("/games/search", [GameController::class, "search"]);
+
+    Route::get("/tags", [TagController::class, "index"]);
+    Route::get("/tags/search", [TagController::class, "search"]);
+});
