@@ -112,7 +112,7 @@ class TwitchController extends Controller
         ]);
     }
 
-    private function getUserDetails(Request $request, String $platform): Collection|RedirectResponse
+    private function getUserDetails(Request $request, string $platform): Collection|RedirectResponse
     {
         $authenticationCode = $request->get("code");
         $error_description = $request->get("error_description");
@@ -169,18 +169,18 @@ class TwitchController extends Controller
         return collect([$userData]);
     }
 
-    private function redirectByPlatform(String $platform, String $token): JsonResponse|RedirectResponse
+    private function redirectByPlatform(string $platform, string $token): JsonResponse|RedirectResponse
     {
         return match ($platform) {
-            "mobile" => redirect()->away(config("twitch.login_error_redirect_url_mobile") . "?token=" . $token),
-            "web" => redirect()->away(config("twitch.login_error_redirect_url_web")),
+            "mobile" => redirect()->away(config("twitch.login_redirect_url_mobile") . "?token=" . $token),
+            "web" => redirect()->away(config("twitch.login_redirect_url_web")),
             default => response()->json([
                 "message" => "Invalid platform",
             ], Status::HTTP_BAD_REQUEST),
         };
     }
 
-    private function redirectErrorByPlatform(String $platform, String $message): JsonResponse|RedirectResponse
+    private function redirectErrorByPlatform(string $platform, string $message): JsonResponse|RedirectResponse
     {
         return match ($platform) {
             "mobile" => redirect()->away(config("twitch.login_error_redirect_url_mobile") . "?message=" . $message),

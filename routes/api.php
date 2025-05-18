@@ -5,6 +5,7 @@ declare(strict_types=1);
 use CommunityWithLegends\Enums\Permission;
 use CommunityWithLegends\Http\Controllers\Auth\LoginController;
 use CommunityWithLegends\Http\Controllers\Auth\LogoutController;
+use CommunityWithLegends\Http\Controllers\Auth\RegisterController;
 use CommunityWithLegends\Http\Controllers\ChangeAvatarController;
 use CommunityWithLegends\Http\Controllers\CommentController;
 use CommunityWithLegends\Http\Controllers\GameController;
@@ -62,6 +63,7 @@ Route::middleware("auth:sanctum")->group(function (): void {
 
 Route::group([], function (): void {
     Route::post("/auth/login", [LoginController::class, "login"])->name("login");
+    Route::post("/auth/register", [RegisterController::class, "register"]);
 
     Route::post("/auth/forgot-password", [ResetPasswordController::class, "sendResetLinkEmail"]);
     Route::post("/auth/reset-password", [ResetPasswordController::class, "reset"]);
