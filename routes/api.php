@@ -41,6 +41,7 @@ Route::post("/auth/token", function (Request $request) {
 
 Route::middleware("auth:sanctum")->group(function (): void {
     Route::post("/auth/logout", [LogoutController::class, "logout"]);
+    Route::post("/auth/refresh", [LoginController::class, "refresh"])->name("refresh");
 
     Route::get("/user", fn(Request $request) => $request->user());
     Route::get("/users", [UserController::class, "index"])->middleware(Authorize::using(Permission::ViewUsers));

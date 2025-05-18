@@ -31,4 +31,14 @@ class LoginController extends Controller
             "user_id" => $user->id,
         ], Status::HTTP_OK);
     }
+
+    public function refresh(): JsonResponse
+    {
+        $user = Auth::user();
+
+        return response()->json([
+            "message" => "success",
+            "user_id" => $user->id,
+        ], Status::HTTP_OK);
+    }
 }
