@@ -60,17 +60,18 @@ Route::middleware("auth:sanctum")->group(function (): void {
     Route::post("/posts/{post}/comments", [CommentController::class, "store"])->middleware(Authorize::using(Permission::MakeComment));
 });
 
-Route::post("/auth/login", [LoginController::class, "login"])->name("login");
-Route::post("/auth/register", [RegisterController::class, "register"]);
-
-Route::post("/auth/forgot-password", [ResetPasswordController::class, "sendResetLinkEmail"]);
-Route::post("/auth/reset-password", [ResetPasswordController::class, "reset"]);
-
-Route::get("/twitch/auth/login/{platform}", [TwitchController::class, "loginByAuthCode"]);
-Route::get("/twitch/auth/register/{platform}", [TwitchController::class, "registerByAuthCode"]);
-Route::get("/twitch/token", [TwitchController::class, "receiveAccessToken"]);
-
 Route::group([], function (): void {
+    Route::post("/auth/login", [LoginController::class, "login"])->name("login");
+    Route::post("/auth/register", [RegisterController::class, "register"]);
+    Route::post("/auth/refresh", [LoginController::class, "refresh"])->name("refresh");
+
+    Route::post("/auth/forgot-password", [ResetPasswordController::class, "sendResetLinkEmail"]);
+    Route::post("/auth/reset-password", [ResetPasswordController::class, "reset"]);
+
+    Route::get("/twitch/auth/login/{platform}", [TwitchController::class, "loginByAuthCode"]);
+    Route::get("/twitch/auth/register/{platform}", [TwitchController::class, "registerByAuthCode"]);
+    Route::get("/twitch/token", [TwitchController::class, "receiveAccessToken"]);
+
     Route::get("/posts", [PostController::class, "index"]);
     Route::get("/posts/trending", [PostController::class, "getTrendingPosts"]);
     Route::get("/posts/filter", [PostController::class, "getFilteredPosts"]);

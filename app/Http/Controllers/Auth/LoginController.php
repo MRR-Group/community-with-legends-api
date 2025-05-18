@@ -6,6 +6,8 @@ namespace CommunityWithLegends\Http\Controllers\Auth;
 
 use CommunityWithLegends\Http\Controllers\Controller;
 use CommunityWithLegends\Http\Requests\LoginRequest;
+use CommunityWithLegends\Http\Resources\UserResource;
+use CommunityWithLegends\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response as Status;
@@ -28,6 +30,16 @@ class LoginController extends Controller
         return response()->json([
             "message" => "success",
             "token" => $token,
+            "user_id" => $user->id,
+        ], Status::HTTP_OK);
+    }
+
+    public function refresh(): JsonResponse
+    {
+        $user = Auth::user();
+
+        return response()->json([
+            "message" => "success",
             "user_id" => $user->id,
         ], Status::HTTP_OK);
     }
