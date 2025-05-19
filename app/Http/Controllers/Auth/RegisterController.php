@@ -17,18 +17,15 @@ class RegisterController extends Controller
     public function register(RegisterRequest $registerRequest, IdenticonHelper $identiconHelper)
     {
         $validated = $registerRequest->validated();
-        $userExist = User::query()->where("email", $validated["email"])->exists();
 
-        if (!$userExist) {
-            $user = new User($validated);
-            $user->password = Hash::make($validated["password"]);
-            $user->save();
+        $user = new User($validated);
+        $user->password = Hash::make($validated["password"]);
+        $user->save();
 
-            $identiconHelper->create($user->id, $user->email);
+        $identiconHelper->create($user->id, $user->email);
 
-            $user->assignRole(Role::User);
-            $user->syncPermissions(Role::User->permissions());
-        }
+        $user->assignRole(Role::User);
+        $user->syncPermissions(Role::User->permissions());
 
         return response()->json([
             "message" => "success",
