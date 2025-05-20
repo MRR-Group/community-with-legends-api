@@ -31,7 +31,7 @@ class AdministratorController
         $user->delete();
 
         return response()->json(
-            ["message" => "Administrator  $user->name deleted."],
+            ["message" => "Administrator $user->name deleted."],
             Status::HTTP_OK,
         );
     }
