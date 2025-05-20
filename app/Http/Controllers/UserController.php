@@ -16,7 +16,7 @@ class UserController
 {
     public function index(): JsonResponse
     {
-        return UserResource::collection(User::withoutRole(Role::Administrator)->get())->response();
+        return UserResource::collection(User::withoutRole([Role::Administrator, Role::SuperAdministrator])->get())->response();
     }
 
     public function show(User $user): JsonResponse
