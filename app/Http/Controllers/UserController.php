@@ -16,7 +16,7 @@ class UserController
 {
     public function index(): JsonResponse
     {
-        return UserResource::collection(User::all())->response();
+        return UserResource::collection(User::withoutRole([Role::Administrator, Role::SuperAdministrator])->get())->response();
     }
 
     public function show(User $user): JsonResponse
@@ -28,6 +28,7 @@ class UserController
     {
         if ($user->hasRole([Role::Moderator, Role::Administrator, Role::SuperAdministrator])) {
             return response()->json(
+                [],
                 Status::HTTP_FORBIDDEN,
             );
         }
@@ -54,6 +55,7 @@ class UserController
     {
         if ($user->hasRole([Role::Moderator, Role::Administrator, Role::SuperAdministrator])) {
             return response()->json(
+                [],
                 Status::HTTP_FORBIDDEN,
             );
         }
@@ -89,6 +91,7 @@ class UserController
     {
         if ($user->hasRole([Role::Administrator, Role::SuperAdministrator]) || !$user->hasRole(Role::Moderator)) {
             return response()->json(
+                [],
                 Status::HTTP_FORBIDDEN,
             );
         }
@@ -99,24 +102,6 @@ class UserController
 
         return response()->json(
             ["message" => "Moderator privileges revoked from $user->name"],
-            Status::HTTP_OK,
-        );
-    }
-
-    public function revokeAdministratorPrivileges(User $user): JsonResponse
-    {
-        if ($user->hasRole([Role::SuperAdministrator]) || !$user->hasRole(Role::Administrator)) {
-            return response()->json(
-                Status::HTTP_FORBIDDEN,
-            );
-        }
-
-        $user->removeRole(Role::Administrator->value);
-        $user->revokePermissionTo(Role::Administrator->permissions());
-        $user->givePermissionTo(Role::User->permissions());
-
-        return response()->json(
-            ["message" => "Administrator privileges revoked from $user->name"],
             Status::HTTP_OK,
         );
     }

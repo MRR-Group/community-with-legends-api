@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use CommunityWithLegends\Enums\Permission;
+use CommunityWithLegends\Http\Controllers\AdministratorController;
 use CommunityWithLegends\Http\Controllers\Auth\LoginController;
 use CommunityWithLegends\Http\Controllers\Auth\LogoutController;
 use CommunityWithLegends\Http\Controllers\Auth\RegisterController;
@@ -51,7 +52,11 @@ Route::middleware("auth:sanctum")->group(function (): void {
     Route::post("/users/{user}/anonymize", [UserController::class, "anonymize"])->middleware(Authorize::using(Permission::AnonymizeUsers));
     Route::post("/users/{user}/grant-moderator-privileges", [UserController::class, "grantModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
     Route::post("/users/{user}/revoke-moderator-privileges", [UserController::class, "revokeModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
-    Route::post("/users/{user}/revoke-administrator-privileges", [UserController::class, "revokeAdministratorPrivileges"])->middleware(Authorize::using(Permission::ManageAdministrators));
+
+    Route::get("/admins", [AdministratorController::class, "index"])->middleware(Authorize::using(Permission::ManageAdministrators));
+    Route::post("/admins", [AdministratorController::class, "store"])->middleware(Authorize::using(Permission::ManageAdministrators));
+    Route::delete("/admins/{user}", [AdministratorController::class, "delete"])->middleware(Authorize::using(Permission::ManageAdministrators));
+    Route::post("/admins/{user}/revoke-administrator-privileges", [AdministratorController::class, "revokeAdministratorPrivileges"])->middleware(Authorize::using(Permission::ManageAdministrators));
 
     Route::post("/avatar", [ChangeAvatarController::class, "store"]);
 
