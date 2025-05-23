@@ -136,8 +136,12 @@ class TwitchController extends Controller
     /**
      * @return Collection<string, mixed>
      */
-    private function getAccessToken(string $authenticationCode): Collection
+    private function getAccessToken(mixed $authenticationCode): Collection
     {
+        if($authenticationCode == null){
+            return collect(['message' => "Access token is missing."]);
+        }
+
         $response = Http::post("https://id.twitch.tv/oauth2/token", [
             "client_id" => config("twitch.client_id"),
             "client_secret" => config("twitch.client_secret"),
@@ -183,8 +187,8 @@ class TwitchController extends Controller
     private function redirectErrorByPlatform(string $platform, string $message): JsonResponse|RedirectResponse
     {
         return match ($platform) {
-            "mobile" => redirect()->away(config("twitch.login_error_redirect_url_mobile") . "?message=" . $message),
-            "web" => redirect()->away(config("twitch.login_error_redirect_url_web") . "?message=" . $message),
+            "mobile" => redirect()->away(config("twitch.login_redirect_error_url_mobile") . "?message=" . $message),
+            "web" => redirect()->away(config("twitch.login_redirect_error_url_web") . "?message=" . $message),
             default => response()->json([
                 "message" => "Invalid platform",
             ], Status::HTTP_BAD_REQUEST),
