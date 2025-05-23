@@ -138,8 +138,8 @@ class TwitchController extends Controller
      */
     private function getAccessToken(mixed $authenticationCode): Collection
     {
-        if($authenticationCode == null){
-            return collect(['message' => "Access token is missing."]);
+        if ($authenticationCode === null) {
+            return collect(["message" => "Access token is missing."]);
         }
 
         $response = Http::post("https://id.twitch.tv/oauth2/token", [

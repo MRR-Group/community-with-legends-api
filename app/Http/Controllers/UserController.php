@@ -28,13 +28,14 @@ class UserController
     {
         $filter = $request->input("filter");
 
-        if($filter){
+        if ($filter) {
             $filter = strtolower($filter);
         }
 
         $users = User::query()
-            ->whereRaw('LOWER(name) LIKE ?', ['%' . $filter . '%'])
+            ->whereRaw("LOWER(name) LIKE ?", ["%" . $filter . "%"])
             ->get();
+
         return UserResource::collection($users)->response();
     }
 
