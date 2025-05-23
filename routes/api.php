@@ -45,8 +45,6 @@ Route::middleware("auth:sanctum")->group(function (): void {
     Route::post("/auth/refresh", [LoginController::class, "refresh"])->name("refresh");
 
     Route::get("/user", fn(Request $request) => $request->user());
-    Route::get("/users", [UserController::class, "index"])->middleware(Authorize::using(Permission::ViewUsers));
-    Route::get("/users/{user}", [UserController::class, "show"]);
     Route::post("/users/{user}/ban", [UserController::class, "ban"])->middleware(Authorize::using(Permission::BanUsers));
     Route::post("/users/{user}/unban", [UserController::class, "unban"])->middleware(Authorize::using(Permission::BanUsers));
     Route::post("/users/{user}/anonymize", [UserController::class, "anonymize"])->middleware(Authorize::using(Permission::AnonymizeUsers));
@@ -72,6 +70,10 @@ Route::group([], function (): void {
 
     Route::post("/auth/forgot-password", [ResetPasswordController::class, "sendResetLinkEmail"]);
     Route::post("/auth/reset-password", [ResetPasswordController::class, "reset"]);
+
+    Route::get("/users", [UserController::class, "index"]);
+    Route::get("/users/search", [UserController::class, "search"]);
+    Route::get("/users/{user}", [UserController::class, "show"]);
 
     Route::get("/twitch/auth/login/{platform}", [TwitchController::class, "loginByAuthCode"]);
     Route::get("/twitch/auth/register/{platform}", [TwitchController::class, "registerByAuthCode"]);

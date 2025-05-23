@@ -24,6 +24,21 @@ class UserController
         return UserResource::make($user)->response();
     }
 
+    public function search(Request $request): JsonResponse
+    {
+        $filter = $request->input("filter");
+
+        if ($filter) {
+            $filter = strtolower($filter);
+        }
+
+        $users = User::query()
+            ->whereRaw("LOWER(name) LIKE ?", ["%" . $filter . "%"])
+            ->get();
+
+        return UserResource::collection($users)->response();
+    }
+
     public function ban(User $user, Request $request): JsonResponse
     {
         if ($user->hasRole([Role::Moderator, Role::Administrator, Role::SuperAdministrator])) {
