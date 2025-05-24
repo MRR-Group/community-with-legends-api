@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
 /**
@@ -17,15 +19,19 @@ use Illuminate\Support\Collection;
  * @property string $content
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property ?Carbon $deleted_at
  * @property User $user
  * @property ?Game $game
  * @property ?PostAsset $asset
  * @property Collection<Reaction> $reactions
  * @property Collection<Comment> $comments
  * @property Collection<Tag> $tags
+ * @property Collection<Report> $reports
  */
 class Post extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ["user_id", "game_id", "content"];
 
     public function user(): BelongsTo
@@ -56,5 +62,10 @@ class Post extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class)->orderBy("created_at", "desc");
+    }
+
+    public function reports(): MorphMany
+    {
+        return $this->morphMany(Report::class, "reportable");
     }
 }

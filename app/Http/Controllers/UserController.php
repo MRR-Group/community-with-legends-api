@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace CommunityWithLegends\Http\Controllers;
 
+use Carbon\Carbon;
 use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Http\Resources\UserResource;
+use CommunityWithLegends\Models\Report;
 use CommunityWithLegends\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,6 +43,15 @@ class UserController
 
     public function ban(User $user, Request $request): JsonResponse
     {
+        if ($user->reports->isEmpty()) {
+            $user->reports()->save(new Report(["user_id" => auth()->id()]));
+        }
+
+        foreach ($user->reports as $report) {
+            $report->resolved_at = Carbon::now();
+            $report->save();
+        }
+
         if ($user->hasRole([Role::Moderator, Role::Administrator, Role::SuperAdministrator])) {
             return response()->json(
                 [],

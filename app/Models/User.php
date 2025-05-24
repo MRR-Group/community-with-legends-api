@@ -11,6 +11,7 @@ use CommunityWithLegends\Notifications\PasswordResetCodeNotification;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
@@ -26,9 +27,10 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon $email_verified_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property Collection<Post> posts
- * @property Collection<Comment> comments
- * @property Collection<Reaction> reactions
+ * @property Collection<Post> $posts
+ * @property Collection<Comment> $comments
+ * @property Collection<Reaction> $reactions
+ * @property Collection<Report> $reports
  */
 class User extends Authenticatable
 {
@@ -78,6 +80,11 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new PasswordResetCodeNotification($this->email));
+    }
+
+    public function reports(): MorphMany
+    {
+        return $this->morphMany(Report::class, "reportable");
     }
 
     protected function avatar(): Attribute

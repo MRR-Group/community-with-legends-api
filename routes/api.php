@@ -11,6 +11,7 @@ use CommunityWithLegends\Http\Controllers\ChangeAvatarController;
 use CommunityWithLegends\Http\Controllers\CommentController;
 use CommunityWithLegends\Http\Controllers\GameController;
 use CommunityWithLegends\Http\Controllers\PostController;
+use CommunityWithLegends\Http\Controllers\ReportController;
 use CommunityWithLegends\Http\Controllers\ResetPasswordController;
 use CommunityWithLegends\Http\Controllers\TagController;
 use CommunityWithLegends\Http\Controllers\TwitchController;
@@ -59,9 +60,22 @@ Route::middleware("auth:sanctum")->group(function (): void {
     Route::post("/avatar", [ChangeAvatarController::class, "store"]);
 
     Route::post("/posts", [PostController::class, "store"])->middleware(Authorize::using(Permission::CreatePost));
+    Route::delete("/posts/{post}", [PostController::class, "remove"])->middleware(Authorize::using(Permission::DeletePosts));
+    Route::post("/posts/{post}/restore", [PostController::class, "restorePost"])->middleware(Authorize::using(Permission::DeletePosts));
     Route::post("/posts/{post}/reactions", [PostController::class, "addReaction"])->middleware(Authorize::using(Permission::ReactToPost));
-    Route::delete("/posts/{post}/reactions", [PostController::class, "removeReaction"])->middleware(Authorize::using(Permission::DeletePosts));
+    Route::delete("/posts/{post}/reactions", [PostController::class, "removeReaction"])->middleware(Authorize::using(Permission::ReactToPost));
     Route::post("/posts/{post}/comments", [CommentController::class, "store"])->middleware(Authorize::using(Permission::MakeComment));
+    Route::delete("/comments/{comment}", [PostController::class, "removeComment"])->middleware(Authorize::using(Permission::DeletePosts));
+    Route::post("/comments/{comment}/restore", [PostController::class, "restoreComment"])->middleware(Authorize::using(Permission::DeletePosts));
+
+    Route::post("/posts/{post}/report", [ReportController::class, "storePost"]);
+    Route::post("/comments/{comment}/report", [ReportController::class, "storeComment"]);
+    Route::post("/users/{user}/report", [ReportController::class, "storeUser"]);
+
+    Route::get("/reports", [ReportController::class, "index"])->middleware([Authorize::using(Permission::BanUsers), Authorize::using(Permission::DeletePosts)]);
+    Route::get("/reports/posts", [ReportController::class, "indexPosts"])->middleware(Authorize::using(Permission::DeletePosts));
+    Route::get("/reports/comments", [ReportController::class, "indexComments"])->middleware(Authorize::using(Permission::DeletePosts));
+    Route::get("/reports/users", [ReportController::class, "indexUsers"])->middleware(Authorize::using(Permission::BanUsers));
 });
 
 Route::group([], function (): void {
