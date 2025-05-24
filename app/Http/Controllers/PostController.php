@@ -53,7 +53,7 @@ class PostController extends Controller
         return PostResource::collection($posts)->response();
     }
 
-    public function indexByUser(User $user)
+    public function indexByUser(User $user): JsonResponse
     {
         $posts = $user->posts()
             ->with(["user", "tags", "game", "comments.user"])
