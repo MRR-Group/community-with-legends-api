@@ -55,6 +55,7 @@ return [
         Permission::DeletePosts->value,
         Permission::ManageAdministrators->value,
         Permission::ManageModerators->value,
+        Permission::UpdateGames->value,
     ],
     "permission_roles" => [
         Role::SuperAdministrator->value => [
@@ -67,6 +68,7 @@ return [
             Permission::CreatePost->value,
             Permission::MakeComment->value,
             Permission::ReactToPost->value,
+            Permission::UpdateGames->value,
         ],
         Role::Administrator->value => [
             Permission::AnonymizeUsers->value,
@@ -77,6 +79,7 @@ return [
             Permission::CreatePost->value,
             Permission::MakeComment->value,
             Permission::ReactToPost->value,
+            Permission::UpdateGames->value,
         ],
         Role::Moderator->value => [
             Permission::ViewUsers->value,

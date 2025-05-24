@@ -12,6 +12,9 @@ return new class() extends Migration {
         Schema::create("games", function (Blueprint $table): void {
             $table->id();
             $table->string("name");
+            $table->string("cover");
+            $table->string("twitch_id")->unique();
+
             $table->timestamps();
         });
 
