@@ -6,7 +6,9 @@ namespace CommunityWithLegends\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $id
@@ -15,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon $updated_at
  * @property Post $post
  * @property User $user
+ * @property Collection<Report> $reports
  */
 class Comment extends Model
 {
@@ -28,5 +31,10 @@ class Comment extends Model
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);
+    }
+
+    public function reports(): MorphMany
+    {
+        return $this->morphMany(Report::class, "reportable");
     }
 }

@@ -7,6 +7,7 @@ namespace CommunityWithLegends\Http\Controllers;
 use Carbon\Carbon;
 use CommunityWithLegends\Http\Requests\CreatePostRequest;
 use CommunityWithLegends\Http\Resources\PostResource;
+use CommunityWithLegends\Models\Comment;
 use CommunityWithLegends\Models\Post;
 use CommunityWithLegends\Models\PostAsset;
 use CommunityWithLegends\Models\User;
@@ -141,6 +142,24 @@ class PostController extends Controller
 
         return response()->json([
             "message" => "Reaction removed successfully",
+        ], Status::HTTP_OK);
+    }
+
+    public function remove(Post $post): JsonResponse
+    {
+        $post->delete();
+
+        return response()->json([
+            "message" => "Post removed successfully",
+        ], Status::HTTP_OK);
+    }
+
+    public function removeComment(Comment $comment): JsonResponse
+    {
+        $comment->delete();
+
+        return response()->json([
+            "message" => "Comment removed successfully",
         ], Status::HTTP_OK);
     }
 }

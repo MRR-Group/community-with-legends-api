@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 
 /**
@@ -23,6 +24,7 @@ use Illuminate\Support\Collection;
  * @property Collection<Reaction> $reactions
  * @property Collection<Comment> $comments
  * @property Collection<Tag> $tags
+ * @property Collection<Report> $reports
  */
 class Post extends Model
 {
@@ -56,5 +58,10 @@ class Post extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class)->orderBy("created_at", "desc");
+    }
+
+    public function reports(): MorphMany
+    {
+        return $this->morphMany(Report::class, "reportable");
     }
 }
