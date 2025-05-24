@@ -20,7 +20,7 @@ class PostResource extends JsonResource
             "created_at" => $this->created_at,
             "user" => UserResource::make($this->user),
             "game" => GameResource::make($this->game),
-            "tags" => $this->tags->pluck("name"),
+            "tags" => TagResource::collection($this->tags),
             "asset" => PostAssetResource::make($this->asset),
             "reactions" => $this->reactions->count(),
             "user_reacted" => $request->user() ? $this->reactions->contains("user_id", $request->user()->id) : false,
