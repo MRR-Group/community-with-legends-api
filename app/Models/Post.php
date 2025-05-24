@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
 /**
@@ -18,6 +19,7 @@ use Illuminate\Support\Collection;
  * @property string $content
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property ?Carbon $deleted_at
  * @property User $user
  * @property ?Game $game
  * @property ?PostAsset $asset
@@ -28,6 +30,8 @@ use Illuminate\Support\Collection;
  */
 class Post extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ["user_id", "game_id", "content"];
 
     public function user(): BelongsTo

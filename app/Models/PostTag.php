@@ -7,6 +7,7 @@ namespace CommunityWithLegends\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -14,11 +15,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $tag_id
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property ?Carbon $deleted_at
  * @property Post $post
  * @property Tag $tag
  */
 class PostTag extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ["post_id", "tag_id"];
     protected $table = "post_tags";
 

@@ -14,16 +14,20 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $reason
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property ?Carbon $resolved_at
  * @property User $user
  * @property User|Post|Comment $reportable
  */
 class Report extends Model
 {
-    protected $fillable = ["reason"];
+    protected $fillable = ["reason", "user_id", "resolved_at"];
+    protected $casts = [
+        "resolved_at" => "date",
+    ];
 
     public function reportable(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     public function user(): BelongsTo

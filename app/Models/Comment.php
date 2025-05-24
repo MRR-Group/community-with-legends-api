@@ -7,6 +7,7 @@ namespace CommunityWithLegends\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
@@ -17,10 +18,13 @@ use Illuminate\Support\Collection;
  * @property Carbon $updated_at
  * @property Post $post
  * @property User $user
+ * @property ?Carbon $deleted_at
  * @property Collection<Report> $reports
  */
 class Comment extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ["post_id", "user_id", "content"];
 
     public function user(): BelongsTo

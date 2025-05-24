@@ -20,6 +20,8 @@ class ReportResource extends JsonResource
             "reportable_type" => class_basename($this->reportable_type),
             "reportable" => $this->resolveReportableResource(),
             "reported_at" => $this->created_at->toDateTimeString(),
+            "resolved_at" => optional($this->resolved_at)?->toDateTimeString(),
+            "status" => $this->resolveStatus(),
             "reported_by" => new UserResource($this->whenLoaded("user")),
         ];
     }
@@ -32,5 +34,38 @@ class ReportResource extends JsonResource
             User::class => new UserResource($this->reportable),
             default => null,
         };
+    }
+
+    protected function resolveStatus(): array
+    {
+        $statuses = [];
+
+        if ($this->resolved_at === null) {
+            return ["pending"];
+        }
+
+        if ($this->resolved_at) {
+            $statuses[] = "resolved";
+        }
+
+        $reportable = $this->reportable;
+
+        if ($this->reportable_type === User::class && empty($reportable?->permissionsNames())) {
+            $statuses[] = "user_banned";
+
+            return $statuses;
+        }
+
+        $author = $reportable?->user;
+
+        if ($author && empty($author->permissionsNames())) {
+            $statuses[] = "user_banned";
+        }
+
+        if ($this->reportable_type !== User::class && $reportable?->trashed()) {
+            $statuses[] = "deleted";
+        }
+
+        return $statuses;
     }
 }

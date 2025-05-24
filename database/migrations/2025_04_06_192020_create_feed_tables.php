@@ -29,6 +29,7 @@ return new class() extends Migration {
 
         Schema::create("posts", function (Blueprint $table): void {
             $table->id();
+            $table->softDeletes();
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("game_id")->nullable();
             $table->text("content");
@@ -47,6 +48,7 @@ return new class() extends Migration {
 
         Schema::create("comments", function (Blueprint $table): void {
             $table->id();
+            $table->softDeletes();
             $table->unsignedBigInteger("post_id");
             $table->unsignedBigInteger("user_id");
             $table->text("content");
@@ -65,6 +67,7 @@ return new class() extends Migration {
 
         Schema::create("reactions", function (Blueprint $table): void {
             $table->id();
+            $table->softDeletes();
             $table->unsignedBigInteger("post_id");
             $table->unsignedBigInteger("user_id");
             $table->timestamps();
@@ -82,6 +85,7 @@ return new class() extends Migration {
 
         Schema::create("post_assets", function (Blueprint $table): void {
             $table->id();
+            $table->softDeletes();
             $table->unsignedBigInteger("post_id");
             $table->unsignedBigInteger("type_id");
             $table->string("link");
@@ -100,6 +104,7 @@ return new class() extends Migration {
 
         Schema::create("post_tag", function (Blueprint $table): void {
             $table->id();
+            $table->softDeletes();
             $table->unsignedBigInteger("post_id");
             $table->integer("tag_id");
             $table->timestamps();

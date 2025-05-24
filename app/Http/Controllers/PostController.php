@@ -10,6 +10,7 @@ use CommunityWithLegends\Http\Resources\PostResource;
 use CommunityWithLegends\Models\Comment;
 use CommunityWithLegends\Models\Post;
 use CommunityWithLegends\Models\PostAsset;
+use CommunityWithLegends\Models\Report;
 use CommunityWithLegends\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -147,6 +148,15 @@ class PostController extends Controller
 
     public function remove(Post $post): JsonResponse
     {
+        if ($post->reports->isEmpty()) {
+            $post->reports()->save(new Report(["user_id" => auth()->id(), "resolved_at" => Carbon::now()]));
+        }
+
+        foreach ($post->reports as $report) {
+            $report->resolved_at = Carbon::now();
+            $report->save();
+        }
+
         $post->delete();
 
         return response()->json([
@@ -156,10 +166,37 @@ class PostController extends Controller
 
     public function removeComment(Comment $comment): JsonResponse
     {
+        if ($comment->reports->isEmpty()) {
+            $comment->reports()->save(new Report(["user_id" => auth()->id()]));
+        }
+
+        foreach ($comment->reports as $report) {
+            $report->resolved_at = Carbon::now();
+            $report->save();
+        }
+
         $comment->delete();
 
         return response()->json([
             "message" => "Comment removed successfully",
+        ], Status::HTTP_OK);
+    }
+
+    public function restoreComment(Comment $comment): JsonResponse
+    {
+        $comment->restore();
+
+        return response()->json([
+            "message" => "Comment restored successfully",
+        ], Status::HTTP_OK);
+    }
+
+    public function restorePost(Post $post): JsonResponse
+    {
+        $post->restore();
+
+        return response()->json([
+            "message" => "Post restored successfully",
         ], Status::HTTP_OK);
     }
 }
