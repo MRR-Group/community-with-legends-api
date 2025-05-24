@@ -17,6 +17,7 @@ class GameResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
+            "cover" => $this->cover,
         ];
     }
 }
