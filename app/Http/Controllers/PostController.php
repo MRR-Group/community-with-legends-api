@@ -9,6 +9,7 @@ use CommunityWithLegends\Http\Requests\CreatePostRequest;
 use CommunityWithLegends\Http\Resources\PostResource;
 use CommunityWithLegends\Models\Post;
 use CommunityWithLegends\Models\PostAsset;
+use CommunityWithLegends\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as Status;
@@ -45,6 +46,16 @@ class PostController extends Controller
     public function index(Request $request): JsonResponse
     {
         $posts = Post::query()
+            ->with(["user", "tags", "game", "comments.user"])
+            ->orderBy("created_at", "desc")
+            ->paginate(10);
+
+        return PostResource::collection($posts)->response();
+    }
+
+    public function indexByUser(User $user)
+    {
+        $posts = $user->posts()
             ->with(["user", "tags", "game", "comments.user"])
             ->orderBy("created_at", "desc")
             ->paginate(10);

@@ -74,6 +74,7 @@ Route::group([], function (): void {
     Route::get("/users", [UserController::class, "index"]);
     Route::get("/users/search", [UserController::class, "search"]);
     Route::get("/users/{user}", [UserController::class, "show"]);
+    Route::get("/users/{user}/posts", [PostController::class, "indexByUser"]);
 
     Route::get("/twitch/auth/login/{platform}", [TwitchController::class, "loginByAuthCode"]);
     Route::get("/twitch/auth/register/{platform}", [TwitchController::class, "registerByAuthCode"]);
