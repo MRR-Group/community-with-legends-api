@@ -20,7 +20,7 @@ class CreatePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "content" => ["required", "string", "max:512"],
+            "content" => ["required", "string", "max:1024"],
             "game_id" => ["nullable", "integer", "exists:games,id"],
             "asset_type_id" => ["nullable", "integer", "exists:asset_types,id"],
             "asset_link" => ["nullable", "string", "max:512"],
