@@ -26,6 +26,11 @@ class UserController
         return UserResource::make($user)->response();
     }
 
+    public function getCurrentUser(Request $request): JsonResponse
+    {
+        return UserResource::make($request->user())->response();
+    }
+
     public function search(Request $request): JsonResponse
     {
         $filter = $request->input("filter");

@@ -45,7 +45,7 @@ Route::middleware("auth:sanctum")->group(function (): void {
     Route::post("/auth/logout", [LogoutController::class, "logout"]);
     Route::post("/auth/refresh", [LoginController::class, "refresh"])->name("refresh");
 
-    Route::get("/user", fn(Request $request) => $request->user());
+    Route::get("/user", [UserController::class, "getCurrentUser"]);
     Route::post("/users/{user}/ban", [UserController::class, "ban"])->middleware(Authorize::using(Permission::BanUsers));
     Route::post("/users/{user}/unban", [UserController::class, "unban"])->middleware(Authorize::using(Permission::BanUsers));
     Route::post("/users/{user}/anonymize", [UserController::class, "anonymize"])->middleware(Authorize::using(Permission::AnonymizeUsers));
