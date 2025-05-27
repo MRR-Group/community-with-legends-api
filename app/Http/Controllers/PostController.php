@@ -42,6 +42,7 @@ class PostController extends Controller
 
         return response()->json([
             "message" => "Post has been created",
+            "id" => $post->id,
         ], Status::HTTP_CREATED);
     }
 
