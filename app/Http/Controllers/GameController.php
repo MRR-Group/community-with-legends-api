@@ -15,7 +15,7 @@ class GameController extends Controller
 {
     public function search(Request $request): JsonResponse
     {
-        $filter = $request->input("filter");
+        $filter = $request->input("search");
 
         if ($filter) {
             $games = Game::query()
