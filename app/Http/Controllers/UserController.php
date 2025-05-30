@@ -7,6 +7,7 @@ namespace CommunityWithLegends\Http\Controllers;
 use Carbon\Carbon;
 use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Helpers\IdenticonHelper;
+use CommunityWithLegends\Http\Requests\UpdateNicknameRequest;
 use CommunityWithLegends\Http\Resources\UserResource;
 use CommunityWithLegends\Models\Report;
 use CommunityWithLegends\Models\User;
@@ -44,6 +45,20 @@ class UserController
             ->get();
 
         return UserResource::collection($users)->response();
+    }
+
+    public function changeNickname(UpdateNicknameRequest $updateNicknameRequest): JsonResponse
+    {
+        $user = $updateNicknameRequest->user();
+
+        $user->name = $updateNicknameRequest->validated()['name'];
+
+        $user->save();
+
+        return response()->json(
+            ["message" => "Nickname successfully changed"],
+            Status::HTTP_OK,
+        );
     }
 
     public function ban(User $user, Request $request): JsonResponse

@@ -1,9 +1,6 @@
 # For other versions check: https://hub.docker.com/_/composer/tags
 FROM composer/composer:2.8.6-bin@sha256:989ad47cea06cb9365afda43d7431a238c6abf913d631b9cf043eb0d43f783ae AS composer-bin
 
-# For other versions check: https://hub.docker.com/_/node/tags?page=1&name=bullseye-slim
-FROM node:23.8.0-bullseye-slim@sha256:23f14061bdb69ec7ae04a292e8de122c57dcc58712bf8ce09c25180197e8d945 AS node
-
 # For other versions check: https://hub.docker.com/_/php/tags?page=1&name=fpm-bullseye
 FROM php:8.3.12-fpm-bullseye@sha256:b9b5efd7bfe05e65097e8253b038c4b711798d95f49c89e4337c0b330f9fc8ff
 
@@ -22,17 +19,6 @@ RUN adduser \
         --groups \
         ${PHP_FPM_GROUP} \
         ${USER_NAME}
-
-# Add node and npm
-COPY --from=node --chown=${USER_NAME}:root /usr/local/lib/node_modules /usr/local/lib/node_modules
-COPY --from=node --chown=${USER_NAME}:root /usr/local/bin/node /usr/local/bin/node
-RUN ln --symbolic /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
-    && chown --no-dereference ${USER_NAME}:root /usr/local/bin/npm \
-    && ln --symbolic /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
-    && chown --no-dereference ${USER_NAME}:root /usr/local/bin/npx
-
-# Update node
-RUN npm install -g npm@11.1.0
 
 # Use the default development configuration
 RUN mv "${PHP_INI_DIR}/php.ini-development" "${PHP_INI_DIR}/php.ini"
