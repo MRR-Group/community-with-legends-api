@@ -57,16 +57,15 @@ Route::middleware(["auth:sanctum", "logout.banned"])->group(function (): void {
     Route::delete("/users/{user}/avatar", [UserController::class, "forceAvatarChange"])->middleware(Authorize::using(Permission::ChangeUsersAvatar));
     Route::delete("/users/{user}/name", [UserController::class, "forceNameChange"])->middleware(Authorize::using(Permission::RenameUsers));
     Route::post("/users/{user}/anonymize", [UserController::class, "anonymize"])->middleware(Authorize::using(Permission::AnonymizeUsers));
+    Route::delete("/users/{user}/hardware", [HardwareController::class, "forceDeleteAll"])->middleware(Authorize::using(Permission::DeleteUserHardware));
 
     Route::post("/users/{user}/grant-moderator-privileges", [UserController::class, "grantModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
     Route::post("/users/{user}/revoke-moderator-privileges", [UserController::class, "revokeModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
 
-    Route::delete("/users/{user}/hardware", [HardwareController::class, "forceDeleteAll"])->middleware(Authorize::using(Permission::DeleteUserHardware));
-
     Route::get("/hardware/{item}", [HardwareController::class, "show"]);
-    Route::post("/hardware", [HardwareController::class, "store"]);
-    Route::put("/hardware/{item}", [HardwareController::class, "update"]);
-    Route::delete("/hardware/{item}", [HardwareController::class, "destroy"]);
+    Route::post("/user/hardware", [HardwareController::class, "store"]);
+    Route::post("/user/hardware/{item}", [HardwareController::class, "update"]);
+    Route::delete("/user/hardware/{item}", [HardwareController::class, "destroy"]);
 
     Route::get("/admins", [AdministratorController::class, "index"])->middleware(Authorize::using(Permission::ManageAdministrators));
     Route::post("/admins", [AdministratorController::class, "store"])->middleware(Authorize::using(Permission::ManageAdministrators));
