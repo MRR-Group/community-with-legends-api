@@ -7,6 +7,7 @@ namespace CommunityWithLegends\Http\Controllers;
 use Carbon\Carbon;
 use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Helpers\IdenticonHelper;
+use CommunityWithLegends\Http\Requests\BanUserRequest;
 use CommunityWithLegends\Http\Resources\UserResource;
 use CommunityWithLegends\Models\Report;
 use CommunityWithLegends\Models\User;
@@ -46,15 +47,10 @@ class UserController
         return UserResource::collection($users)->response();
     }
 
-    public function ban(User $user, Request $request): JsonResponse
+    public function ban(User $user, BanUserRequest $request): JsonResponse
     {
         if ($user->reports->isEmpty()) {
             $user->reports()->save(new Report(["user_id" => auth()->id()]));
-        }
-
-        foreach ($user->reports as $report) {
-            $report->resolved_at = Carbon::now();
-            $report->save();
         }
 
         if ($user->hasRole([Role::Moderator, Role::Administrator, Role::SuperAdministrator])) {
@@ -64,7 +60,13 @@ class UserController
             );
         }
 
-        $user->revokePermissionTo(Role::User->permissions());
+        $duration = $request->validated("duration");
+        $by_ip = $request->validated("by_ip");
+
+        $user->ban([
+            'ip' => $by_ip != null ? $request->ip() : null,
+            'expired_at' => $duration != null ? Carbon::now()->addDays($duration) : null,
+        ]);
 
         return response()->json(
             ["message" => "$user->name successfully banned"],
@@ -74,7 +76,7 @@ class UserController
 
     public function unban(User $user, Request $request): JsonResponse
     {
-        $user->givePermissionTo(Role::User->permissions());
+        $user->unban();
 
         return response()->json(
             ["message" => "$user->name successfully unbanned"],

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CommunityWithLegends\Http\Controllers;
 
+use Carbon\Carbon;
 use CommunityWithLegends\Http\Requests\ReportRequest;
 use CommunityWithLegends\Http\Resources\ReportResource;
 use CommunityWithLegends\Models\Comment;
@@ -61,6 +62,22 @@ class ReportController extends Controller
         $reportable->reports()->save($report);
 
         return response()->json(["message" => "The report has been submitted"], 201);
+    }
+
+    protected function close(Report $report): JsonResponse
+    {
+        $report->resolved_at = Carbon::now();
+        $report->save();
+
+        return response()->json(["message" => "The report has been submitted"], 200);
+    }
+
+    protected function reopen(Report $report): JsonResponse
+    {
+        $report->resolved_at = null;
+        $report->save();
+
+        return response()->json(["message" => "The report has been reopen"], 200);
     }
 
     protected function getReportsByType(string $type): JsonResponse
