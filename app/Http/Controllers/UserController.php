@@ -47,7 +47,7 @@ class UserController
         return UserResource::collection($users)->response();
     }
 
-    public function changeNickname(UpdateNicknameRequest $updateNicknameRequest): JsonResponse
+    public function changeName(UpdateNicknameRequest $updateNicknameRequest): JsonResponse
     {
         $user = $updateNicknameRequest->user();
 
@@ -94,6 +94,53 @@ class UserController
 
         return response()->json(
             ["message" => "$user->name successfully unbanned"],
+            Status::HTTP_OK,
+        );
+    }
+
+    public function deleteAvatar(Request $request, IdenticonHelper $identiconHelper): JsonResponse
+    {
+        $identiconHelper->create($request->user()->id, $request->user()->email);
+
+        return response()->json(
+            ["message" => "Avatar successfully deleted"],
+            Status::HTTP_OK,
+        );
+    }
+
+    public function forceAvatarChange(User $user, IdenticonHelper $identiconHelper): JsonResponse
+    {
+        if ($user->hasRole([Role::Administrator, Role::SuperAdministrator])) {
+            return response()->json(
+                [],
+                Status::HTTP_FORBIDDEN,
+            );
+        }
+
+        $identiconHelper->create($user->id, $user->email);
+
+        return response()->json(
+            ["message" => "$user->name's avatar successfully changed"],
+            Status::HTTP_OK,
+        );
+    }
+
+    public function forceNameChange(User $user, Request $request): JsonResponse
+    {
+        if ($user->hasRole([Role::Administrator, Role::SuperAdministrator])) {
+            return response()->json(
+                [],
+                Status::HTTP_FORBIDDEN,
+            );
+        }
+
+        $oldName = $user->name;
+
+        $user->name = "Renamed User";
+        $user->save();
+
+        return response()->json(
+            ["message" => "$oldName's name successfully changed"],
             Status::HTTP_OK,
         );
     }
