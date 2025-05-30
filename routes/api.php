@@ -53,12 +53,19 @@ Route::middleware(["auth:sanctum", "logout.banned"])->group(function (): void {
     Route::post("/users/{user}/ban", [UserController::class, "ban"])->middleware(Authorize::using(Permission::BanUsers));
     Route::post("/users/{user}/unban", [UserController::class, "unban"])->middleware(Authorize::using(Permission::BanUsers));
 
-    Route::delete("/users/{user}/avatar", [UserController::class, "forceAvatarChange"])->middleware(Authorize::using(Permission::AnonymizeUsers));
-    Route::delete("/users/{user}/name", [UserController::class, "forceNameChange"])->middleware(Authorize::using(Permission::AnonymizeUsers));
+    Route::delete("/users/{user}/avatar", [UserController::class, "forceAvatarChange"])->middleware(Authorize::using(Permission::ChangeUsersAvatar));
+    Route::delete("/users/{user}/name", [UserController::class, "forceNameChange"])->middleware(Authorize::using(Permission::RenameUsers));
     Route::post("/users/{user}/anonymize", [UserController::class, "anonymize"])->middleware(Authorize::using(Permission::AnonymizeUsers));
 
     Route::post("/users/{user}/grant-moderator-privileges", [UserController::class, "grantModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
     Route::post("/users/{user}/revoke-moderator-privileges", [UserController::class, "revokeModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
+
+    Route::delete('/users/{user}/hardware', [HardwareController::class, 'forceDeleteAll'])->middleware(Authorize::using(Permission::DeleteUserHardware));
+
+    Route::get('/hardware/{item}', [HardwareController::class, 'show']);
+    Route::post('/hardware', [HardwareController::class, 'store']);
+    Route::put('/hardware/{item}', [HardwareController::class, 'update']);
+    Route::delete('/hardware/{item}', [HardwareController::class, 'destroy']);
 
     Route::get("/admins", [AdministratorController::class, "index"])->middleware(Authorize::using(Permission::ManageAdministrators));
     Route::post("/admins", [AdministratorController::class, "store"])->middleware(Authorize::using(Permission::ManageAdministrators));
@@ -78,13 +85,13 @@ Route::middleware(["auth:sanctum", "logout.banned"])->group(function (): void {
     Route::post("/comments/{comment}/report", [ReportController::class, "storeComment"]);
     Route::post("/users/{user}/report", [ReportController::class, "storeUser"]);
 
-    Route::get("/reports", [ReportController::class, "index"])->middleware([Authorize::using(Permission::BanUsers), Authorize::using(Permission::DeletePosts)]);
-    Route::get("/reports/posts", [ReportController::class, "indexPosts"])->middleware(Authorize::using(Permission::DeletePosts));
-    Route::get("/reports/comments", [ReportController::class, "indexComments"])->middleware(Authorize::using(Permission::DeletePosts));
-    Route::get("/reports/users", [ReportController::class, "indexUsers"])->middleware(Authorize::using(Permission::BanUsers));
+    Route::get("/reports", [ReportController::class, "index"])->middleware([Authorize::using(Permission::BanUsers), Authorize::using(Permission::ManageReports)]);
+    Route::get("/reports/posts", [ReportController::class, "indexPosts"])->middleware(Authorize::using(Permission::ManageReports));
+    Route::get("/reports/comments", [ReportController::class, "indexComments"])->middleware(Authorize::using(Permission::ManageReports));
+    Route::get("/reports/users", [ReportController::class, "indexUsers"])->middleware(Authorize::using(Permission::ManageReports));
 
-    Route::post("/reports/{report}/reopen", [ReportController::class, "reopen"])->middleware(Authorize::using(Permission::BanUsers), Authorize::using(Permission::DeletePosts));
-    Route::post("/reports/{report}/close", [ReportController::class, "close"])->middleware(Authorize::using(Permission::BanUsers), Authorize::using(Permission::DeletePosts));
+    Route::post("/reports/{report}/reopen", [ReportController::class, "reopen"])->middleware(Authorize::using(Permission::BanUsers), Authorize::using(Permission::ManageReports));
+    Route::post("/reports/{report}/close", [ReportController::class, "close"])->middleware(Authorize::using(Permission::BanUsers), Authorize::using(Permission::ManageReports));
 
     Route::post("/games/import", [GameController::class, "import"])->middleware(Authorize::using(Permission::UpdateGames));
     Route::get("/games/import/progress", [GameController::class, "getProgress"])->middleware(Authorize::using(Permission::UpdateGames));
@@ -101,6 +108,7 @@ Route::group([], function (): void {
     Route::get("/users/search", [UserController::class, "search"]);
     Route::get("/users/{user}", [UserController::class, "show"]);
     Route::get("/users/{user}/posts", [PostController::class, "indexByUser"]);
+    Route::get('/users/{user}/hardware', [HardwareController::class, 'index']);
 
     Route::get("/twitch/auth/login/{platform}", [TwitchController::class, "loginByAuthCode"]);
     Route::get("/twitch/auth/register/{platform}", [TwitchController::class, "registerByAuthCode"]);

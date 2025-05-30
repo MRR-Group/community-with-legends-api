@@ -32,6 +32,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Collection<Post> $posts
  * @property Collection<Comment> $comments
  * @property Collection<Reaction> $reactions
+ * @property Collection<HardwareItem> $hardware
  * @property Collection<Report> $reports
  */
 class User extends Authenticatable
@@ -93,6 +94,11 @@ class User extends Authenticatable
     protected function avatar(): Attribute
     {
         return Attribute::get(fn(): string => IdenticonHelper::url($this->id));
+    }
+
+    public function hardware(): HasMany
+    {
+        return $this->hasMany(HardwareItem::class);
     }
 
     protected function casts(): array
