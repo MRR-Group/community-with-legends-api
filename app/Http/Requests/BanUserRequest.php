@@ -26,7 +26,7 @@ class BanUserRequest extends FormRequest
     {
         return [
             "by_ip" => "nullable|boolean",
-            "ban_duration" => "nullable|int"
+            "ban_duration" => "nullable|int",
         ];
     }
 }

@@ -51,7 +51,7 @@ class UserController
     {
         $user = $updateNicknameRequest->user();
 
-        $user->name = $updateNicknameRequest->validated()['name'];
+        $user->name = $updateNicknameRequest->validated()["name"];
 
         $user->save();
 
