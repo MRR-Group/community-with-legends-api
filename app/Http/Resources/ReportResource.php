@@ -56,7 +56,7 @@ class ReportResource extends JsonResource
 
         $author = $reportable?->user;
 
-        if ($author && empty($author->isBanned())) {
+        if ($author && $author->isBanned()) {
             $statuses[] = "user_banned";
         }
 
