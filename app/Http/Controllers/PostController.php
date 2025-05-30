@@ -50,6 +50,7 @@ class PostController extends Controller
     {
         $posts = Post::query()
             ->with(["user", "tags", "game", "comments.user"])
+            ->whereHas("user.permissions")
             ->orderBy("created_at", "desc")
             ->paginate(10);
 
@@ -60,6 +61,7 @@ class PostController extends Controller
     {
         $posts = $user->posts()
             ->with(["user", "tags", "game", "comments.user"])
+            ->whereHas("user.permissions")
             ->orderBy("created_at", "desc")
             ->paginate(10);
 
@@ -71,6 +73,7 @@ class PostController extends Controller
         $posts = Post::query()
             ->with(["user", "tags", "game", "comments.user"])
             ->where("created_at", ">", Carbon::now()->subDays(7))
+            ->whereHas("user.permissions")
             ->orderBy("user_reacted", "desc")
             ->orderBy("created_at", "desc")
             ->paginate(10);
@@ -96,6 +99,7 @@ class PostController extends Controller
 
         $posts = $query
             ->with(["user", "tags", "game", "comments.user"])
+            ->whereHas("user.permissions")
             ->orderBy("created_at", "desc")
             ->paginate(10);
 

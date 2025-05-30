@@ -24,7 +24,9 @@ class PostResource extends JsonResource
             "asset" => PostAssetResource::make($this->asset),
             "reactions" => $this->reactions->count(),
             "user_reacted" => $request->user() ? $this->reactions->contains("user_id", $request->user()->id) : false,
-            "comments" => CommentResource::collection($this->comments),
+            "comments" => CommentResource::collection(
+                $this->comments->filter(fn($comment) => $comment->user && $comment->user->permissions()->exists()),
+            ),
         ];
     }
 }
