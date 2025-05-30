@@ -1,7 +1,10 @@
 <?php
 
-return [
+declare(strict_types=1);
 
+use Mchev\Banhammer\Models\Ban;
+
+return [
     /*
     |--------------------------------------------------------------------------
     | Table Name
@@ -12,7 +15,7 @@ return [
     |
     */
 
-    'table' => 'bans',
+    "table" => "bans",
 
     /*
     |--------------------------------------------------------------------------
@@ -23,7 +26,7 @@ return [
     |
      */
 
-    'model' => \Mchev\Banhammer\Models\Ban::class,
+    "model" => Ban::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -36,7 +39,7 @@ return [
     |
     */
 
-    'fallback_url' => null, // Examples: null (default), "/oops", "/login"
+    "fallback_url" => null, // Examples: null (default), "/oops", "/login"
 
     /*
     |--------------------------------------------------------------------------
@@ -47,10 +50,10 @@ return [
     |
     */
 
-    'messages' => [
-        'user' => 'Your account has been banned.',
-        'ip' => 'Access from your IP address is restricted.',
-        'country' => 'Access from your country is restricted.',
+    "messages" => [
+        "user" => "Your account has been banned.",
+        "ip" => "Access from your IP address is restricted.",
+        "country" => "Access from your country is restricted.",
     ],
 
     /*
@@ -65,7 +68,7 @@ return [
     |
     */
 
-    'block_by_country' => env('BANHAMMER_BLOCK_BY_COUNTRY', false),
+    "block_by_country" => env("BANHAMMER_BLOCK_BY_COUNTRY", false),
 
     /*
     |--------------------------------------------------------------------------
@@ -77,7 +80,7 @@ return [
     |
     */
 
-    'blocked_countries' => [], // Examples: ['US', 'CA', 'GB', 'FR', 'ES', 'DE']
+    "blocked_countries" => [], // Examples: ['US', 'CA', 'GB', 'FR', 'ES', 'DE']
 
     /*
     |--------------------------------------------------------------------------
@@ -90,6 +93,5 @@ return [
     | whether to block a request based on the user's country.
     |
     */
-    'cache_duration' => 120, // Duration in minutes
-
+    "cache_duration" => 120, // Duration in minutes
 ];
