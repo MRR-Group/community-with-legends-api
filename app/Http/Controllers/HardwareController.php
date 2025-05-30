@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
+namespace CommunityWithLegends\Http\Controllers;
+
 use CommunityWithLegends\Enums\Role;
-use CommunityWithLegends\Http\Controllers\Controller;
 use CommunityWithLegends\Http\Requests\HardwareItemRequest;
 use CommunityWithLegends\Http\Resources\HardwareItemResource;
 use CommunityWithLegends\Models\HardwareItem;
