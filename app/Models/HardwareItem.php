@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class HardwareItem extends Model
 {
-    protected $fillable = ['user_id', 'title', 'value'];
+    protected $fillable = ["user_id", "title", "value"];
 
     public function user(): BelongsTo
     {

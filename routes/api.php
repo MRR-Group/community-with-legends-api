@@ -60,12 +60,12 @@ Route::middleware(["auth:sanctum", "logout.banned"])->group(function (): void {
     Route::post("/users/{user}/grant-moderator-privileges", [UserController::class, "grantModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
     Route::post("/users/{user}/revoke-moderator-privileges", [UserController::class, "revokeModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
 
-    Route::delete('/users/{user}/hardware', [HardwareController::class, 'forceDeleteAll'])->middleware(Authorize::using(Permission::DeleteUserHardware));
+    Route::delete("/users/{user}/hardware", [HardwareController::class, "forceDeleteAll"])->middleware(Authorize::using(Permission::DeleteUserHardware));
 
-    Route::get('/hardware/{item}', [HardwareController::class, 'show']);
-    Route::post('/hardware', [HardwareController::class, 'store']);
-    Route::put('/hardware/{item}', [HardwareController::class, 'update']);
-    Route::delete('/hardware/{item}', [HardwareController::class, 'destroy']);
+    Route::get("/hardware/{item}", [HardwareController::class, "show"]);
+    Route::post("/hardware", [HardwareController::class, "store"]);
+    Route::put("/hardware/{item}", [HardwareController::class, "update"]);
+    Route::delete("/hardware/{item}", [HardwareController::class, "destroy"]);
 
     Route::get("/admins", [AdministratorController::class, "index"])->middleware(Authorize::using(Permission::ManageAdministrators));
     Route::post("/admins", [AdministratorController::class, "store"])->middleware(Authorize::using(Permission::ManageAdministrators));
@@ -108,7 +108,7 @@ Route::group([], function (): void {
     Route::get("/users/search", [UserController::class, "search"]);
     Route::get("/users/{user}", [UserController::class, "show"]);
     Route::get("/users/{user}/posts", [PostController::class, "indexByUser"]);
-    Route::get('/users/{user}/hardware', [HardwareController::class, 'index']);
+    Route::get("/users/{user}/hardware", [HardwareController::class, "index"]);
 
     Route::get("/twitch/auth/login/{platform}", [TwitchController::class, "loginByAuthCode"]);
     Route::get("/twitch/auth/register/{platform}", [TwitchController::class, "registerByAuthCode"]);

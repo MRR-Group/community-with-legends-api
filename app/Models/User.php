@@ -91,14 +91,14 @@ class User extends Authenticatable
         return $this->morphMany(Report::class, "reportable");
     }
 
-    protected function avatar(): Attribute
-    {
-        return Attribute::get(fn(): string => IdenticonHelper::url($this->id));
-    }
-
     public function hardware(): HasMany
     {
         return $this->hasMany(HardwareItem::class);
+    }
+
+    protected function avatar(): Attribute
+    {
+        return Attribute::get(fn(): string => IdenticonHelper::url($this->id));
     }
 
     protected function casts(): array

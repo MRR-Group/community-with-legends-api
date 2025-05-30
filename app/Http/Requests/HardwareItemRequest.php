@@ -20,8 +20,8 @@ class HardwareItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'min:1', 'max:40'],
-            'value' => ['required', 'string', 'min:1', 'max:60'],
+            "title" => ["required", "string", "min:1", "max:40"],
+            "value" => ["required", "string", "min:1", "max:60"],
         ];
     }
 }

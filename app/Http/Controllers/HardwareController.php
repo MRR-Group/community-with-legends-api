@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Http\Controllers\Controller;
 use CommunityWithLegends\Http\Requests\HardwareItemRequest;
@@ -35,7 +37,7 @@ class HardwareController extends Controller
         $user = $request->user();
 
         if ($item->user->isNot($user)) {
-            return response()->json(['message' => 'Unauthorized'], Status::HTTP_FORBIDDEN);
+            return response()->json(["message" => "Unauthorized"], Status::HTTP_FORBIDDEN);
         }
 
         $item->update($request->validated());
@@ -48,12 +50,12 @@ class HardwareController extends Controller
         $user = $request->user();
 
         if ($item->user->isNot($user)) {
-            return response()->json(['message' => 'Unauthorized'], Status::HTTP_FORBIDDEN);
+            return response()->json(["message" => "Unauthorized"], Status::HTTP_FORBIDDEN);
         }
 
         $item->delete();
 
-        return response()->json(['message' => "$item->title deleted"]);
+        return response()->json(["message" => "$item->title deleted"]);
     }
 
     public function forceDeleteAll(User $user)
@@ -64,6 +66,6 @@ class HardwareController extends Controller
 
         $user->hardware()->delete();
 
-        return response()->json(['message' => 'All hardware deleted']);
+        return response()->json(["message" => "All hardware deleted"]);
     }
 }
