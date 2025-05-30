@@ -6,6 +6,7 @@ namespace CommunityWithLegends\Http\Controllers\Auth;
 
 use CommunityWithLegends\Http\Controllers\Controller;
 use CommunityWithLegends\Http\Requests\LoginRequest;
+use Illuminate\Http\Client\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response as Status;
@@ -23,6 +24,9 @@ class LoginController extends Controller
         }
 
         $user = Auth::user();
+        $user->last_login_ip = $loginRequest->ip();
+        $user->save();
+
         $token = $user->createToken("api-token")->plainTextToken;
 
         return response()->json([
@@ -32,9 +36,11 @@ class LoginController extends Controller
         ], Status::HTTP_OK);
     }
 
-    public function refresh(): JsonResponse
+    public function refresh(Request $request): JsonResponse
     {
         $user = Auth::user();
+        $user->last_login_ip = $request->ip();
+        $user->save();
 
         return response()->json([
             "message" => "success",
