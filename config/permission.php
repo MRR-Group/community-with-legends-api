@@ -53,9 +53,13 @@ return [
         Permission::AnonymizeUsers->value,
         Permission::ViewUsers->value,
         Permission::DeletePosts->value,
+        Permission::DeleteUserHardware->value,
         Permission::ManageAdministrators->value,
         Permission::ManageModerators->value,
+        Permission::ManageReports->value,
         Permission::UpdateGames->value,
+        Permission::RenameUsers->value,
+        Permission::ChangeUsersAvatar->value,
     ],
     "permission_roles" => [
         Role::SuperAdministrator->value => [
@@ -69,6 +73,10 @@ return [
             Permission::MakeComment->value,
             Permission::ReactToPost->value,
             Permission::UpdateGames->value,
+            Permission::DeleteUserHardware->value,
+            Permission::ManageReports->value,
+            Permission::RenameUsers->value,
+            Permission::ChangeUsersAvatar->value,
         ],
         Role::Administrator->value => [
             Permission::AnonymizeUsers->value,
@@ -80,6 +88,10 @@ return [
             Permission::MakeComment->value,
             Permission::ReactToPost->value,
             Permission::UpdateGames->value,
+            Permission::DeleteUserHardware->value,
+            Permission::ManageReports->value,
+            Permission::RenameUsers->value,
+            Permission::ChangeUsersAvatar->value,
         ],
         Role::Moderator->value => [
             Permission::ViewUsers->value,
@@ -88,6 +100,10 @@ return [
             Permission::CreatePost->value,
             Permission::MakeComment->value,
             Permission::ReactToPost->value,
+            Permission::DeleteUserHardware->value,
+            Permission::ManageReports->value,
+            Permission::RenameUsers->value,
+            Permission::ChangeUsersAvatar->value,
         ],
         Role::User->value => [
             Permission::CreatePost->value,

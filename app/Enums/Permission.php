@@ -12,6 +12,10 @@ enum Permission: string
     case BanUsers = "banUsers";
     case ViewUsers = "viewUsers";
     case DeletePosts = "deletePosts";
+    case ManageReports = "manageReports";
+    case RenameUsers = "renameUsers";
+    case ChangeUsersAvatar = "changeUsersAvatar";
+    case DeleteUserHardware = "deleteUserHardware";
     case AnonymizeUsers = "anonymizeUsers";
     case ManageAdministrators = "manageAdministrators";
     case ManageModerators = "manageModerators";

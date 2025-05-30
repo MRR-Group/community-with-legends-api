@@ -32,6 +32,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Collection<Post> $posts
  * @property Collection<Comment> $comments
  * @property Collection<Reaction> $reactions
+ * @property Collection<HardwareItem> $hardware
  * @property Collection<Report> $reports
  */
 class User extends Authenticatable
@@ -88,6 +89,11 @@ class User extends Authenticatable
     public function reports(): MorphMany
     {
         return $this->morphMany(Report::class, "reportable");
+    }
+
+    public function hardware(): HasMany
+    {
+        return $this->hasMany(HardwareItem::class);
     }
 
     protected function avatar(): Attribute
