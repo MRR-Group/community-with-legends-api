@@ -28,6 +28,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon $email_verified_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property ?string $last_login_ip
  * @property Collection<Post> $posts
  * @property Collection<Comment> $comments
  * @property Collection<Reaction> $reactions

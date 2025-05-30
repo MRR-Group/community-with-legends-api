@@ -78,7 +78,7 @@ class UserController
         $by_ip = $request->boolean("by_ip");
 
         $user->ban([
-            "ip" => $by_ip ? $request->ip() : null,
+            "ip" => $by_ip ? $user->last_login_ip : null,
             "expired_at" => $duration !== null ? Carbon::now()->addDays($duration) : null,
         ]);
 
