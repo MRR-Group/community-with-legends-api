@@ -76,8 +76,9 @@ Route::middleware(["auth:sanctum", "logout.banned"])->group(function (): void {
     Route::get("/reports/posts", [ReportController::class, "indexPosts"])->middleware(Authorize::using(Permission::DeletePosts));
     Route::get("/reports/comments", [ReportController::class, "indexComments"])->middleware(Authorize::using(Permission::DeletePosts));
     Route::get("/reports/users", [ReportController::class, "indexUsers"])->middleware(Authorize::using(Permission::BanUsers));
-    Route::get("/reports/{report}/reopen", [ReportController::class, "reopen"])->middleware(Authorize::using(Permission::BanUsers), Authorize::using(Permission::DeletePosts));
-    Route::get("/reports/{report}/close", [ReportController::class, "close"])->middleware(Authorize::using(Permission::BanUsers), Authorize::using(Permission::DeletePosts));
+
+    Route::post("/reports/{report}/reopen", [ReportController::class, "reopen"])->middleware(Authorize::using(Permission::BanUsers), Authorize::using(Permission::DeletePosts));
+    Route::post("/reports/{report}/close", [ReportController::class, "close"])->middleware(Authorize::using(Permission::BanUsers), Authorize::using(Permission::DeletePosts));
 
     Route::post("/games/import", [GameController::class, "import"])->middleware(Authorize::using(Permission::UpdateGames));
     Route::get("/games/import/progress", [GameController::class, "getProgress"])->middleware(Authorize::using(Permission::UpdateGames));
