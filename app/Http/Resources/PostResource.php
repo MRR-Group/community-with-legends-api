@@ -25,7 +25,7 @@ class PostResource extends JsonResource
             "reactions" => $this->reactions->count(),
             "user_reacted" => $request->user() ? $this->reactions->contains("user_id", $request->user()->id) : false,
             "comments" => CommentResource::collection(
-                $this->comments->filter(fn($comment) => $comment->user && $comment->user->permissions()->exists()),
+                $this->comments()->whereHas('user', fn($query) => $query->whereHas('permissions'))->get(),
             ),
         ];
     }
