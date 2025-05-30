@@ -7,6 +7,7 @@ namespace CommunityWithLegends\Http\Controllers;
 use Carbon\Carbon;
 use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Helpers\IdenticonHelper;
+use CommunityWithLegends\Http\Requests\UpdateNicknameRequest;
 use CommunityWithLegends\Http\Resources\UserResource;
 use CommunityWithLegends\Models\Report;
 use CommunityWithLegends\Models\User;
@@ -46,15 +47,24 @@ class UserController
         return UserResource::collection($users)->response();
     }
 
+    public function changeName(UpdateNicknameRequest $updateNicknameRequest): JsonResponse
+    {
+        $user = $updateNicknameRequest->user();
+
+        $user->name = $updateNicknameRequest->validated()["name"];
+
+        $user->save();
+
+        return response()->json(
+            ["message" => "Nickname successfully changed"],
+            Status::HTTP_OK,
+        );
+    }
+
     public function ban(User $user, Request $request): JsonResponse
     {
         if ($user->reports->isEmpty()) {
             $user->reports()->save(new Report(["user_id" => auth()->id()]));
-        }
-
-        foreach ($user->reports as $report) {
-            $report->resolved_at = Carbon::now();
-            $report->save();
         }
 
         if ($user->hasRole([Role::Moderator, Role::Administrator, Role::SuperAdministrator])) {
@@ -64,7 +74,13 @@ class UserController
             );
         }
 
-        $user->revokePermissionTo(Role::User->permissions());
+        $duration = $request->integer("duration", null);
+        $by_ip = $request->boolean("by_ip");
+
+        $user->ban([
+            "ip" => $by_ip ? $request->ip() : null,
+            "expired_at" => $duration !== null ? Carbon::now()->addDays($duration) : null,
+        ]);
 
         return response()->json(
             ["message" => "$user->name successfully banned"],
@@ -74,10 +90,57 @@ class UserController
 
     public function unban(User $user, Request $request): JsonResponse
     {
-        $user->givePermissionTo(Role::User->permissions());
+        $user->unban();
 
         return response()->json(
             ["message" => "$user->name successfully unbanned"],
+            Status::HTTP_OK,
+        );
+    }
+
+    public function deleteAvatar(Request $request, IdenticonHelper $identiconHelper): JsonResponse
+    {
+        $identiconHelper->create($request->user()->id, $request->user()->email);
+
+        return response()->json(
+            ["message" => "Avatar successfully deleted"],
+            Status::HTTP_OK,
+        );
+    }
+
+    public function forceAvatarChange(User $user, IdenticonHelper $identiconHelper): JsonResponse
+    {
+        if ($user->hasRole([Role::Administrator, Role::SuperAdministrator])) {
+            return response()->json(
+                [],
+                Status::HTTP_FORBIDDEN,
+            );
+        }
+
+        $identiconHelper->create($user->id, $user->email);
+
+        return response()->json(
+            ["message" => "$user->name's avatar successfully changed"],
+            Status::HTTP_OK,
+        );
+    }
+
+    public function forceNameChange(User $user, Request $request): JsonResponse
+    {
+        if ($user->hasRole([Role::Administrator, Role::SuperAdministrator])) {
+            return response()->json(
+                [],
+                Status::HTTP_FORBIDDEN,
+            );
+        }
+
+        $oldName = $user->name;
+
+        $user->name = "Renamed User";
+        $user->save();
+
+        return response()->json(
+            ["message" => "$oldName's name successfully changed"],
             Status::HTTP_OK,
         );
     }

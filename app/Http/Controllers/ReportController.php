@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CommunityWithLegends\Http\Controllers;
 
+use Carbon\Carbon;
 use CommunityWithLegends\Http\Requests\ReportRequest;
 use CommunityWithLegends\Http\Resources\ReportResource;
 use CommunityWithLegends\Models\Comment;
@@ -51,6 +52,22 @@ class ReportController extends Controller
             ->paginate(20);
 
         return ReportResource::collection($reports)->response();
+    }
+
+    public function close(Report $report): JsonResponse
+    {
+        $report->resolved_at = Carbon::now();
+        $report->save();
+
+        return response()->json(["message" => "The report has been resolved"], 200);
+    }
+
+    public function reopen(Report $report): JsonResponse
+    {
+        $report->resolved_at = null;
+        $report->save();
+
+        return response()->json(["message" => "The report has been reopened"], 200);
     }
 
     protected function storeReport(ReportRequest $request, $reportable): JsonResponse

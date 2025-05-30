@@ -50,6 +50,7 @@ class PostController extends Controller
     {
         $posts = Post::query()
             ->with(["user", "tags", "game", "comments.user"])
+            ->whereHas("user", fn($query) => $query->notBanned())
             ->orderBy("created_at", "desc")
             ->paginate(10);
 
@@ -60,6 +61,7 @@ class PostController extends Controller
     {
         $posts = $user->posts()
             ->with(["user", "tags", "game", "comments.user"])
+            ->whereHas("user", fn($query) => $query->notBanned())
             ->orderBy("created_at", "desc")
             ->paginate(10);
 
@@ -71,6 +73,7 @@ class PostController extends Controller
         $posts = Post::query()
             ->with(["user", "tags", "game", "comments.user"])
             ->where("created_at", ">", Carbon::now()->subDays(7))
+            ->whereHas("user", fn($query) => $query->notBanned())
             ->orderBy("user_reacted", "desc")
             ->orderBy("created_at", "desc")
             ->paginate(10);
@@ -96,6 +99,7 @@ class PostController extends Controller
 
         $posts = $query
             ->with(["user", "tags", "game", "comments.user"])
+            ->whereHas("user", fn($query) => $query->notBanned())
             ->orderBy("created_at", "desc")
             ->paginate(10);
 
@@ -150,12 +154,7 @@ class PostController extends Controller
     public function remove(Post $post): JsonResponse
     {
         if ($post->reports->isEmpty()) {
-            $post->reports()->save(new Report(["user_id" => auth()->id(), "resolved_at" => Carbon::now()]));
-        }
-
-        foreach ($post->reports as $report) {
-            $report->resolved_at = Carbon::now();
-            $report->save();
+            $post->reports()->save(new Report(["user_id" => auth()->id()]));
         }
 
         $post->delete();
@@ -169,11 +168,6 @@ class PostController extends Controller
     {
         if ($comment->reports->isEmpty()) {
             $comment->reports()->save(new Report(["user_id" => auth()->id()]));
-        }
-
-        foreach ($comment->reports as $report) {
-            $report->resolved_at = Carbon::now();
-            $report->save();
         }
 
         $comment->delete();
