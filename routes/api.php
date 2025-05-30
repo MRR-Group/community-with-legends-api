@@ -10,6 +10,7 @@ use CommunityWithLegends\Http\Controllers\Auth\RegisterController;
 use CommunityWithLegends\Http\Controllers\ChangeAvatarController;
 use CommunityWithLegends\Http\Controllers\CommentController;
 use CommunityWithLegends\Http\Controllers\GameController;
+use CommunityWithLegends\Http\Controllers\HardwareController;
 use CommunityWithLegends\Http\Controllers\PostController;
 use CommunityWithLegends\Http\Controllers\ReportController;
 use CommunityWithLegends\Http\Controllers\ResetPasswordController;
