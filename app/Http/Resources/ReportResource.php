@@ -40,17 +40,15 @@ class ReportResource extends JsonResource
     {
         $statuses = [];
 
-        if ($this->resolved_at === null) {
-            return ["pending"];
-        }
-
         if ($this->resolved_at) {
             $statuses[] = "resolved";
+        } else {
+            $statuses[] = "pending";
         }
 
         $reportable = $this->reportable;
 
-        if ($this->reportable_type === User::class && $reportable?->isBanned) {
+        if ($this->reportable_type === User::class && $reportable?->isBanned()) {
             $statuses[] = "user_banned";
 
             return $statuses;
@@ -58,7 +56,7 @@ class ReportResource extends JsonResource
 
         $author = $reportable?->user;
 
-        if ($author && empty($author->isBanned)) {
+        if ($author && empty($author->isBanned())) {
             $statuses[] = "user_banned";
         }
 

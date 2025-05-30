@@ -54,6 +54,22 @@ class ReportController extends Controller
         return ReportResource::collection($reports)->response();
     }
 
+    public function close(Report $report): JsonResponse
+    {
+        $report->resolved_at = Carbon::now();
+        $report->save();
+
+        return response()->json(["message" => "The report has been resolved"], 200);
+    }
+
+    public function reopen(Report $report): JsonResponse
+    {
+        $report->resolved_at = null;
+        $report->save();
+
+        return response()->json(["message" => "The report has been reopen"], 200);
+    }
+
     protected function storeReport(ReportRequest $request, $reportable): JsonResponse
     {
         $report = new Report($request->validated());
@@ -62,22 +78,6 @@ class ReportController extends Controller
         $reportable->reports()->save($report);
 
         return response()->json(["message" => "The report has been submitted"], 201);
-    }
-
-    protected function close(Report $report): JsonResponse
-    {
-        $report->resolved_at = Carbon::now();
-        $report->save();
-
-        return response()->json(["message" => "The report has been submitted"], 200);
-    }
-
-    protected function reopen(Report $report): JsonResponse
-    {
-        $report->resolved_at = null;
-        $report->save();
-
-        return response()->json(["message" => "The report has been reopen"], 200);
     }
 
     protected function getReportsByType(string $type): JsonResponse

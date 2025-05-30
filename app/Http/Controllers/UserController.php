@@ -7,7 +7,6 @@ namespace CommunityWithLegends\Http\Controllers;
 use Carbon\Carbon;
 use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Helpers\IdenticonHelper;
-use CommunityWithLegends\Http\Requests\BanUserRequest;
 use CommunityWithLegends\Http\Resources\UserResource;
 use CommunityWithLegends\Models\Report;
 use CommunityWithLegends\Models\User;
@@ -47,7 +46,7 @@ class UserController
         return UserResource::collection($users)->response();
     }
 
-    public function ban(User $user, BanUserRequest $request): JsonResponse
+    public function ban(User $user, Request $request): JsonResponse
     {
         if ($user->reports->isEmpty()) {
             $user->reports()->save(new Report(["user_id" => auth()->id()]));
@@ -60,12 +59,12 @@ class UserController
             );
         }
 
-        $duration = $request->validated("duration");
-        $by_ip = $request->validated("by_ip");
+        $duration = $request->integer("duration", null);
+        $by_ip = $request->boolean("by_ip");
 
         $user->ban([
-            'ip' => $by_ip != null ? $request->ip() : null,
-            'expired_at' => $duration != null ? Carbon::now()->addDays($duration) : null,
+            "ip" => $by_ip !== null ? $request->ip() : null,
+            "expired_at" => $duration !== null ? Carbon::now()->addDays($duration) : null,
         ]);
 
         return response()->json(

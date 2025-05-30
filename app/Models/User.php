@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use CommunityWithLegends\Enums\Permission;
 use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Notifications\PasswordResetCodeNotification;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
