@@ -67,7 +67,7 @@ class ReportController extends Controller
         $report->resolved_at = null;
         $report->save();
 
-        return response()->json(["message" => "The report has been reopen"], 200);
+        return response()->json(["message" => "The report has been reopened"], 200);
     }
 
     protected function storeReport(ReportRequest $request, $reportable): JsonResponse
