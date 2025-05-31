@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CommunityWithLegends\Http\Controllers;
 
 use CommunityWithLegends\Http\Requests\CreateCommentRequest;
+use CommunityWithLegends\Http\Resources\CommentResource;
 use CommunityWithLegends\Models\Comment;
 use CommunityWithLegends\Models\Post;
 use Illuminate\Http\JsonResponse;
@@ -25,6 +26,12 @@ class CommentController extends Controller
 
         return response()->json([
             "message" => "Comment has been created",
+            "id" => $comment->id,
         ], Status::HTTP_CREATED);
+    }
+
+    public function show(Comment $comment): JsonResponse
+    {
+        return CommentResource::make($comment)->response();
     }
 }

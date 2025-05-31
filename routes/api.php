@@ -137,6 +137,7 @@ Route::group([], function (): void {
     Route::get("/posts/trending", [PostController::class, "getTrendingPosts"]);
     Route::get("/posts/filter", [PostController::class, "getFilteredPosts"]);
     Route::get("/posts/{post}", [PostController::class, "show"]);
+    Route::get("/comments/{comment}", [CommentController::class, "show"]);
 
     Route::get("/games", [GameController::class, "index"]);
     Route::get("/games/search", [GameController::class, "search"]);
