@@ -17,6 +17,8 @@ use CommunityWithLegends\Http\Controllers\ResetPasswordController;
 use CommunityWithLegends\Http\Controllers\TagController;
 use CommunityWithLegends\Http\Controllers\TwitchController;
 use CommunityWithLegends\Http\Controllers\UserController;
+use CommunityWithLegends\Http\Controllers\UserGameController;
+use CommunityWithLegends\Http\Controllers\UserProposalController;
 use CommunityWithLegends\Models\User;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Http\Request;
@@ -58,6 +60,18 @@ Route::middleware(["auth:sanctum", "logout.banned"])->group(function (): void {
     Route::delete("/users/{user}/name", [UserController::class, "forceNameChange"])->middleware(Authorize::using(Permission::RenameUsers));
     Route::post("/users/{user}/anonymize", [UserController::class, "anonymize"])->middleware(Authorize::using(Permission::AnonymizeUsers));
     Route::delete("/users/{user}/hardware", [HardwareController::class, "forceDeleteAll"])->middleware(Authorize::using(Permission::DeleteUserHardware));
+    Route::post("/users/{user}/games/{game}/propose", [UserProposalController::class, "store"]);
+
+    Route::post("/user-games", [UserGameController::class, "store"]);
+    Route::post("/user-games/{userGame}", [UserGameController::class, "update"]);
+    Route::delete("/user-games/{userGame}", [UserGameController::class, "destroy"]);
+
+    Route::delete("/proposals/{gameProposal}", [UserProposalController::class, "destroy"]);
+    Route::post("/proposals/{gameProposal}/accept", [UserProposalController::class, "accept"]);
+    Route::post("/proposals/{gameProposal}/reject", [UserProposalController::class, "reject"]);
+    Route::post("/proposals/{gameProposal}/like", [UserProposalController::class, "like"]);
+    Route::post("/proposals/{gameProposal}/dislike", [UserProposalController::class, "dislike"]);
+    Route::delete("/proposals/{gameProposal}/like", [UserProposalController::class, "removeReaction"]);
 
     Route::post("/users/{user}/grant-moderator-privileges", [UserController::class, "grantModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
     Route::post("/users/{user}/revoke-moderator-privileges", [UserController::class, "revokeModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
@@ -109,6 +123,11 @@ Route::group([], function (): void {
     Route::get("/users/{user}", [UserController::class, "show"]);
     Route::get("/users/{user}/posts", [PostController::class, "indexByUser"]);
     Route::get("/users/{user}/hardware", [HardwareController::class, "index"]);
+    Route::get("/users/{user}/games", [UserGameController::class, "index"]);
+    Route::get("/users/{user}/proposals", [UserProposalController::class, "index"]);
+
+    Route::get("/user-games/{userGame}", [UserGameController::class, "show"]);
+    Route::get("/proposals/{gameProposal}", [UserProposalController::class, "show"]);
 
     Route::get("/twitch/auth/login/{platform}", [TwitchController::class, "loginByAuthCode"]);
     Route::get("/twitch/auth/register/{platform}", [TwitchController::class, "registerByAuthCode"]);
