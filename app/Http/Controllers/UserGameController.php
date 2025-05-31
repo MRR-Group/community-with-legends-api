@@ -40,7 +40,10 @@ class UserGameController extends Controller
             'status' => $data['status'],
         ]);
 
-        return response()->json(new UserGameResource($userGame), Status::HTTP_CREATED);
+        return response()->json([
+            "message" => "Game has been added",
+            "id" => $userGame->id,
+        ], Status::HTTP_CREATED);
     }
 
     public function update(UserGame $userGame, UserGameRequest $request): JsonResponse
@@ -59,7 +62,7 @@ class UserGameController extends Controller
             'status' => $data['status'],
         ]);
 
-        return response()->json(new UserGameResource($userGame), Status::HTTP_OK);
+        return response()->json(["Game has been edited"], Status::HTTP_OK);
     }
 
     public function destroy(UserGame $userGame): JsonResponse

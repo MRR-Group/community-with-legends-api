@@ -33,6 +33,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Collection<Comment> $comments
  * @property Collection<Reaction> $reactions
  * @property Collection<HardwareItem> $hardware
+ * @property Collection<GameProposal> $gameProposals
+ * @property Collection<UserGame> $userGames
  * @property Collection<Report> $reports
  */
 class User extends Authenticatable
@@ -79,6 +81,16 @@ class User extends Authenticatable
     public function reactions(): HasMany
     {
         return $this->hasMany(Reaction::class);
+    }
+
+    public function userGames(): HasMany
+    {
+        return $this->hasMany(UserGame::class);
+    }
+
+    public function gameProposals(): HasMany
+    {
+        return $this->hasMany(GameProposal::class);
     }
 
     public function sendPasswordResetNotification($token): void
