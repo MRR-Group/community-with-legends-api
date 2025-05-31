@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Models;
 
 use Carbon\Carbon;
@@ -29,10 +31,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class GameProposal extends Model
 {
     protected $fillable = [
-        'user_id',
-        'target_user_id',
-        'game_id',
-        'status',
+        "user_id",
+        "target_user_id",
+        "game_id",
+        "status",
     ];
 
     public function user(): BelongsTo
@@ -42,7 +44,7 @@ class GameProposal extends Model
 
     public function targetUser(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'target_user_id');
+        return $this->belongsTo(User::class, "target_user_id");
     }
 
     public function game(): BelongsTo
@@ -55,23 +57,11 @@ class GameProposal extends Model
         return $this->hasMany(GameProposalVote::class);
     }
 
-    protected function votesCount(): Attribute
-    {
-        return Attribute::get(fn() => $this->votes->sum('value'));
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'status' => GameProposalStatus::class,
-        ];
-    }
-
     public function scopeAlreadyProposed($query, int $userId, int $targetUserId, int $gameId)
     {
-        return $query->where('user_id', $userId)
-            ->where('target_user_id', $targetUserId)
-            ->where('game_id', $gameId);
+        return $query->where("user_id", $userId)
+            ->where("target_user_id", $targetUserId)
+            ->where("game_id", $gameId);
     }
 
     public static function hasUserAlreadyProposed(int $userId, int $targetUserId, int $gameId): bool
@@ -82,12 +72,24 @@ class GameProposal extends Model
     public static function userHasGame(User $user, int $gameId): bool
     {
         return $user->userGames()
-            ->where('game_id', $gameId)
-            ->whereIn('status', [
+            ->where("game_id", $gameId)
+            ->whereIn("status", [
                 UserGameStatus::Played->value,
                 UserGameStatus::Playing->value,
-                UserGameStatus::ToPlay->value
+                UserGameStatus::ToPlay->value,
             ])
             ->exists();
+    }
+
+    protected function votesCount(): Attribute
+    {
+        return Attribute::get(fn() => $this->votes->sum("value"));
+    }
+
+    protected function casts(): array
+    {
+        return [
+            "status" => GameProposalStatus::class,
+        ];
     }
 }

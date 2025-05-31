@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -17,20 +19,20 @@ class GameProposalResource extends JsonResource
         $userVote = null;
         $user = auth()->user();
 
-        if ($user && $this->relationLoaded('votes')) {
-            $vote = $this->votes->firstWhere('user_id', $user->id);
-            $userVote = $vote?->vote_type?->value;
+        if ($user) {
+            $vote = $this->votes->firstWhere("user_id", $user->id);
+            $userVote = $vote !== null;
         }
 
         return [
-            'id' => $this->id,
-            'user' => UserResource::make($this->user),
-            'targetUser' => UserResource::make($this->target_user),
-            'game' => $this->GameResource::make($this->game),
-            'status' => $this->status,
-            'created_at' => $this->created_at,
-            'votes' => $this->votesCount,
-            'user_vote' => $userVote,
+            "id" => $this->id,
+            "user" => UserResource::make($this->user),
+            "targetUser" => UserResource::make($this->targetUser),
+            "game" => GameResource::make($this->game),
+            "status" => $this->status,
+            "created_at" => $this->created_at,
+            "votes" => $this->votesCount,
+            "user_vote" => $userVote,
         ];
     }
 }

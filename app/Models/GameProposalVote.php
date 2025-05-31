@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Models;
 
 use Carbon\Carbon;
@@ -22,9 +24,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class GameProposalVote extends Model
 {
     protected $fillable = [
-        'user_id',
-        'game_proposal_id',
-        'vote_type',
+        "user_id",
+        "game_proposal_id",
+        "vote_type",
     ];
 
     public function user(): BelongsTo
@@ -34,20 +36,18 @@ class GameProposalVote extends Model
 
     public function proposal(): BelongsTo
     {
-        return $this->belongsTo(GameProposal::class, 'game_proposal_id');
+        return $this->belongsTo(GameProposal::class, "game_proposal_id");
     }
 
     protected function value(): Attribute
     {
-        return Attribute::get(function (): int {
-            return $this->vote_type === GameProposalVoteType::Up ? 1 : -1;
-        });
+        return Attribute::get(fn(): int => $this->vote_type === GameProposalVoteType::Up ? 1 : -1);
     }
 
     protected function casts(): array
     {
         return [
-            'vote_type' => GameProposalVoteType::class,
+            "vote_type" => GameProposalVoteType::class,
         ];
     }
 }

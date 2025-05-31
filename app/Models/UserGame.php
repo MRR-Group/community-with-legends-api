@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Models;
 
 use Carbon\Carbon;
 use CommunityWithLegends\Enums\UserGameStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Collection;
 
 /**
  * @property int $id
@@ -20,7 +21,7 @@ use Illuminate\Support\Collection;
  */
 class UserGame extends Model
 {
-    protected $fillable = ['user_id', 'game_id', 'status'];
+    protected $fillable = ["user_id", "game_id", "status"];
 
     public function user(): BelongsTo
     {
@@ -35,7 +36,7 @@ class UserGame extends Model
     protected function casts(): array
     {
         return [
-            'status' => UserGameStatus::class,
+            "status" => UserGameStatus::class,
         ];
     }
 }

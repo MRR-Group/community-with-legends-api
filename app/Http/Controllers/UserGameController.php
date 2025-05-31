@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Controllers;
 
 use CommunityWithLegends\Http\Requests\UserGameRequest;
@@ -13,7 +15,7 @@ class UserGameController extends Controller
 {
     public function index(User $user): JsonResponse
     {
-        $games = $user->userGames()->with('game')->get();
+        $games = $user->userGames()->with("game")->get();
 
         return UserGameResource::collection($games)->response();
     }
@@ -28,16 +30,16 @@ class UserGameController extends Controller
         $user = auth()->user();
         $data = $request->validated();
 
-        if ($user->userGames()->where('game_id', $data['game_id'])->exists()) {
+        if ($user->userGames()->where("game_id", $data["game_id"])->exists()) {
             return response()->json([
-                'message' => 'You already have this game in your list.'
+                "message" => "You already have this game in your list.",
             ], Status::HTTP_CONFLICT);
         }
 
         $userGame = UserGame::create([
-            'user_id' => $user->id,
-            'game_id' => $data['game_id'],
-            'status' => $data['status'],
+            "user_id" => $user->id,
+            "game_id" => $data["game_id"],
+            "status" => $data["status"],
         ]);
 
         return response()->json([
@@ -52,14 +54,14 @@ class UserGameController extends Controller
 
         if ($userGame->user->isNot($user)) {
             return response()->json([
-                'message' => 'Forbidden'
+                "message" => "Forbidden",
             ], Status::HTTP_FORBIDDEN);
         }
 
         $data = $request->validated();
 
         $userGame->update([
-            'status' => $data['status'],
+            "status" => $data["status"],
         ]);
 
         return response()->json(["Game has been edited"], Status::HTTP_OK);
@@ -71,14 +73,14 @@ class UserGameController extends Controller
 
         if ($userGame->user->isNot($user)) {
             return response()->json([
-                'message' => 'Forbidden'
+                "message" => "Forbidden",
             ], Status::HTTP_FORBIDDEN);
         }
 
         $userGame->delete();
 
         return response()->json([
-            'message' => 'User game entry deleted successfully.'
+            "message" => "User game entry deleted successfully.",
         ], Status::HTTP_OK);
     }
 }

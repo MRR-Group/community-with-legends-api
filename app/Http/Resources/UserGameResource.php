@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -15,9 +17,9 @@ class UserGameResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'status' => $this->status,
-            'game' => new GameResource($this->game),
+            "id" => $this->id,
+            "status" => $this->status,
+            "game" => new GameResource($this->game),
         ];
     }
 }

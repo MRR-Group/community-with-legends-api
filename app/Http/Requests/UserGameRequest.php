@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Requests;
 
 use CommunityWithLegends\Enums\UserGameStatus;
@@ -23,11 +25,11 @@ class UserGameRequest extends FormRequest
      */
     public function rules(): array
     {
-        $validStatuses = implode(',', array_column(UserGameStatus::cases(), 'value'));
+        $validStatuses = implode(",", array_column(UserGameStatus::cases(), "value"));
 
         return [
-            'game_id' => ['required', 'exists:games,id'],
-            'status' => ['required', "in:$validStatuses"],
+            "game_id" => ["required", "exists:games,id"],
+            "status" => ["required", "in:$validStatuses"],
         ];
     }
 }
