@@ -151,7 +151,7 @@ class UserProposalController extends Controller
     {
         $user = auth()->user();
 
-        if ($gameProposal->user->is($user) && $gameProposal->targetUser->is($user)) {
+        if ($gameProposal->user->is($user) || $gameProposal->targetUser->is($user)) {
             return response()->json(["message" => "Unauthorized"], Status::HTTP_FORBIDDEN);
         }
 
