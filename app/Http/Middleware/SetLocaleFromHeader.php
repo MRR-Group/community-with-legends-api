@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommunityWithLegends\Http\Middleware;
 
 use Closure;
@@ -10,17 +12,17 @@ class SetLocaleFromHeader
 {
     public function handle(Request $request, Closure $next)
     {
-        $acceptLanguage = $request->header('Accept-Language');
+        $acceptLanguage = $request->header("Accept-Language");
 
-        $locale = config('app.locale');
+        $locale = config("app.locale");
 
         if ($acceptLanguage) {
-            $languages = explode(',', $acceptLanguage);
+            $languages = explode(",", $acceptLanguage);
 
             if (!empty($languages)) {
                 $primaryLang = substr($languages[0], 0, 2);
 
-                if (in_array($primaryLang, ['en', 'pl'])) {
+                if (in_array($primaryLang, ["en", "pl"], true)) {
                     $locale = $primaryLang;
                 }
             }

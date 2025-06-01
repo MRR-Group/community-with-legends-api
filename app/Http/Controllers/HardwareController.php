@@ -58,8 +58,8 @@ class HardwareController extends Controller
 
         return response()->json(
             [
-                "message" => __("hardware.deleted", ["title" => $item->title])
-            ]
+                "message" => __("hardware.deleted", ["title" => $item->title]),
+            ],
         );
     }
 

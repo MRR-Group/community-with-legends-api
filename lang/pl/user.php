@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     "nickname_changed" => "Nick został zmieniony pomyślnie.",
     "banned" => ":name został zbanowany pomyślnie.",

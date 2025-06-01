@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     "self_proposal" => "Nie możesz zaproponować gry samemu sobie.",
     "already_proposed" => "Propozycja dla tej gry już istnieje.",

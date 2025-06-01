@@ -1,7 +1,8 @@
 <?php
 
-return [
+declare(strict_types=1);
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Password Reset Language Lines
@@ -18,5 +19,4 @@ return [
     "throttled" => "Proszę zaczekać zanim spróbujesz ponownie.",
     "token" => "Token resetowania hasła jest nieprawidłowy.",
     "user" => "Token resetowania hasła jest nieprawidłowy.",
-
 ];

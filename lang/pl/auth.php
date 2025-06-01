@@ -1,7 +1,8 @@
 <?php
 
-return [
+declare(strict_types=1);
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Authentication Language Lines
@@ -17,5 +18,4 @@ return [
     "password" => "Podane hasło jest nieprawidłowe.",
     "logout" => "Wylogowano",
     "throttle" => "Za dużo nieudanych prób logowania. Proszę spróbować za :seconds sekund.",
-
 ];

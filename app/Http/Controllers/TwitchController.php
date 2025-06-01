@@ -46,7 +46,7 @@ class TwitchController extends Controller
             return $this->redirectErrorByPlatform($platform, __("twitch.no_account_found"));
         }
 
-        return $this->redirectErrorByPlatform($platform,  __("twitch.failed_login"));
+        return $this->redirectErrorByPlatform($platform, __("twitch.failed_login"));
     }
 
     public function registerByAuthCode(Request $request, IdenticonHelper $identiconHelper, string $platform): JsonResponse|RedirectResponse
