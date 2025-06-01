@@ -25,6 +25,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $email
  * @property string $password
  * @property string $avatar
+ * @property bool $hasPassword
+ * @property bool $has_twitch_login
  * @property Carbon $email_verified_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -106,6 +108,11 @@ class User extends Authenticatable
     public function hardware(): HasMany
     {
         return $this->hasMany(HardwareItem::class);
+    }
+
+    public function hasPassword(): Attribute
+    {
+        return Attribute::get(fn(): bool => !empty($this->password));
     }
 
     protected function avatar(): Attribute

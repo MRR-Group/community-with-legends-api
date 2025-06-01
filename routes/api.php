@@ -52,6 +52,7 @@ Route::middleware(["auth:sanctum", "logout.banned"])->group(function (): void {
     Route::post("/user/name", [UserController::class, "changeName"]);
     Route::post("/user/avatar", [ChangeAvatarController::class, "store"]);
     Route::delete("/user/avatar", [UserController::class, "deleteAvatar"]);
+    Route::post("/user/set-password", [UserController::class, "setPassword"]);
 
     Route::post("/users/{user}/ban", [UserController::class, "ban"])->middleware(Authorize::using(Permission::BanUsers));
     Route::post("/users/{user}/unban", [UserController::class, "unban"])->middleware(Authorize::using(Permission::BanUsers));

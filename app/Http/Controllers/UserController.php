@@ -7,12 +7,14 @@ namespace CommunityWithLegends\Http\Controllers;
 use Carbon\Carbon;
 use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Helpers\IdenticonHelper;
+use CommunityWithLegends\Http\Requests\SetPasswordRequest;
 use CommunityWithLegends\Http\Requests\UpdateNicknameRequest;
 use CommunityWithLegends\Http\Resources\UserResource;
 use CommunityWithLegends\Models\Report;
 use CommunityWithLegends\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response as Status;
 
 class UserController
@@ -198,5 +200,25 @@ class UserController
             ["message" => "Moderator privileges revoked from $user->name"],
             Status::HTTP_OK,
         );
+    }
+
+    public function setPassword(SetPasswordRequest $setPasswordRequest): JsonResponse
+    {
+        $user = $setPasswordRequest->user();
+
+        if ($user->hasPassword) {
+            return response()->json(
+                ["message" => "The user already has a password set."],
+                Status::HTTP_CONFLICT,
+            );
+        }
+
+        $password = $setPasswordRequest->validated()["password"];
+        $user->password = Hash::make($password);
+        $user->save();
+
+        return response()->json([
+            "message" => "Password has been set successfully.",
+        ], Status::HTTP_OK);
     }
 }

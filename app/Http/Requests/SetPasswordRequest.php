@@ -7,7 +7,7 @@ namespace CommunityWithLegends\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ResetPasswordRequest extends FormRequest
+class SetPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,6 @@ class ResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "email" => "required|email",
-            "token" => "required",
             "password" => "required|confirmed|min:8|max:225",
         ];
     }

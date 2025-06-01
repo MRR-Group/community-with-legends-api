@@ -22,6 +22,7 @@ class UserResource extends JsonResource
             "avatar" => $this->avatar,
             "permissions" => $this->permissionsNames(),
             "isBanned" => $this->isBanned(),
+            "hasPassword" => $this->hasPassword,
             "created_at" => $this->created_at,
         ];
     }
