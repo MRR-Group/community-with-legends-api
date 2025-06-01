@@ -110,14 +110,14 @@ class User extends Authenticatable
         return $this->hasMany(HardwareItem::class);
     }
 
-    protected function avatar(): Attribute
-    {
-        return Attribute::get(fn(): string => IdenticonHelper::url($this->id));
-    }
-
     public function hasPassword(): Attribute
     {
         return Attribute::get(fn(): bool => !empty($this->password));
+    }
+
+    protected function avatar(): Attribute
+    {
+        return Attribute::get(fn(): string => IdenticonHelper::url($this->id));
     }
 
     protected function casts(): array

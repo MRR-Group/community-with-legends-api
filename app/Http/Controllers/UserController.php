@@ -213,12 +213,12 @@ class UserController
             );
         }
 
-        $password = $setPasswordRequest->validated()['password'];
+        $password = $setPasswordRequest->validated()["password"];
         $user->password = Hash::make($password);
         $user->save();
 
         return response()->json([
-            'message' => 'Password has been set successfully.'
+            "message" => "Password has been set successfully.",
         ], Status::HTTP_OK);
     }
 }
