@@ -25,7 +25,7 @@ class CommentController extends Controller
         $comment->save();
 
         return response()->json([
-            "message" => "Comment has been created",
+            "message" => __("comment.created"),
             "id" => $comment->id,
         ], Status::HTTP_CREATED);
     }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CommunityWithLegends\Http\Controllers;
 
 use CommunityWithLegends\Enums\Role;
-use CommunityWithLegends\Helpers\IdenticonHelper;
+use CommunityWithLegends\Helpers\Helpers\IdenticonHelper;
 use CommunityWithLegends\Http\Requests\RegisterRequest;
 use CommunityWithLegends\Http\Resources\UserResource;
 use CommunityWithLegends\Models\User;
@@ -31,7 +31,7 @@ class AdministratorController
         $user->delete();
 
         return response()->json(
-            ["message" => "Administrator $user->name deleted."],
+            ["message" => __("admin.deleted", ["name" => $user->name])],
             Status::HTTP_OK,
         );
     }
@@ -50,7 +50,7 @@ class AdministratorController
         $user->syncPermissions(Role::Administrator->permissions());
 
         return response()->json(
-            ["message" => "Administrator created"],
+            ["message" => __("admin.created")],
             Status::HTTP_CREATED,
         );
     }
@@ -69,7 +69,7 @@ class AdministratorController
         $user->givePermissionTo(Role::User->permissions());
 
         return response()->json(
-            ["message" => "Administrator privileges revoked from $user->name"],
+            ["message" => __("admin.privileges_revoked", ["name" => $user->name])],
             Status::HTTP_OK,
         );
     }

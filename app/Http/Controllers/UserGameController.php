@@ -32,7 +32,7 @@ class UserGameController extends Controller
 
         if ($user->userGames()->where("game_id", $data["game_id"])->exists()) {
             return response()->json([
-                "message" => "You already have this game in your list.",
+                "message" => __("user_game.already_added"),
             ], Status::HTTP_CONFLICT);
         }
 
@@ -43,7 +43,7 @@ class UserGameController extends Controller
         ]);
 
         return response()->json([
-            "message" => "Game has been added",
+            "message" => __("user_game.added"),
             "id" => $userGame->id,
         ], Status::HTTP_CREATED);
     }
@@ -54,7 +54,7 @@ class UserGameController extends Controller
 
         if ($userGame->user->isNot($user)) {
             return response()->json([
-                "message" => "Forbidden",
+                "message" => __("user_game.forbidden"),
             ], Status::HTTP_FORBIDDEN);
         }
 
@@ -64,7 +64,9 @@ class UserGameController extends Controller
             "status" => $data["status"],
         ]);
 
-        return response()->json(["Game has been edited"], Status::HTTP_OK);
+        return response()->json([
+            "message" => __("user_game.edited"),
+        ], Status::HTTP_OK);
     }
 
     public function destroy(UserGame $userGame): JsonResponse
@@ -73,14 +75,14 @@ class UserGameController extends Controller
 
         if ($userGame->user->isNot($user)) {
             return response()->json([
-                "message" => "Forbidden",
+                "message" => __("user_game.forbidden"),
             ], Status::HTTP_FORBIDDEN);
         }
 
         $userGame->delete();
 
         return response()->json([
-            "message" => "User game entry deleted successfully.",
+            "message" => __("user_game.deleted"),
         ], Status::HTTP_OK);
     }
 }

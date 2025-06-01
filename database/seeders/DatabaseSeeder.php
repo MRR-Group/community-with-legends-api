@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use CommunityWithLegends\Helpers\IdenticonHelper;
+use CommunityWithLegends\Helpers\Helpers\IdenticonHelper;
 use CommunityWithLegends\Models\User;
 use Illuminate\Database\Seeder;
 

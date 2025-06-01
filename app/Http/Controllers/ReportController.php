@@ -59,7 +59,7 @@ class ReportController extends Controller
         $report->resolved_at = Carbon::now();
         $report->save();
 
-        return response()->json(["message" => "The report has been resolved"], 200);
+        return response()->json(["message" => __("report.resolved")], 200);
     }
 
     public function reopen(Report $report): JsonResponse
@@ -67,7 +67,7 @@ class ReportController extends Controller
         $report->resolved_at = null;
         $report->save();
 
-        return response()->json(["message" => "The report has been reopened"], 200);
+        return response()->json(["message" => __("report.reopened")], 200);
     }
 
     protected function storeReport(ReportRequest $request, $reportable): JsonResponse
@@ -77,7 +77,7 @@ class ReportController extends Controller
         $report->user()->associate($request->user());
         $reportable->reports()->save($report);
 
-        return response()->json(["message" => "The report has been submitted"], 201);
+        return response()->json(["message" => __("report.submitted")], 201);
     }
 
     protected function getReportsByType(string $type): JsonResponse

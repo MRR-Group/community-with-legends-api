@@ -39,19 +39,19 @@ class UserProposalController extends Controller
 
         if ($user->is($authUser)) {
             return response()->json([
-                "message" => "Cannot propose a game to yourself",
+                "message" => __("game_proposal.self_proposal"),
             ], Status::HTTP_BAD_REQUEST);
         }
 
         if (GameProposal::hasUserAlreadyProposed($authUser->id, $user->id, $game->id)) {
             return response()->json([
-                "message" => "Proposal already exists",
+                "message" => __("game_proposal.already_proposed"),
             ], Status::HTTP_CONFLICT);
         }
 
         if (GameProposal::userHasGame($user, $game->id)) {
             return response()->json([
-                "message" => "User already has this game",
+                "message" => __("game_proposal.already_has_game"),
             ], Status::HTTP_CONFLICT);
         }
 
@@ -64,20 +64,22 @@ class UserProposalController extends Controller
         $gameProposal->save();
 
         return response()->json([
-            "message" => "Proposal has been sent",
+            "message" => __("game_proposal.sent"),
         ], Status::HTTP_CREATED);
     }
 
     public function destroy(GameProposal $gameProposal): JsonResponse
     {
         if ($gameProposal->user->isNot(auth()->user())) {
-            return response()->json(["message" => "Unauthorized"], Status::HTTP_FORBIDDEN);
+            return response()->json([
+                "message" => __("game_proposal.unauthorized"),
+            ], Status::HTTP_FORBIDDEN);
         }
 
         $gameProposal->delete();
 
         return response()->json([
-            "message" => "Proposal has been deleted",
+            "message" => __("game_proposal.deleted"),
         ], Status::HTTP_OK);
     }
 
@@ -86,7 +88,9 @@ class UserProposalController extends Controller
         $user = auth()->user();
 
         if ($gameProposal->targetUser->isNot($user)) {
-            return response()->json(["message" => "Unauthorized"], Status::HTTP_FORBIDDEN);
+            return response()->json([
+                "message" => __("game_proposal.unauthorized"),
+            ], Status::HTTP_FORBIDDEN);
         }
 
         $gameProposal->status = GameProposalStatus::Accepted;
@@ -99,7 +103,7 @@ class UserProposalController extends Controller
         ]);
 
         return response()->json([
-            "message" => "Proposal has been accepted",
+            "message" => __("game_proposal.accepted"),
             "userGameId" => $userGame->id,
         ], Status::HTTP_CREATED);
     }
@@ -109,14 +113,16 @@ class UserProposalController extends Controller
         $user = auth()->user();
 
         if ($gameProposal->targetUser->isNot($user)) {
-            return response()->json(["message" => "Unauthorized"], Status::HTTP_FORBIDDEN);
+            return response()->json([
+                "message" => __("game_proposal.unauthorized"),
+            ], Status::HTTP_FORBIDDEN);
         }
 
         $gameProposal->status = GameProposalStatus::Rejected;
         $gameProposal->save();
 
         return response()->json([
-            "message" => "Proposal has been rejected",
+            "message" => __("game_proposal.rejected"),
         ], Status::HTTP_OK);
     }
 
@@ -125,11 +131,15 @@ class UserProposalController extends Controller
         $user = auth()->user();
 
         if ($gameProposal->user->is($user) || $gameProposal->targetUser->is($user)) {
-            return response()->json(["message" => "Unauthorized"], Status::HTTP_FORBIDDEN);
+            return response()->json([
+                "message" => __("game_proposal.unauthorized"),
+            ], Status::HTTP_FORBIDDEN);
         }
 
         if ($gameProposal->status !== GameProposalStatus::Pending) {
-            return response()->json(["message" => "You can no longer vote on this proposal"], Status::HTTP_FORBIDDEN);
+            return response()->json([
+                "message" => __("game_proposal.cannot_vote"),
+            ], Status::HTTP_FORBIDDEN);
         }
 
         GameProposalVote::query()->updateOrCreate(
@@ -143,7 +153,7 @@ class UserProposalController extends Controller
         );
 
         return response()->json([
-            "message" => "Proposal has been liked",
+            "message" => __("game_proposal.liked"),
         ], Status::HTTP_OK);
     }
 
@@ -152,11 +162,15 @@ class UserProposalController extends Controller
         $user = auth()->user();
 
         if ($gameProposal->user->is($user) || $gameProposal->targetUser->is($user)) {
-            return response()->json(["message" => "Unauthorized"], Status::HTTP_FORBIDDEN);
+            return response()->json([
+                "message" => __("game_proposal.unauthorized"),
+            ], Status::HTTP_FORBIDDEN);
         }
 
         if ($gameProposal->status !== GameProposalStatus::Pending) {
-            return response()->json(["message" => "You can no longer vote on this proposal"], Status::HTTP_FORBIDDEN);
+            return response()->json([
+                "message" => __("game_proposal.cannot_vote"),
+            ], Status::HTTP_FORBIDDEN);
         }
 
         GameProposalVote::query()->updateOrCreate(
@@ -170,7 +184,7 @@ class UserProposalController extends Controller
         );
 
         return response()->json([
-            "message" => "Proposal has been disliked",
+            "message" => __("game_proposal.disliked"),
         ], Status::HTTP_OK);
     }
 
@@ -188,7 +202,7 @@ class UserProposalController extends Controller
         }
 
         return response()->json([
-            "message" => "Reaction has been removed",
+            "message" => __("game_proposal.removed_reaction"),
         ], Status::HTTP_OK);
     }
 }

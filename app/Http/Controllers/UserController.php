@@ -6,7 +6,7 @@ namespace CommunityWithLegends\Http\Controllers;
 
 use Carbon\Carbon;
 use CommunityWithLegends\Enums\Role;
-use CommunityWithLegends\Helpers\IdenticonHelper;
+use CommunityWithLegends\Helpers\Helpers\IdenticonHelper;
 use CommunityWithLegends\Http\Requests\SetPasswordRequest;
 use CommunityWithLegends\Http\Requests\UpdateNicknameRequest;
 use CommunityWithLegends\Http\Resources\UserResource;
@@ -58,7 +58,7 @@ class UserController
         $user->save();
 
         return response()->json(
-            ["message" => "Nickname successfully changed"],
+            ["message" => __("user.nickname_changed")],
             Status::HTTP_OK,
         );
     }
@@ -85,7 +85,7 @@ class UserController
         ]);
 
         return response()->json(
-            ["message" => "$user->name successfully banned"],
+            ["message" => __("user.banned", ["name" => $user->name])],
             Status::HTTP_OK,
         );
     }
@@ -95,7 +95,7 @@ class UserController
         $user->unban();
 
         return response()->json(
-            ["message" => "$user->name successfully unbanned"],
+            ["message" => __("user.unbanned", ["name" => $user->name])],
             Status::HTTP_OK,
         );
     }
@@ -105,7 +105,7 @@ class UserController
         $identiconHelper->create($request->user()->id, $request->user()->email);
 
         return response()->json(
-            ["message" => "Avatar successfully deleted"],
+            ["message" => __("user.avatar_deleted")],
             Status::HTTP_OK,
         );
     }
@@ -122,7 +122,7 @@ class UserController
         $identiconHelper->create($user->id, $user->email);
 
         return response()->json(
-            ["message" => "$user->name's avatar successfully changed"],
+            ["message" => __("user.avatar_changed", ["name" => $user->name])],
             Status::HTTP_OK,
         );
     }
@@ -142,7 +142,7 @@ class UserController
         $user->save();
 
         return response()->json(
-            ["message" => "$oldName's name successfully changed"],
+            ["message" => __("user.name_changed", ["oldName" => $oldName])],
             Status::HTTP_OK,
         );
     }
@@ -167,7 +167,7 @@ class UserController
         $identiconHelper->create($user->id, $user->email);
 
         return response()->json(
-            ["message" => "$user->name successfully anonymized"],
+            ["message" => __("user.anonymized", ["name" => $user->name])],
             Status::HTTP_OK,
         );
     }
@@ -178,7 +178,7 @@ class UserController
         $user->givePermissionTo(Role::Moderator->permissions());
 
         return response()->json(
-            ["message" => "Moderator privileges granted to $user->name"],
+            ["message" => __("user.moderator_granted", ["name" => $user->name])],
             Status::HTTP_OK,
         );
     }
@@ -197,7 +197,7 @@ class UserController
         $user->givePermissionTo(Role::User->permissions());
 
         return response()->json(
-            ["message" => "Moderator privileges revoked from $user->name"],
+            ["message" => __("user.moderator_revoked", ["name" => $user->name])],
             Status::HTTP_OK,
         );
     }
@@ -208,7 +208,7 @@ class UserController
 
         if ($user->hasPassword) {
             return response()->json(
-                ["message" => "The user already has a password set."],
+                ["message" => __("user.password_set")],
                 Status::HTTP_CONFLICT,
             );
         }
@@ -218,7 +218,7 @@ class UserController
         $user->save();
 
         return response()->json([
-            "message" => "Password has been set successfully.",
+            ["message" => __("user.already_has_password")],
         ], Status::HTTP_OK);
     }
 }

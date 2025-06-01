@@ -40,7 +40,7 @@ class GameController extends Controller
         if (Cache::get("game_import_in_progress")) {
             return response()->json([
                 "status" => "error",
-                "message" => "An import is already in progress!",
+                "message" => __("game.import_in_progress"),
             ]);
         }
 
@@ -48,7 +48,7 @@ class GameController extends Controller
 
         return response()->json([
             "status" => "ok",
-            "message" => "Import has been started.",
+            "message" => __("game.import_started"),
         ]);
     }
 
