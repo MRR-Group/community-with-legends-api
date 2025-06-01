@@ -23,6 +23,7 @@ class UserResource extends JsonResource
             "permissions" => $this->permissionsNames(),
             "isBanned" => $this->isBanned(),
             "hasPassword" => $this->hasPassword,
+            "hasTwitchAccount" => $this->has_twitch_account,
             "created_at" => $this->created_at,
         ];
     }
