@@ -41,7 +41,7 @@ class PostController extends Controller
         }
 
         return response()->json([
-            "message" => "Post has been created",
+            "message" => __("post.created"),
             "id" => $post->id,
         ], Status::HTTP_CREATED);
     }
@@ -119,7 +119,7 @@ class PostController extends Controller
 
         if ($reaction) {
             return response()->json([
-                "message" => "You have already reacted to this post",
+                "message" => __("post.already_reacted"),
             ], Status::HTTP_CONFLICT);
         }
 
@@ -128,7 +128,7 @@ class PostController extends Controller
         ]);
 
         return response()->json([
-            "message" => "Reaction added successfully",
+            "message" => __("post.reaction_added"),
         ], Status::HTTP_CREATED);
     }
 
@@ -140,14 +140,14 @@ class PostController extends Controller
 
         if (!$reaction) {
             return response()->json([
-                "message" => "No reaction to remove",
+                "message" => __("post.no_reaction"),
             ], Status::HTTP_NOT_FOUND);
         }
 
         $reaction->delete();
 
         return response()->json([
-            "message" => "Reaction removed successfully",
+            "message" => __("post.reaction_removed"),
         ], Status::HTTP_OK);
     }
 
@@ -160,7 +160,7 @@ class PostController extends Controller
         $post->delete();
 
         return response()->json([
-            "message" => "Post removed successfully",
+            "message" => __("post.removed"),
         ], Status::HTTP_OK);
     }
 
@@ -173,7 +173,7 @@ class PostController extends Controller
         $comment->delete();
 
         return response()->json([
-            "message" => "Comment removed successfully",
+            "message" => __("post.comment_removed"),
         ], Status::HTTP_OK);
     }
 
@@ -182,7 +182,7 @@ class PostController extends Controller
         $comment->restore();
 
         return response()->json([
-            "message" => "Comment restored successfully",
+            "message" => __("post.comment_restored"),
         ], Status::HTTP_OK);
     }
 
@@ -191,7 +191,7 @@ class PostController extends Controller
         $post->restore();
 
         return response()->json([
-            "message" => "Post restored successfully",
+            "message" => __("post.restored"),
         ], Status::HTTP_OK);
     }
 }

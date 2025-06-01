@@ -23,7 +23,7 @@ class ResetPasswordController extends Controller
         Password::sendResetLink($validated);
 
         return response()->json([
-            "message" => "If the email is correct, a link to reset your password will be sent to it",
+            "message" => __("password_reset.link_sent"),
         ], Status::HTTP_OK);
     }
 
@@ -37,7 +37,7 @@ class ResetPasswordController extends Controller
 
         if (!$resetEntry || !Hash::check($validated["token"], $resetEntry->token)) {
             return response()->json([
-                "message" => "Invalid code",
+                "message" => __("password_reset.invalid_token"),
             ], Status::HTTP_BAD_REQUEST);
         }
 
@@ -53,7 +53,7 @@ class ResetPasswordController extends Controller
         DB::table("password_reset_tokens")->where("email", $validated["email"])->delete();
 
         return response()->json([
-            "message" => "Password successfully reset",
+            "message" => __("password_reset.success"),
         ], Status::HTTP_OK);
     }
 }

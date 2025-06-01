@@ -28,7 +28,7 @@ class LogoutController extends Controller
         }
 
         return response()->json([
-            "message" => "Logged out",
+            "message" => __("auth.logout"),
         ], Status::HTTP_OK);
     }
 }

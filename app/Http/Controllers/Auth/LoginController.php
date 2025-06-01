@@ -19,7 +19,7 @@ class LoginController extends Controller
 
         if (!Auth::attempt($credentials)) {
             return response()->json([
-                "message" => "The provided credentials do not match our records.",
+                "message" => __("auth.failed"),
             ], Status::HTTP_FORBIDDEN);
         }
 
