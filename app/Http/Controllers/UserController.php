@@ -52,10 +52,16 @@ class UserController
     public function changeName(UpdateNicknameRequest $updateNicknameRequest): JsonResponse
     {
         $user = $updateNicknameRequest->user();
+        $oldName = $user->name;
 
         $user->name = $updateNicknameRequest->validated()["name"];
 
         $user->save();
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($user)
+            ->log("User changed nickname from '{$oldName}' to '{$user->name}'");
 
         return response()->json(
             ["message" => __("user.nickname_changed")],
@@ -70,6 +76,11 @@ class UserController
         }
 
         if ($user->hasRole([Role::Moderator, Role::Administrator, Role::SuperAdministrator])) {
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log("Blocked ban attempt on privileged user '{$user->name}'");
+
             return response()->json(
                 [],
                 Status::HTTP_FORBIDDEN,
@@ -84,6 +95,13 @@ class UserController
             "expired_at" => $duration !== null ? Carbon::now()->addDays($duration) : null,
         ]);
 
+        $banned_for = $duration === null ? "permanently banned" : "banned for {$duration} days";
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->log("User '{$user->name}' was $banned_for. Banned by IP: " . ($by_ip ? "yes" : "no"));
+
         return response()->json(
             ["message" => __("user.banned", ["name" => $user->name])],
             Status::HTTP_OK,
@@ -93,6 +111,11 @@ class UserController
     public function unban(User $user, Request $request): JsonResponse
     {
         $user->unban();
+
+        activity()
+            ->causedBy($request->user())
+            ->performedOn($user)
+            ->log("User '{$user->name}' was unbanned");
 
         return response()->json(
             ["message" => __("user.unbanned", ["name" => $user->name])],
@@ -104,6 +127,11 @@ class UserController
     {
         $identiconHelper->create($request->user()->id, $request->user()->email);
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn(auth()->user())
+            ->log("User deleted their avatar");
+
         return response()->json(
             ["message" => __("user.avatar_deleted")],
             Status::HTTP_OK,
@@ -113,6 +141,11 @@ class UserController
     public function forceAvatarChange(User $user, IdenticonHelper $identiconHelper): JsonResponse
     {
         if ($user->hasRole([Role::Administrator, Role::SuperAdministrator])) {
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log("Blocked forced avatar change on '{$user->name}' due to high role");
+
             return response()->json(
                 [],
                 Status::HTTP_FORBIDDEN,
@@ -120,6 +153,11 @@ class UserController
         }
 
         $identiconHelper->create($user->id, $user->email);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->log("Admin forced avatar change for user '{$user->name}'");
 
         return response()->json(
             ["message" => __("user.avatar_changed", ["name" => $user->name])],
@@ -130,6 +168,11 @@ class UserController
     public function forceNameChange(User $user, Request $request): JsonResponse
     {
         if ($user->hasRole([Role::Administrator, Role::SuperAdministrator])) {
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log("Blocked forced name change on '{$user->name}' due to high role");
+
             return response()->json(
                 [],
                 Status::HTTP_FORBIDDEN,
@@ -141,6 +184,11 @@ class UserController
         $user->name = "Renamed User";
         $user->save();
 
+        activity()
+            ->causedBy($request->user())
+            ->performedOn($user)
+            ->log("Forced name change from '{$oldName}' to 'Renamed User'");
+
         return response()->json(
             ["message" => __("user.name_changed", ["oldName" => $oldName])],
             Status::HTTP_OK,
@@ -150,6 +198,11 @@ class UserController
     public function anonymize(User $user, IdenticonHelper $identiconHelper): JsonResponse
     {
         if ($user->hasRole([Role::Moderator, Role::Administrator, Role::SuperAdministrator])) {
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log("Blocked anonymization attempt on privileged user '{$user->name}'");
+
             return response()->json(
                 [],
                 Status::HTTP_FORBIDDEN,
@@ -160,11 +213,18 @@ class UserController
             $user->revokePermissionTo($permission);
         }
 
+        $oldName = $user->name;
+
         $user->email = "$user->id@anonymous.com";
         $user->name = "Anonymous";
         $user->save();
 
         $identiconHelper->create($user->id, $user->email);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->log("User '{$oldName}' was anonymized");
 
         return response()->json(
             ["message" => __("user.anonymized", ["name" => $user->name])],
@@ -177,6 +237,11 @@ class UserController
         $user->assignRole(Role::Moderator->value);
         $user->givePermissionTo(Role::Moderator->permissions());
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->log("Granted moderator privileges to '{$user->name}'");
+
         return response()->json(
             ["message" => __("user.moderator_granted", ["name" => $user->name])],
             Status::HTTP_OK,
@@ -186,6 +251,11 @@ class UserController
     public function revokeModeratorPrivileges(User $user): JsonResponse
     {
         if ($user->hasRole([Role::Administrator, Role::SuperAdministrator]) || !$user->hasRole(Role::Moderator)) {
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log("Blocked revocation of moderator role on '{$user->name}'");
+
             return response()->json(
                 [],
                 Status::HTTP_FORBIDDEN,
@@ -195,6 +265,11 @@ class UserController
         $user->removeRole(Role::Moderator->value);
         $user->revokePermissionTo(Role::Moderator->permissions());
         $user->givePermissionTo(Role::User->permissions());
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->log("Revoked moderator privileges from '{$user->name}'");
 
         return response()->json(
             ["message" => __("user.moderator_revoked", ["name" => $user->name])],
@@ -216,6 +291,11 @@ class UserController
         $password = $setPasswordRequest->validated()["password"];
         $user->password = Hash::make($password);
         $user->save();
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($user)
+            ->log("User {$user->name} set password");
 
         return response()->json([
             ["message" => __("user.already_has_password")],

@@ -22,6 +22,10 @@ class ResetPasswordController extends Controller
 
         Password::sendResetLink($validated);
 
+        activity()
+            ->withProperties(["email" => $validated["email"]])
+            ->log("Requested a password reset link");
+
         return response()->json([
             "message" => __("password_reset.link_sent"),
         ], Status::HTTP_OK);
@@ -36,6 +40,10 @@ class ResetPasswordController extends Controller
             ->first();
 
         if (!$resetEntry || !Hash::check($validated["token"], $resetEntry->token)) {
+            activity()
+                ->withProperties(["email" => $validated["email"]])
+                ->log("Attempted to reset password with invalid token");
+
             return response()->json([
                 "message" => __("password_reset.invalid_token"),
             ], Status::HTTP_BAD_REQUEST);
@@ -51,6 +59,10 @@ class ResetPasswordController extends Controller
         $user->save();
 
         DB::table("password_reset_tokens")->where("email", $validated["email"])->delete();
+
+        activity()
+            ->performedOn($user)
+            ->log("Reset their password");
 
         return response()->json([
             "message" => __("password_reset.success"),

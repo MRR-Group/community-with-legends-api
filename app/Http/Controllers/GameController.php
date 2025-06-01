@@ -38,6 +38,10 @@ class GameController extends Controller
     public function import()
     {
         if (Cache::get("game_import_in_progress")) {
+            activity()
+                ->causedBy(auth()->user())
+                ->log("Attempted to start game import while already in progress");
+
             return response()->json([
                 "status" => "error",
                 "message" => __("game.import_in_progress"),
@@ -45,6 +49,10 @@ class GameController extends Controller
         }
 
         dispatch(new ImportGamesFromJSON());
+
+        activity()
+            ->causedBy(auth()->user())
+            ->log("Started game import");
 
         return response()->json([
             "status" => "ok",

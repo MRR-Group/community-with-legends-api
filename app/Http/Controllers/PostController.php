@@ -28,6 +28,11 @@ class PostController extends Controller
         $post = new Post($postData);
         $post->save();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($post)
+            ->log("Created a new post: " . $post->id);
+
         if (isset($validated["asset_type_id"]) && isset($validated["asset_link"])) {
             PostAsset::create([
                 "post_id" => $post->id,
@@ -118,6 +123,11 @@ class PostController extends Controller
             ->first();
 
         if ($reaction) {
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($post)
+                ->log("Tried to add reaction to post again: " . $post->id);
+
             return response()->json([
                 "message" => __("post.already_reacted"),
             ], Status::HTTP_CONFLICT);
@@ -126,6 +136,11 @@ class PostController extends Controller
         $post->reactions()->create([
             "user_id" => auth()->id(),
         ]);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($post)
+            ->log("Added reaction to post: " . $post->id);
 
         return response()->json([
             "message" => __("post.reaction_added"),
@@ -139,12 +154,22 @@ class PostController extends Controller
             ->first();
 
         if (!$reaction) {
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($post)
+                ->log("Tried to remove a reaction that does not exist for post: " . $post->id);
+
             return response()->json([
                 "message" => __("post.no_reaction"),
             ], Status::HTTP_NOT_FOUND);
         }
 
         $reaction->delete();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($post)
+            ->log("Removed reaction from post: " . $post->id);
 
         return response()->json([
             "message" => __("post.reaction_removed"),
@@ -159,6 +184,11 @@ class PostController extends Controller
 
         $post->delete();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($post)
+            ->log("Deleted post: " . $post->id);
+
         return response()->json([
             "message" => __("post.removed"),
         ], Status::HTTP_OK);
@@ -172,6 +202,11 @@ class PostController extends Controller
 
         $comment->delete();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($comment)
+            ->log("Deleted comment: " . $comment->id);
+
         return response()->json([
             "message" => __("post.comment_removed"),
         ], Status::HTTP_OK);
@@ -181,6 +216,11 @@ class PostController extends Controller
     {
         $comment->restore();
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($comment)
+            ->log("Restored comment: " . $comment->id);
+
         return response()->json([
             "message" => __("post.comment_restored"),
         ], Status::HTTP_OK);
@@ -189,6 +229,11 @@ class PostController extends Controller
     public function restorePost(Post $post): JsonResponse
     {
         $post->restore();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($post)
+            ->log("Restored post: " . $post->id);
 
         return response()->json([
             "message" => __("post.restored"),

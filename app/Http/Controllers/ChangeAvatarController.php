@@ -17,5 +17,10 @@ class ChangeAvatarController extends Controller
         $image = Image::read($upload)->scale(300, 300)->encodeByExtension("png");
 
         Storage::disk("avatars")->put($user->id . ".png", $image);
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($user)
+            ->log("Updated avatar");
     }
 }
