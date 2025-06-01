@@ -34,6 +34,10 @@ class TwitchController extends Controller
                 $token = $user->createToken("api-token")->plainTextToken;
 
                 Auth::login($user);
+                if(!$user->has_twitch_account){
+                    $user->has_twitch_account = true;
+                    $user->save();
+                }
 
                 return $this->redirectByPlatform($platform, $token);
             }
@@ -72,6 +76,7 @@ class TwitchController extends Controller
             ],
         );
         $user->markEmailAsVerified();
+        $user->has_twitch_account = true;
         $user->save();
 
         $identiconHelper->create($user->id, $user->email);

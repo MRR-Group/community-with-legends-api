@@ -25,6 +25,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $email
  * @property string $password
  * @property string $avatar
+ * @property bool $hasPassword
+ * @property bool $has_twitch_login
  * @property Carbon $email_verified_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -111,6 +113,11 @@ class User extends Authenticatable
     protected function avatar(): Attribute
     {
         return Attribute::get(fn(): string => IdenticonHelper::url($this->id));
+    }
+
+    public function hasPassword(): Attribute
+    {
+        return Attribute::get(fn(): bool => !empty($this->password));
     }
 
     protected function casts(): array
