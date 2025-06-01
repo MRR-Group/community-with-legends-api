@@ -6,7 +6,7 @@ namespace CommunityWithLegends\Models;
 
 use Carbon\Carbon;
 use CommunityWithLegends\Enums\Permission;
-use CommunityWithLegends\Helpers\Helpers\IdenticonHelper;
+use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Notifications\PasswordResetCodeNotification;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

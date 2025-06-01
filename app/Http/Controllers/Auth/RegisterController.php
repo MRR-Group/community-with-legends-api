@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CommunityWithLegends\Http\Controllers\Auth;
 
 use CommunityWithLegends\Enums\Role;
-use CommunityWithLegends\Helpers\Helpers\IdenticonHelper;
+use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Http\Controllers\Controller;
 use CommunityWithLegends\Http\Requests\RegisterRequest;
 use CommunityWithLegends\Models\User;

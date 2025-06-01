@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CommunityWithLegends\Http\Controllers;
 
 use CommunityWithLegends\Enums\Role;
-use CommunityWithLegends\Helpers\Helpers\IdenticonHelper;
+use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

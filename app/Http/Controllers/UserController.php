@@ -6,7 +6,7 @@ namespace CommunityWithLegends\Http\Controllers;
 
 use Carbon\Carbon;
 use CommunityWithLegends\Enums\Role;
-use CommunityWithLegends\Helpers\Helpers\IdenticonHelper;
+use CommunityWithLegends\Helpers\IdenticonHelper;
 use CommunityWithLegends\Http\Requests\SetPasswordRequest;
 use CommunityWithLegends\Http\Requests\UpdateNicknameRequest;
 use CommunityWithLegends\Http\Resources\UserResource;
