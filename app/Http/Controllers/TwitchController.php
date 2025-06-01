@@ -76,6 +76,7 @@ class TwitchController extends Controller
                 "name" => $username,
             ],
         );
+
         $user->markEmailAsVerified();
         $user->has_twitch_account = true;
         $user->save();

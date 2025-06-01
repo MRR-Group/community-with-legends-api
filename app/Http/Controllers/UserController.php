@@ -207,14 +207,13 @@ class UserController
         $user = $setPasswordRequest->user();
 
         if ($user->hasPassword) {
-
             return response()->json(
                 ["message" => "The user already has a password set."],
                 Status::HTTP_CONFLICT,
             );
         }
 
-        $password = $setPasswordRequest['password'];
+        $password = $setPasswordRequest->validated()['password'];
         $user->password = Hash::make($password);
         $user->save();
 
