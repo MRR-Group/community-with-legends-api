@@ -25,7 +25,7 @@ class SetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "password" => "required|confirmed|min:8",
+            "password" => "required|confirmed|min:8|max:225",
         ];
     }
 }
