@@ -34,7 +34,8 @@ class TwitchController extends Controller
                 $token = $user->createToken("api-token")->plainTextToken;
 
                 Auth::login($user);
-                if(!$user->has_twitch_account){
+
+                if (!$user->has_twitch_account) {
                     $user->has_twitch_account = true;
                     $user->save();
                 }
