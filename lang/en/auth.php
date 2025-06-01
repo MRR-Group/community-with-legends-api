@@ -18,4 +18,5 @@ return [
     "password" => "The provided password is incorrect.",
     "logout" => "Logged out",
     "throttle" => "Too many login attempts. Please try again in :seconds seconds.",
+    "unauthorized" => "You must be logged in to perform this action.",
 ];

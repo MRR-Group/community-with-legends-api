@@ -18,4 +18,5 @@ return [
     "password" => "Podane hasło jest nieprawidłowe.",
     "logout" => "Wylogowano",
     "throttle" => "Za dużo nieudanych prób logowania. Proszę spróbować za :seconds sekund.",
+    "unauthorized" => "Musisz być zalogowany, aby wykonać tę akcję.",
 ];
