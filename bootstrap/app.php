@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use CommunityWithLegends\Http\Middleware\SetLocaleFromHeader;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -21,7 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: "*");
         $middleware->statefulApi();
+
+        $middleware->append(SetLocaleFromHeader::class);
         $middleware->append(StartSession::class);
+
         $middleware->alias([
             "role" => RoleMiddleware::class,
             "permission" => PermissionMiddleware::class,
