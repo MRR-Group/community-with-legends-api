@@ -40,6 +40,11 @@ class TwitchController extends Controller
                     $user->save();
                 }
 
+                activity()
+                    ->causedBy($user)
+                    ->performedOn($user)
+                    ->log("User logged in via Twitch on platform: {$platform}");
+
                 return $this->redirectByPlatform($platform, $token);
             }
 
@@ -67,6 +72,9 @@ class TwitchController extends Controller
         $userExist = User::query()->where("email", $email)->first();
 
         if ($userExist) {
+            activity()
+                ->log("Twitch registration failed - account already exists for email: {$email}");
+
             return $this->redirectErrorByPlatform($platform, __("twitch.email_exists"));
         }
 
@@ -89,6 +97,11 @@ class TwitchController extends Controller
         $token = $user->createToken("api-token")->plainTextToken;
 
         Auth::login($user);
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($user)
+            ->log("User registered via Twitch on platform: {$platform}");
 
         return $this->redirectByPlatform($platform, $token);
     }

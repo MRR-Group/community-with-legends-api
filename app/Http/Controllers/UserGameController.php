@@ -31,6 +31,10 @@ class UserGameController extends Controller
         $data = $request->validated();
 
         if ($user->userGames()->where("game_id", $data["game_id"])->exists()) {
+            activity()
+                ->causedBy($user)
+                ->log("Attempted to add an already assigned game with game_id: {$data["game_id"]}");
+
             return response()->json([
                 "message" => __("user_game.already_added"),
             ], Status::HTTP_CONFLICT);
@@ -41,6 +45,11 @@ class UserGameController extends Controller
             "game_id" => $data["game_id"],
             "status" => $data["status"],
         ]);
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($userGame)
+            ->log("Added a new game with game_id: {$data["game_id"]} and status: {$data["status"]}");
 
         return response()->json([
             "message" => __("user_game.added"),
@@ -53,6 +62,11 @@ class UserGameController extends Controller
         $user = auth()->user();
 
         if ($userGame->user->isNot($user)) {
+            activity()
+                ->causedBy($user)
+                ->performedOn($userGame)
+                ->log("Unauthorized attempt to update UserGame ID {$userGame->id}");
+
             return response()->json([
                 "message" => __("user_game.forbidden"),
             ], Status::HTTP_FORBIDDEN);
@@ -64,6 +78,11 @@ class UserGameController extends Controller
             "status" => $data["status"],
         ]);
 
+        activity()
+            ->causedBy($user)
+            ->performedOn($userGame)
+            ->log("Updated UserGame ID {$userGame->id} with new status: {$data["status"]}");
+
         return response()->json([
             "message" => __("user_game.edited"),
         ], Status::HTTP_OK);
@@ -74,12 +93,22 @@ class UserGameController extends Controller
         $user = auth()->user();
 
         if ($userGame->user->isNot($user)) {
+            activity()
+                ->causedBy($user)
+                ->performedOn($userGame)
+                ->log("Unauthorized attempt to delete UserGame ID {$userGame->id}");
+
             return response()->json([
                 "message" => __("user_game.forbidden"),
             ], Status::HTTP_FORBIDDEN);
         }
 
         $userGame->delete();
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($userGame)
+            ->log("Deleted UserGame ID {$userGame->id}");
 
         return response()->json([
             "message" => __("user_game.deleted"),

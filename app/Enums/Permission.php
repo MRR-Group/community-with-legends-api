@@ -20,4 +20,5 @@ enum Permission: string
     case ManageAdministrators = "manageAdministrators";
     case ManageModerators = "manageModerators";
     case UpdateGames = "updateGames";
+    case ViewLogs = "viewLogs";
 }

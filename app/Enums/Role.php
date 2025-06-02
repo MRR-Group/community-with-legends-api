@@ -25,7 +25,7 @@ enum Role: string
 
     public function label(): string
     {
-        return __($this->value);
+        return $this->value;
     }
 
     public function permissions(): array

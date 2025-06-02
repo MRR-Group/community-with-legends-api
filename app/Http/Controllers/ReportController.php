@@ -59,6 +59,11 @@ class ReportController extends Controller
         $report->resolved_at = Carbon::now();
         $report->save();
 
+        activity()
+            ->performedOn($report)
+            ->causedBy(auth()->user())
+            ->log("Closed report #{$report->id}");
+
         return response()->json(["message" => __("report.resolved")], 200);
     }
 
@@ -66,6 +71,11 @@ class ReportController extends Controller
     {
         $report->resolved_at = null;
         $report->save();
+
+        activity()
+            ->performedOn($report)
+            ->causedBy(auth()->user())
+            ->log("Reopened report #{$report->id}");
 
         return response()->json(["message" => __("report.reopened")], 200);
     }
@@ -76,6 +86,18 @@ class ReportController extends Controller
 
         $report->user()->associate($request->user());
         $reportable->reports()->save($report);
+
+        $type = $report->reportable_type;
+
+        activity()
+            ->performedOn($reportable)
+            ->causedBy($request->user())
+            ->withProperties([
+                "report_id" => $report->id,
+                "reportable_type" => $type,
+                "report_reason" => $request->input("reason"),
+            ])
+            ->log("Submitted a report for $type");
 
         return response()->json(["message" => __("report.submitted")], 201);
     }

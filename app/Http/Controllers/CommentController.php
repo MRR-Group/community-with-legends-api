@@ -22,7 +22,13 @@ class CommentController extends Controller
             "user_id" => auth()->id(),
             "content" => $validated["content"],
         ]);
+
         $comment->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($comment)
+            ->log("Created a new comment on post ID: " . $post->id);
 
         return response()->json([
             "message" => __("comment.created"),

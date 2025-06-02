@@ -11,9 +11,11 @@ use CommunityWithLegends\Http\Controllers\ChangeAvatarController;
 use CommunityWithLegends\Http\Controllers\CommentController;
 use CommunityWithLegends\Http\Controllers\GameController;
 use CommunityWithLegends\Http\Controllers\HardwareController;
+use CommunityWithLegends\Http\Controllers\LogController;
 use CommunityWithLegends\Http\Controllers\PostController;
 use CommunityWithLegends\Http\Controllers\ReportController;
 use CommunityWithLegends\Http\Controllers\ResetPasswordController;
+use CommunityWithLegends\Http\Controllers\StatisticsController;
 use CommunityWithLegends\Http\Controllers\TagController;
 use CommunityWithLegends\Http\Controllers\TwitchController;
 use CommunityWithLegends\Http\Controllers\UserController;
@@ -110,6 +112,9 @@ Route::middleware(["auth:sanctum", "logout.banned"])->group(function (): void {
 
     Route::post("/games/import", [GameController::class, "import"])->middleware(Authorize::using(Permission::UpdateGames));
     Route::get("/games/import/progress", [GameController::class, "getProgress"])->middleware(Authorize::using(Permission::UpdateGames));
+
+    Route::get("/logs", [LogController::class, "index"])->middleware(Authorize::using(Permission::ViewLogs));
+    Route::get("/statistics", [StatisticsController::class, "index"])->middleware(Authorize::using(Permission::ViewLogs));
 });
 
 Route::group([], function (): void {

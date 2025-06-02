@@ -60,6 +60,7 @@ return [
         Permission::UpdateGames->value,
         Permission::RenameUsers->value,
         Permission::ChangeUsersAvatar->value,
+        Permission::ViewLogs->value,
     ],
     "permission_roles" => [
         Role::SuperAdministrator->value => [
@@ -77,6 +78,7 @@ return [
             Permission::ManageReports->value,
             Permission::RenameUsers->value,
             Permission::ChangeUsersAvatar->value,
+            Permission::ViewLogs->value,
         ],
         Role::Administrator->value => [
             Permission::AnonymizeUsers->value,
@@ -92,6 +94,7 @@ return [
             Permission::ManageReports->value,
             Permission::RenameUsers->value,
             Permission::ChangeUsersAvatar->value,
+            Permission::ViewLogs->value,
         ],
         Role::Moderator->value => [
             Permission::ViewUsers->value,
