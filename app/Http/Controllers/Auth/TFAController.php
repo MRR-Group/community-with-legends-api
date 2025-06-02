@@ -35,6 +35,7 @@ class TFAController extends Controller
         return response()->json([
             "message" => "success",
             "token" => $plainCode,
+            "expires_at" => $tfa->expires_at,
         ], Status::HTTP_OK);
     }
 

@@ -28,6 +28,7 @@ services:
         ports:
             - ${DOCKER_APP_HOST_PORT:-63851}:80
             - ${DOCKER_SSL_HOST_PORT:-443}:443
+            - 8080:8080
         networks:
             - community-with-legends-dev
         restart: unless-stopped
