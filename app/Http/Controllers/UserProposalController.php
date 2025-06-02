@@ -7,6 +7,9 @@ namespace CommunityWithLegends\Http\Controllers;
 use CommunityWithLegends\Enums\GameProposalStatus;
 use CommunityWithLegends\Enums\GameProposalVoteType;
 use CommunityWithLegends\Enums\UserGameStatus;
+use CommunityWithLegends\Events\GameProposalAccepted;
+use CommunityWithLegends\Events\GameProposalAdded;
+use CommunityWithLegends\Events\GameProposalRejected;
 use CommunityWithLegends\Http\Resources\GameProposalResource;
 use CommunityWithLegends\Models\Game;
 use CommunityWithLegends\Models\GameProposal;
@@ -80,6 +83,8 @@ class UserProposalController extends Controller
             ->performedOn($gameProposal)
             ->log("Sent game proposal to user_id {$user->id} for game_id {$game->id}.");
 
+        event(new GameProposalAdded($gameProposal, $gameProposal->user));
+
         return response()->json([
             "message" => __("game_proposal.sent"),
         ], Status::HTTP_CREATED);
@@ -139,6 +144,8 @@ class UserProposalController extends Controller
             ->performedOn($gameProposal)
             ->log("Accepted game proposal ID {$gameProposal->id}, created UserGame ID {$userGame->id}.");
 
+        event(new GameProposalAccepted($gameProposal, $gameProposal->user));
+
         return response()->json([
             "message" => __("game_proposal.accepted"),
             "userGameId" => $userGame->id,
@@ -167,6 +174,8 @@ class UserProposalController extends Controller
             ->causedBy($user)
             ->performedOn($gameProposal)
             ->log("Rejected game proposal ID {$gameProposal->id}.");
+
+        event(new GameProposalRejected($gameProposal, $gameProposal->user));
 
         return response()->json([
             "message" => __("game_proposal.rejected"),

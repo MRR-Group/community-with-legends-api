@@ -11,9 +11,11 @@
         "guzzlehttp/guzzle": "^7.9.2",
         "intervention/image-laravel": "^1.5",
         "laravel/framework": "^12.10",
+        "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0.8",
         "laravel/tinker": "^2.10.1",
         "mchev/banhammer": "^2.4",
+        "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-permission": "^6.15",
         "yzalis/identicon": "^2.0"

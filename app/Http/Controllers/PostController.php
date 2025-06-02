@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CommunityWithLegends\Http\Controllers;
 
 use Carbon\Carbon;
+use CommunityWithLegends\Events\PostLiked;
 use CommunityWithLegends\Http\Requests\CreatePostRequest;
 use CommunityWithLegends\Http\Resources\PostResource;
 use CommunityWithLegends\Models\Comment;
@@ -141,6 +142,8 @@ class PostController extends Controller
             ->causedBy(auth()->user())
             ->performedOn($post)
             ->log("Added reaction to post: " . $post->id);
+
+        event(new PostLiked($post, $post->user));
 
         return response()->json([
             "message" => __("post.reaction_added"),
