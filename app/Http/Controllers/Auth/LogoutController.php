@@ -25,6 +25,7 @@ class LogoutController extends Controller
 
             $request->session()->invalidate();
             $request->session()->regenerateToken();
+            $request->session()->forget("tfa_passed");
         }
 
         return response()->json([

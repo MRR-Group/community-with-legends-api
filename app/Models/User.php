@@ -11,6 +11,7 @@ use CommunityWithLegends\Notifications\PasswordResetCodeNotification;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -31,7 +32,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property ?string $last_login_ip
- * @property Collection<Post> $posts
+ * @property UserTfaCode $userTfaCode
  * @property Collection<Comment> $comments
  * @property Collection<Reaction> $reactions
  * @property Collection<HardwareItem> $hardware
@@ -93,6 +94,11 @@ class User extends Authenticatable
     public function gameProposals(): HasMany
     {
         return $this->hasMany(GameProposal::class);
+    }
+
+    public function userTfaCode(): HasOne
+    {
+        return $this->hasOne(UserTfaCode::class);
     }
 
     public function sendPasswordResetNotification($token): void

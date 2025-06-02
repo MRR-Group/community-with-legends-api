@@ -52,6 +52,7 @@ class ResetPasswordController extends Controller
         $user = User::query()
             ->where("email", $validated["email"])
             ->first();
+
         $user->forceFill([
             "password" => Hash::make($validated["password"]),
             "remember_token" => Str::random(60),
