@@ -19,7 +19,7 @@ class TagSeeder extends Seeder
             "Epic save", "Funny glitch", "Highlight reel", "Boss fight", "Multikill", "Sneak attack", "Epic troll",
             "Funny fail", "Victory dance", "Funny reaction", "Lag spike", "Clutch clutch", "Game glitch", "Funny moment",
             "Replay", "Speedrun fail", "Epic combo", "News", "Screenshot", "Opinion", "Discussion", "Controversial",
-            "Review", "Guide", "Update", "Event", "Announcement"
+            "Review", "Guide", "Update", "Event", "Announcement",
         ];
 
         foreach ($tags as $tagName) {
