@@ -7,6 +7,7 @@ use CommunityWithLegends\Http\Controllers\AdministratorController;
 use CommunityWithLegends\Http\Controllers\Auth\LoginController;
 use CommunityWithLegends\Http\Controllers\Auth\LogoutController;
 use CommunityWithLegends\Http\Controllers\Auth\RegisterController;
+use CommunityWithLegends\Http\Controllers\Auth\TFAController;
 use CommunityWithLegends\Http\Controllers\ChangeAvatarController;
 use CommunityWithLegends\Http\Controllers\CommentController;
 use CommunityWithLegends\Http\Controllers\GameController;
@@ -21,6 +22,7 @@ use CommunityWithLegends\Http\Controllers\TwitchController;
 use CommunityWithLegends\Http\Controllers\UserController;
 use CommunityWithLegends\Http\Controllers\UserGameController;
 use CommunityWithLegends\Http\Controllers\UserProposalController;
+use CommunityWithLegends\Http\Middleware\EnsureTfaPassed;
 use CommunityWithLegends\Models\User;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Http\Request;
@@ -76,45 +78,49 @@ Route::middleware(["auth:sanctum", "logout.banned"])->group(function (): void {
     Route::post("/proposals/{gameProposal}/dislike", [UserProposalController::class, "dislike"]);
     Route::delete("/proposals/{gameProposal}/like", [UserProposalController::class, "removeReaction"]);
 
-    Route::post("/users/{user}/grant-moderator-privileges", [UserController::class, "grantModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
-    Route::post("/users/{user}/revoke-moderator-privileges", [UserController::class, "revokeModeratorPrivileges"])->middleware(Authorize::using(Permission::ManageModerators));
+    Route::post("/users/{user}/grant-moderator-privileges", [UserController::class, "grantModeratorPrivileges"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::ManageModerators)]);
+    Route::post("/users/{user}/revoke-moderator-privileges", [UserController::class, "revokeModeratorPrivileges"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::ManageModerators)]);
 
     Route::get("/hardware/{item}", [HardwareController::class, "show"]);
     Route::post("/user/hardware", [HardwareController::class, "store"]);
     Route::post("/user/hardware/{item}", [HardwareController::class, "update"]);
     Route::delete("/user/hardware/{item}", [HardwareController::class, "destroy"]);
 
-    Route::get("/admins", [AdministratorController::class, "index"])->middleware(Authorize::using(Permission::ManageAdministrators));
-    Route::post("/admins", [AdministratorController::class, "store"])->middleware(Authorize::using(Permission::ManageAdministrators));
-    Route::delete("/admins/{user}", [AdministratorController::class, "delete"])->middleware(Authorize::using(Permission::ManageAdministrators));
-    Route::post("/admins/{user}/revoke-administrator-privileges", [AdministratorController::class, "revokeAdministratorPrivileges"])->middleware(Authorize::using(Permission::ManageAdministrators));
+    Route::get("/admins", [AdministratorController::class, "index"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::ManageAdministrators)]);
+    Route::post("/admins", [AdministratorController::class, "store"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::ManageAdministrators)]);
+    Route::delete("/admins/{user}", [AdministratorController::class, "delete"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::ManageAdministrators)]);
+    Route::post("/admins/{user}/revoke-administrator-privileges", [AdministratorController::class, "revokeAdministratorPrivileges"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::ManageAdministrators)]);
 
     Route::post("/posts", [PostController::class, "store"])->middleware(Authorize::using(Permission::CreatePost));
     Route::delete("/posts/{post}", [PostController::class, "remove"])->middleware(Authorize::using(Permission::DeletePosts));
-    Route::post("/posts/{post}/restore", [PostController::class, "restorePost"])->middleware(Authorize::using(Permission::DeletePosts));
+    Route::post("/posts/{post}/restore", [PostController::class, "restorePost"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::DeletePosts)]);
     Route::post("/posts/{post}/reactions", [PostController::class, "addReaction"])->middleware(Authorize::using(Permission::ReactToPost));
     Route::delete("/posts/{post}/reactions", [PostController::class, "removeReaction"])->middleware(Authorize::using(Permission::ReactToPost));
     Route::post("/posts/{post}/comments", [CommentController::class, "store"])->middleware(Authorize::using(Permission::MakeComment));
     Route::delete("/comments/{comment}", [PostController::class, "removeComment"])->middleware(Authorize::using(Permission::DeletePosts));
-    Route::post("/comments/{comment}/restore", [PostController::class, "restoreComment"])->middleware(Authorize::using(Permission::DeletePosts));
+    Route::post("/comments/{comment}/restore", [PostController::class, "restoreComment"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::DeletePosts)]);
 
     Route::post("/posts/{post}/report", [ReportController::class, "storePost"]);
     Route::post("/comments/{comment}/report", [ReportController::class, "storeComment"]);
     Route::post("/users/{user}/report", [ReportController::class, "storeUser"]);
 
-    Route::get("/reports", [ReportController::class, "index"])->middleware([Authorize::using(Permission::BanUsers), Authorize::using(Permission::ManageReports)]);
-    Route::get("/reports/posts", [ReportController::class, "indexPosts"])->middleware(Authorize::using(Permission::ManageReports));
-    Route::get("/reports/comments", [ReportController::class, "indexComments"])->middleware(Authorize::using(Permission::ManageReports));
-    Route::get("/reports/users", [ReportController::class, "indexUsers"])->middleware(Authorize::using(Permission::ManageReports));
+    Route::get("/reports", [ReportController::class, "index"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::BanUsers), Authorize::using(Permission::ManageReports)]);
+    Route::get("/reports/posts", [ReportController::class, "indexPosts"])->middleware(EnsureTfaPassed::class, Authorize::using(Permission::ManageReports));
+    Route::get("/reports/comments", [ReportController::class, "indexComments"])->middleware(EnsureTfaPassed::class, Authorize::using(Permission::ManageReports));
+    Route::get("/reports/users", [ReportController::class, "indexUsers"])->middleware(EnsureTfaPassed::class, Authorize::using(Permission::ManageReports));
 
-    Route::post("/reports/{report}/reopen", [ReportController::class, "reopen"])->middleware(Authorize::using(Permission::BanUsers), Authorize::using(Permission::ManageReports));
-    Route::post("/reports/{report}/close", [ReportController::class, "close"])->middleware(Authorize::using(Permission::BanUsers), Authorize::using(Permission::ManageReports));
+    Route::post("/reports/{report}/reopen", [ReportController::class, "reopen"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::BanUsers), Authorize::using(Permission::ManageReports)]);
+    Route::post("/reports/{report}/close", [ReportController::class, "close"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::BanUsers), Authorize::using(Permission::ManageReports)]);
 
-    Route::post("/games/import", [GameController::class, "import"])->middleware(Authorize::using(Permission::UpdateGames));
-    Route::get("/games/import/progress", [GameController::class, "getProgress"])->middleware(Authorize::using(Permission::UpdateGames));
+    Route::post("/games/import", [GameController::class, "import"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::UpdateGames)]);
+    Route::get("/games/import/progress", [GameController::class, "getProgress"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::UpdateGames)]);
 
-    Route::get("/logs", [LogController::class, "index"])->middleware(Authorize::using(Permission::ViewLogs));
-    Route::get("/statistics", [StatisticsController::class, "index"])->middleware(Authorize::using(Permission::ViewLogs));
+    Route::get("/logs", [LogController::class, "index"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::ViewLogs)]);
+    Route::get("/statistics", [StatisticsController::class, "index"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::ViewLogs)]);
+
+    Route::get("/auth/tfa", [LoginController::class, "refresh"])->middleware([EnsureTfaPassed::class]);
+    Route::post("/auth/tfa/generate", [TFAController::class, "generate"]);
+    Route::post("/auth/tfa/validate", [TFAController::class, "validate"]);
 });
 
 Route::group([], function (): void {
