@@ -25,7 +25,7 @@ class MergeTags extends Command
         $processedTagsCount = 0;
 
         foreach ($tags as $tag) {
-            if ($processed->contains($tag->name)) {
+            if (!$processed->contains($tag->name)) {
                 $duplicates = Tag::query()->where("name", $tag->name)->get();
 
                 if ($duplicates->count() <= 1) {
