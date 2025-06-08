@@ -29,7 +29,8 @@ class TFAController extends Controller
         $tfa = new UserTfaCode();
         $tfa->user_id = $user->id;
         $tfa->code = Hash::make($plainCode);
-        $tfa->expires_at = Carbon::now()->addMinutes(config("tfa.expiration_time"));
+
+        $tfa->expires_at = Carbon::now()->addMinutes((int)config("auth.tfa.expiration_time"));
         $tfa->save();
 
         return response()->json([

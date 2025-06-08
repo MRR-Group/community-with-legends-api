@@ -88,7 +88,7 @@ class UserController
         }
 
         $duration = $request->integer("duration", null);
-        $by_ip = $request->boolean("by_ip");
+        $by_ip = $request->boolean("by_ip", null);
 
         $user->ban([
             "ip" => $by_ip ? $user->last_login_ip : null,
@@ -181,7 +181,7 @@ class UserController
 
         $oldName = $user->name;
 
-        $user->name = "Renamed User";
+        $user->name = "Renamed User " . rand(0, 10000);
         $user->save();
 
         activity()

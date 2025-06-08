@@ -93,12 +93,12 @@ Route::middleware(["auth:sanctum", "logout.banned"])->group(function (): void {
 
     Route::post("/posts", [PostController::class, "store"])->middleware(Authorize::using(Permission::CreatePost));
     Route::delete("/posts/{post}", [PostController::class, "remove"])->middleware(Authorize::using(Permission::DeletePosts));
-    Route::post("/posts/{post}/restore", [PostController::class, "restorePost"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::DeletePosts)]);
+    Route::post("/posts/{post}/restore", [PostController::class, "restorePost"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::DeletePosts)])->withTrashed();
     Route::post("/posts/{post}/reactions", [PostController::class, "addReaction"])->middleware(Authorize::using(Permission::ReactToPost));
     Route::delete("/posts/{post}/reactions", [PostController::class, "removeReaction"])->middleware(Authorize::using(Permission::ReactToPost));
     Route::post("/posts/{post}/comments", [CommentController::class, "store"])->middleware(Authorize::using(Permission::MakeComment));
     Route::delete("/comments/{comment}", [PostController::class, "removeComment"])->middleware(Authorize::using(Permission::DeletePosts));
-    Route::post("/comments/{comment}/restore", [PostController::class, "restoreComment"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::DeletePosts)]);
+    Route::post("/comments/{comment}/restore", [PostController::class, "restoreComment"])->middleware([EnsureTfaPassed::class, Authorize::using(Permission::DeletePosts)])->withTrashed();
 
     Route::post("/posts/{post}/report", [ReportController::class, "storePost"]);
     Route::post("/comments/{comment}/report", [ReportController::class, "storeComment"]);
