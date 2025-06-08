@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             "name" => $this->name,
             "avatar" => $this->avatar,
             "permissions" => $this->permissionsNames(),
+            "hardware" => $this->whenLoaded("hardware", fn() => HardwareItemResource::collection($this->hardware)),
             "isBanned" => $this->isBanned(),
             "hasPassword" => $this->hasPassword,
             "hasTwitchAccount" => $this->has_twitch_account,
