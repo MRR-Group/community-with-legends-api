@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use CommunityWithLegends\Enums\Role;
 use CommunityWithLegends\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 

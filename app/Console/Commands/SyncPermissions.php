@@ -50,12 +50,12 @@ class SyncPermissions extends Command
 
     protected function syncUsersRoles(): void
     {
-        User::all()->each(function (User $user) {
+        User::all()->each(function (User $user): void {
             $email = $user->email;
 
             $role = match (true) {
-                $email === 'admin@cwl.com' => RoleEnum::SuperAdministrator->value,
-                str_starts_with($email, 'admin') && preg_match('/^admin\d+@cwl\.com$/', $email) => RoleEnum::Administrator->value,
+                $email === "admin@cwl.com" => RoleEnum::SuperAdministrator->value,
+                str_starts_with($email, "admin") && preg_match('/^admin\d+@cwl\.com$/', $email) => RoleEnum::Administrator->value,
                 default => RoleEnum::User->value,
             };
 
@@ -81,18 +81,20 @@ class SyncPermissions extends Command
 
     protected function syncUserPermissionsBasedOnRoles(): void
     {
-        User::with('roles')->each(function (User $user) {
+        User::with("roles")->each(function (User $user): void {
             $role = $user->roles->first();
 
-            if (! $role) {
+            if (!$role) {
                 $this->warn("User {$user->id} has no role assigned. Skipping...");
+
                 return;
             }
 
             $roleEnum = RoleEnum::tryFrom($role->name);
 
-            if (! $roleEnum) {
+            if (!$roleEnum) {
                 $this->warn("User {$user->id} has unknown role '{$role->name}'. Skipping...");
+
                 return;
             }
 

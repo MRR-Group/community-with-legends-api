@@ -43,19 +43,19 @@ return [
             ],
             "client_options" => [],
         ],
-        'pusher' => [
-            'driver' => 'pusher',
-            'key' => env('PUSHER_APP_KEY'),
-            'secret' => env('PUSHER_APP_SECRET'),
-            'app_id' => env('PUSHER_APP_ID'),
-            'options' => [
-                'cluster' => 'eu',
-                'useTLS' => true
+        "pusher" => [
+            "driver" => "pusher",
+            "key" => env("PUSHER_APP_KEY"),
+            "secret" => env("PUSHER_APP_SECRET"),
+            "app_id" => env("PUSHER_APP_ID"),
+            "options" => [
+                "cluster" => "eu",
+                "useTLS" => true,
             ],
-            'client_options' => [],
+            "client_options" => [],
         ],
     ],
 
-    'cluster' => 'eu',
-    'useTLS' => true,
+    "cluster" => "eu",
+    "useTLS" => true,
 ];
