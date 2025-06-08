@@ -88,7 +88,7 @@ class UserController
         }
 
         $duration = $request->integer("duration", null);
-        $by_ip = $request->boolean("by_ip", null);
+        $by_ip = $request->boolean("by_ip", false);
 
         $user->ban([
             "ip" => $by_ip ? $user->last_login_ip : null,
