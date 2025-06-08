@@ -31,6 +31,6 @@ return [
     ],
     "password_timeout" => env("AUTH_PASSWORD_TIMEOUT", 10800),
     "tfa" => [
-        "expiration_time" => env("AUTH_TFA_EXPIRATION_TIME", 5),
+        "expiration_time" => env("AUTH_TFA_EXPIRATION_TIME", 10),
     ],
 ];

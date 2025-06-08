@@ -42,9 +42,10 @@ RUN apt-get update \
         cron \
     && pecl install redis-${PHPREDIS_VERSION} \
     && pecl install imagick \
-    && docker-php-ext-install zip gd pdo_pgsql \
+    && docker-php-ext-install zip gd pdo_pgsql pcntl \
     && docker-php-ext-enable redis \
-    && docker-php-ext-enable imagick
+    && docker-php-ext-enable imagick \
+    && docker-php-ext-configure pcntl --enable-pcntl
 
 # For other versions check: https://pecl.php.net/package/xdebug
 ARG XDEBUG_VERSION=3.3.2

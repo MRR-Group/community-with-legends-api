@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CommunityWithLegends\Console\Commands;
 
 use CommunityWithLegends\Enums\Role as RoleEnum;
+use CommunityWithLegends\Models\User;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -21,6 +22,10 @@ class SyncPermissions extends Command
 
         $this->info("Syncing roles and assigning permissions...");
         $this->syncRolesAndAssignments();
+
+        $this->info("Syncing user roles...");
+        $this->syncUsersRoles();
+        $this->syncUserPermissionsBasedOnRoles();
 
         $this->info("Permissions & Roles synchronized successfully.");
 
@@ -43,6 +48,22 @@ class SyncPermissions extends Command
         });
     }
 
+    protected function syncUsersRoles(): void
+    {
+        User::all()->each(function (User $user): void {
+            $email = $user->email;
+
+            $role = match (true) {
+                $email === "admin@cwl.com" => RoleEnum::SuperAdministrator->value,
+                str_starts_with($email, "admin") && preg_match('/^admin\d+@cwl\.com$/', $email) => RoleEnum::Administrator->value,
+                default => RoleEnum::User->value,
+            };
+
+            $user->syncRoles([$role]);
+            $this->line("User {$user->id} ({$email}) assigned to role: {$role}");
+        });
+    }
+
     protected function syncRolesAndAssignments(): void
     {
         $rolePermissionsMap = config("permission.permission_roles");
@@ -56,5 +77,31 @@ class SyncPermissions extends Command
             $role->syncPermissions($permissions);
             $this->line("Assigned " . count($permissions) . " permission(s)");
         }
+    }
+
+    protected function syncUserPermissionsBasedOnRoles(): void
+    {
+        User::with("roles")->each(function (User $user): void {
+            $role = $user->roles->first();
+
+            if (!$role) {
+                $this->warn("User {$user->id} has no role assigned. Skipping...");
+
+                return;
+            }
+
+            $roleEnum = RoleEnum::tryFrom($role->name);
+
+            if (!$roleEnum) {
+                $this->warn("User {$user->id} has unknown role '{$role->name}'. Skipping...");
+
+                return;
+            }
+
+            $permissions = $roleEnum->permissions();
+            $user->syncPermissions($permissions);
+
+            $this->line("User {$user->id} assigned " . count($permissions) . " permission(s) based on role '{$role->name}'");
+        });
     }
 }

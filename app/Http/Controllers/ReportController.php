@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CommunityWithLegends\Http\Controllers;
 
 use Carbon\Carbon;
+use CommunityWithLegends\Events\ReportCreated;
 use CommunityWithLegends\Http\Requests\ReportRequest;
 use CommunityWithLegends\Http\Resources\ReportResource;
 use CommunityWithLegends\Models\Comment;
@@ -98,6 +99,8 @@ class ReportController extends Controller
                 "report_reason" => $request->input("reason"),
             ])
             ->log("Submitted a report for $type");
+
+        event(new ReportCreated($report));
 
         return response()->json(["message" => __("report.submitted")], 201);
     }
