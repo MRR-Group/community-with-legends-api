@@ -35,9 +35,18 @@ class UserGameController extends Controller
                 ->causedBy($user)
                 ->log("Attempted to add an already assigned game with game_id: {$data["game_id"]}");
 
+            $userGame = $user->userGames()->where("game_id", $data["game_id"])->first();
+            $userGame->status = $data["status"];
+            $userGame->save();            
+
+            activity()
+                ->causedBy($user)
+                ->performedOn($userGame)
+                ->log("Updated UserGame ID {$userGame->id} with new status: {$data["status"]}");
+
             return response()->json([
-                "message" => __("user_game.already_added"),
-            ], Status::HTTP_CONFLICT);
+                "message" => __("user_game.edited"),
+            ], Status::HTTP_OK);
         }
 
         $userGame = UserGame::create([

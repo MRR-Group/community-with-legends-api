@@ -107,7 +107,16 @@ class ReportController extends Controller
 
     protected function getReportsByType(string $type): JsonResponse
     {
-        $reports = Report::with(["user", "reportable"])
+        $reports = Report::with([
+            "user", 
+            "reportable" => function ($morphTo): void {
+                $morphTo->morphWith([
+                    User::class => ["hardware"], 
+                    Post::class => [],        
+                    Comment::class => [],
+                ]);
+            },
+        ])
             ->where("reportable_type", $type)
             ->latest()
             ->paginate(20);
