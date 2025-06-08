@@ -63,7 +63,7 @@ return [
         Permission::ViewLogs->value,
     ],
     "permission_roles" => [
-        Role::SuperAdministrator->value => [
+            Role::SuperAdministrator->value => [
             Permission::ManageAdministrators->value,
             Permission::AnonymizeUsers->value,
             Permission::ManageModerators->value,
