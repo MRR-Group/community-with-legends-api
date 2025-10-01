@@ -1,5 +1,5 @@
 # For other versions check: https://hub.docker.com/_/composer/tags
-FROM composer/composer:2.8.6-bin@sha256:989ad47cea06cb9365afda43d7431a238c6abf913d631b9cf043eb0d43f783ae AS composer-bin
+FROM composer/composer:2.8.12-bin@sha256:c735b6a52ea118693178babc601984dbbbd07f1d31ec87eaa881173622b467ed AS composer-bin
 
 # For other versions check: https://hub.docker.com/_/php/tags?page=1&name=fpm-bullseye
 FROM php:8.3.12-fpm-bullseye@sha256:b9b5efd7bfe05e65097e8253b038c4b711798d95f49c89e4337c0b330f9fc8ff
